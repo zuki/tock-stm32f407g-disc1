@@ -1,6 +1,6 @@
 target
 build/*
-book/*
+doc/book/*
 *.rlib
 *.sdb
 *.bin
