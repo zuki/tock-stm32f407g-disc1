@@ -14,6 +14,7 @@ use kernel::capabilities;
 use kernel::common::dynamic_deferred_call::{DynamicDeferredCall, DynamicDeferredCallClientState};
 use kernel::component::Component;
 use kernel::hil::gpio::Configure;
+use kernel::hil::gpio::Output;
 use kernel::Platform;
 use kernel::{create_capability, debug, static_init};
 
@@ -32,7 +33,7 @@ static mut PROCESSES: [Option<&'static dyn kernel::procs::ProcessType>; NUM_PROC
     [None, None, None, None];
 
 // Static reference to chip for panic dumps.
-static mut CHIP: Option<&'static stm32f407vg::chip::Stm32f4xx> = None;
+static mut CHIP: Option<&'static stm32f407vg::chip::Stm32f407> = None;
 
 // How should the kernel respond when a process faults.
 const FAULT_RESPONSE: kernel::procs::FaultResponse = kernel::procs::FaultResponse::Panic;
@@ -49,6 +50,9 @@ struct STM32F407GDISC1 {
     ipc: kernel::ipc::IPC,
     led: &'static capsules::led::LED<'static, stm32f407vg::gpio::Pin<'static>>,
     button: &'static capsules::button::Button<'static, stm32f407vg::gpio::Pin<'static>>,
+    ninedof: &'static capsules::ninedof::NineDof<'static>,
+    lis3dsh: &'static my_capsules::lis3dsh::Lis3dshSpi<'static>,
+    temp: &'static capsules::temperature::TemperatureSensor<'static>,
     alarm: &'static capsules::alarm::AlarmDriver<
         'static,
         VirtualMuxAlarm<'static, stm32f407vg::tim2::Tim2<'static>>,
@@ -66,6 +70,9 @@ impl Platform for STM32F407GDISC1 {
             capsules::led::DRIVER_NUM => f(Some(self.led)),
             capsules::button::DRIVER_NUM => f(Some(self.button)),
             capsules::alarm::DRIVER_NUM => f(Some(self.alarm)),
+            my_capsules::lis3dsh::DRIVER_NUM => f(Some(self.lis3dsh)),
+            capsules::ninedof::DRIVER_NUM => f(Some(self.ninedof)),
+            capsules::temperature::DRIVER_NUM => f(Some(self.temp)),
             kernel::ipc::DRIVER_NUM => f(Some(&self.ipc)),
             _ => f(None),
         }
@@ -74,14 +81,17 @@ impl Platform for STM32F407GDISC1 {
 
 /// Helper function called during bring-up that configures DMA.
 unsafe fn setup_dma() {
-    use stm32f407vg::dma1::{Dma1Peripheral, DMA1};
+    use stm32f407vg::dma::{DmaPeripheral, DMA1, DMA2};
     use stm32f407vg::usart;
     use stm32f407vg::usart::USART2;
+    use stm32f407vg::spi;
+    use stm32f407vg::spi::SPI1;
 
+    // setup dma for USART2
     DMA1.enable_clock();
 
-    let usart2_tx_stream = Dma1Peripheral::USART2_TX.get_stream();
-    let usart2_rx_stream = Dma1Peripheral::USART2_RX.get_stream();
+    let usart2_tx_stream = DmaPeripheral::USART2_TX.get_stream();
+    let usart2_rx_stream = DmaPeripheral::USART2_RX.get_stream();
 
     USART2.set_dma(
         usart::TxDMA(usart2_tx_stream),
@@ -91,11 +101,31 @@ unsafe fn setup_dma() {
     usart2_tx_stream.set_client(&USART2);
     usart2_rx_stream.set_client(&USART2);
 
-    usart2_tx_stream.setup(Dma1Peripheral::USART2_TX);
-    usart2_rx_stream.setup(Dma1Peripheral::USART2_RX);
+    usart2_tx_stream.setup(DmaPeripheral::USART2_TX);
+    usart2_rx_stream.setup(DmaPeripheral::USART2_RX);
 
-    cortexm4::nvic::Nvic::new(Dma1Peripheral::USART2_TX.get_stream_irqn()).enable();
-    cortexm4::nvic::Nvic::new(Dma1Peripheral::USART2_RX.get_stream_irqn()).enable();
+    cortexm4::nvic::Nvic::new(DmaPeripheral::USART2_TX.get_stream_irqn()).enable();
+    cortexm4::nvic::Nvic::new(DmaPeripheral::USART2_RX.get_stream_irqn()).enable();
+
+    // setup dma for SPI1
+    DMA2.enable_clock();
+
+    let spi1_tx_stream = DmaPeripheral::SPI1_TX.get_stream();
+    let spi1_rx_stream = DmaPeripheral::SPI1_RX.get_stream();
+
+    SPI1.set_dma(
+        spi::TxDMA(spi1_tx_stream),
+        spi::RxDMA(spi1_rx_stream),
+    );
+
+    spi1_tx_stream.set_client(&SPI1);
+    spi1_rx_stream.set_client(&SPI1);
+
+    spi1_tx_stream.setup(DmaPeripheral::SPI1_TX);
+    spi1_rx_stream.setup(DmaPeripheral::SPI1_RX);
+
+    cortexm4::nvic::Nvic::new(DmaPeripheral::SPI1_TX.get_stream_irqn()).enable();
+    cortexm4::nvic::Nvic::new(DmaPeripheral::SPI1_RX.get_stream_irqn()).enable();
 }
 
 /// Helper function called during bring-up that configures multiplexed I/O.
@@ -106,7 +136,9 @@ unsafe fn set_pin_primary_functions() {
 
     SYSCFG.enable_clock();
 
+    PORT[PortId::A as usize].enable_clock();
     PORT[PortId::D as usize].enable_clock();
+    PORT[PortId::E as usize].enable_clock();
 
     // User LD5 (RED) is connected to PD14. Configure PD14 as `debug_gpio!(0, ...)`
     PinId::PD14.get_pin().as_ref().map(|pin| {
@@ -129,8 +161,6 @@ unsafe fn set_pin_primary_functions() {
         pin.set_alternate_function(AlternateFunction::AF7);
     });
 
-    PORT[PortId::A as usize].enable_clock();
-
     // user button is connected on pa0
     PinId::PA00.get_pin().as_ref().map(|pin| {
         // By default, upon reset, the pin is in input mode, with no internal
@@ -141,6 +171,40 @@ unsafe fn set_pin_primary_functions() {
         EXTI.associate_line_gpiopin(LineId::Exti0, pin);
     });
     cortexm4::nvic::Nvic::new(stm32f407vg::nvic::EXTI0).enable();
+
+    // SPI1 has the lis3dsh sensor connected
+    // PA05: SPI1 SCK
+    PinId::PA05.get_pin().as_ref().map(|pin| {
+        pin.make_output();
+        pin.set_floating_state(kernel::hil::gpio::FloatingState::PullNone);
+        pin.set_mode(Mode::AlternateFunctionMode);
+        // AF5 is SPI1/SPI2
+        pin.set_alternate_function(AlternateFunction::AF5);
+    });
+    // PA06: SPI1 MISO
+    PinId::PA06.get_pin().as_ref().map(|pin| {
+        pin.set_mode(Mode::AlternateFunctionMode);
+        pin.set_floating_state(kernel::hil::gpio::FloatingState::PullNone);
+        // AF5 is SPI1/SPI2
+        pin.set_alternate_function(AlternateFunction::AF5);
+    });
+    // PA07: SPI1 MOSI
+    PinId::PA07.get_pin().as_ref().map(|pin| {
+        pin.make_output();
+        pin.set_floating_state(kernel::hil::gpio::FloatingState::PullNone);
+        pin.set_mode(Mode::AlternateFunctionMode);
+        // AF5 is SPI1/SPI2
+        pin.set_alternate_function(AlternateFunction::AF5);
+    });
+    // PE03: SPI1 CS
+    PinId::PE03.get_pin().as_ref().map(|pin| {
+        pin.make_output();
+        pin.set_floating_state(kernel::hil::gpio::FloatingState::PullNone);
+        pin.set();
+    });
+
+    stm32f407vg::spi::SPI1.enable_clock();
+
 }
 
 /// Helper function for miscellaneous peripheral functions
@@ -184,8 +248,8 @@ pub unsafe fn reset_handler() {
     DynamicDeferredCall::set_global_instance(dynamic_deferred_caller);
 
     let chip = static_init!(
-        stm32f407vg::chip::Stm32f4xx,
-        stm32f407vg::chip::Stm32f4xx::new()
+        stm32f407vg::chip::Stm32f407,
+        stm32f407vg::chip::Stm32f407::new()
     );
     CHIP = Some(chip);
 
@@ -283,13 +347,45 @@ pub unsafe fn reset_handler() {
     let alarm = components::alarm::AlarmDriverComponent::new(board_kernel, mux_alarm)
         .finalize(components::alarm_component_helper!(stm32f407vg::tim2::Tim2));
 
+    // LIS3DSH sensor
+    let mux_spi = components::spi::SpiMuxComponent::new(&stm32f407vg::spi::SPI1)
+        .finalize(components::spi_mux_component_helper!(stm32f407vg::spi::Spi));
+    let lis3dsh = my_components::lis3dsh::Lis3dshSpiComponent::new()
+        .finalize(my_components::lis3dsh_spi_component_helper!(
+            // spi type
+            stm32f407vg::spi::Spi,
+            // chip select
+            stm32f407vg::gpio::PinId::PE03,
+            // spi mux
+            mux_spi
+        ),
+    );
+
+    let grant_cap = create_capability!(capabilities::MemoryAllocationCapability);
+    let grant_temperature = board_kernel.create_grant(&grant_cap);
+
+    lis3dsh.power_on();
+
+    let temp = static_init!(
+        capsules::temperature::TemperatureSensor<'static>,
+        capsules::temperature::TemperatureSensor::new(lis3dsh, grant_temperature)
+    );
+    kernel::hil::sensors::TemperatureDriver::set_client(lis3dsh, temp);
+
+    let ninedof = components::ninedof::NineDofComponent::new(board_kernel)
+        .finalize(components::ninedof_component_helper!(lis3dsh));
+
     let stm32f407g_disc1 = STM32F407GDISC1 {
         console: console,
         ipc: kernel::ipc::IPC::new(board_kernel, &memory_allocation_capability),
         led: led,
         button: button,
+        ninedof: ninedof,
+        lis3dsh: lis3dsh,
+        temp: temp,
         alarm: alarm,
     };
+
 
     // // Optional kernel tests
     // //

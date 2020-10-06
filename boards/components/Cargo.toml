@@ -1,0 +1,10 @@
+[package]
+name = "my_components"
+version = "0.1.0"
+authors = ["Keiji Suzuki"]
+edition = "2018"
+
+[dependencies]
+capsules = { path = "../../tock/capsules" }
+my_capsules = { path = "../../capsules" }
+kernel = { path = "../../tock/kernel" }

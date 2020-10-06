@@ -1,0 +1,10 @@
+[package]
+name = "my_capsules"
+version = "0.1.0"
+authors = ["Keiji Suzuki"]
+edition = "2018"
+
+[dependencies]
+kernel = { path = "../tock/kernel" }
+enum_primitive = { path = "../tock/libraries/enum_primitive" }
+capsules = { path = "../tock/capsules" }

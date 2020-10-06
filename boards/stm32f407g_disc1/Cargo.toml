@@ -7,7 +7,9 @@ edition = "2018"
 
 [dependencies]
 components = { path = "../../tock/boards/components" }
+my_components = { path = "../../boards/components" }
 cortexm4 = { path = "../../tock/arch/cortex-m4" }
 capsules = { path = "../../tock/capsules" }
+my_capsules = { path = "../../capsules" }
 kernel = { path = "../../tock/kernel" }
 stm32f407vg = { path = "../../chips/stm32f407vg" }

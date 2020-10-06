@@ -1,8 +1,14 @@
+#![feature(const_fn)]
 #![no_std]
 
-pub use stm32f4xx::{chip, dbg, dma1, exti, gpio, nvic, rcc, spi, syscfg, tim2, usart};
+pub use stm32f4xx::{dbg, exti, gpio, nvic, syscfg, tim2};
 
 pub mod stm32f407vg_nvic;
+pub mod rcc;
+pub mod spi;
+pub mod dma;
+pub mod chip;
+pub mod usart;
 
 use cortexm4::{generic_isr, unhandled_interrupt};
 
