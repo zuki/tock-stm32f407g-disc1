@@ -35,6 +35,9 @@
 //! - `5`: Read Temperature
 //!   - `data`: unused
 //!   - Return: `SUCCESS` if no other command is in progress, `EBUSY` otherwise.
+//! - `6`: Set Test mode
+//!   - `data1`: 0, 1, 2
+//!   - Return: `SUCCESS` if no other command is in progress, `EBUSY` otherwise.
 //!
 //! ### Subscribe
 //!
@@ -237,6 +240,7 @@ enum Lis3dshStatus {
     SetScale,
     ReadXYZ,
     ReadTemperature,
+    SetTestMode,
 }
 
 pub struct Lis3dshSpi<'a> {
@@ -248,6 +252,7 @@ pub struct Lis3dshSpi<'a> {
     callback: OptionalCell<Callback>,
     nine_dof_client: OptionalCell<&'a dyn sensors::NineDofClient>,
     temperature_client: OptionalCell<&'a dyn sensors::TemperatureClient>,
+    test_mode: Cell<u8>,
 }
 
 impl<'a> Lis3dshSpi<'a> {
@@ -266,6 +271,7 @@ impl<'a> Lis3dshSpi<'a> {
             callback: OptionalCell::empty(),
             nine_dof_client: OptionalCell::empty(),
             temperature_client: OptionalCell::empty(),
+            test_mode: Cell::new(0),
         }
     }
 
@@ -293,7 +299,17 @@ impl<'a> Lis3dshSpi<'a> {
         self.scale.set(scale);
         self.txbuffer.take().map(|buf| {
             buf[0] = LIS3DSH_REG_CTRL_REG5;
-            buf[1] = (scale & 0x07) << 3;
+            buf[1] = ((scale & 0x07) << 3) | ((self.test_mode.get() & 0x03) << 1);
+            self.spi.read_write_bytes(buf, None, 2);
+        });
+    }
+
+    fn set_test_mode(&self, test_mode: u8) {
+        self.status.set(Lis3dshStatus::SetTestMode);
+        self.test_mode.set(test_mode);
+        self.txbuffer.take().map(|buf| {
+            buf[0] = LIS3DSH_REG_CTRL_REG5;
+            buf[1] = ((self.scale.get() & 0x07) << 3) | ((test_mode & 0x03) << 1);
             self.spi.read_write_bytes(buf, None, 2);
         });
     }
@@ -380,6 +396,16 @@ impl Driver for Lis3dshSpi<'_> {
                     ReturnCode::EBUSY
                 }
             }
+            // テストモード設定
+            6 => {
+                if self.status.get() == Lis3dshStatus::Idle {
+                    let test_mode = data1 as u8;
+                    self.set_test_mode(test_mode);
+                    ReturnCode::SUCCESS
+                } else {
+                    ReturnCode::EBUSY
+                }
+            }     
             // 未定義
             _ => ReturnCode::ENOSUPPORT,
         }
