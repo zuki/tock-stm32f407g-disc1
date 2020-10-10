@@ -81,17 +81,15 @@ impl Platform for STM32F407GDISC1 {
 
 /// Helper function called during bring-up that configures DMA.
 unsafe fn setup_dma() {
-    use stm32f407vg::dma::{DmaPeripheral, DMA1, DMA2};
+    use stm32f407vg::dma1::{Dma1Peripheral, DMA1};
     use stm32f407vg::usart;
     use stm32f407vg::usart::USART2;
-    use stm32f407vg::spi;
-    use stm32f407vg::spi::SPI1;
 
     // setup dma for USART2
     DMA1.enable_clock();
 
-    let usart2_tx_stream = DmaPeripheral::USART2_TX.get_stream();
-    let usart2_rx_stream = DmaPeripheral::USART2_RX.get_stream();
+    let usart2_tx_stream = Dma1Peripheral::USART2_TX.get_stream();
+    let usart2_rx_stream = Dma1Peripheral::USART2_RX.get_stream();
 
     USART2.set_dma(
         usart::TxDMA(usart2_tx_stream),
@@ -101,31 +99,11 @@ unsafe fn setup_dma() {
     usart2_tx_stream.set_client(&USART2);
     usart2_rx_stream.set_client(&USART2);
 
-    usart2_tx_stream.setup(DmaPeripheral::USART2_TX);
-    usart2_rx_stream.setup(DmaPeripheral::USART2_RX);
+    usart2_tx_stream.setup(Dma1Peripheral::USART2_TX);
+    usart2_rx_stream.setup(Dma1Peripheral::USART2_RX);
 
-    cortexm4::nvic::Nvic::new(DmaPeripheral::USART2_TX.get_stream_irqn()).enable();
-    cortexm4::nvic::Nvic::new(DmaPeripheral::USART2_RX.get_stream_irqn()).enable();
-
-    // setup dma for SPI1
-    DMA2.enable_clock();
-
-    let spi1_tx_stream = DmaPeripheral::SPI1_TX.get_stream();
-    let spi1_rx_stream = DmaPeripheral::SPI1_RX.get_stream();
-
-    SPI1.set_dma(
-        spi::TxDMA(spi1_tx_stream),
-        spi::RxDMA(spi1_rx_stream),
-    );
-
-    spi1_tx_stream.set_client(&SPI1);
-    spi1_rx_stream.set_client(&SPI1);
-
-    spi1_tx_stream.setup(DmaPeripheral::SPI1_TX);
-    spi1_rx_stream.setup(DmaPeripheral::SPI1_RX);
-
-    cortexm4::nvic::Nvic::new(DmaPeripheral::SPI1_TX.get_stream_irqn()).enable();
-    cortexm4::nvic::Nvic::new(DmaPeripheral::SPI1_RX.get_stream_irqn()).enable();
+    cortexm4::nvic::Nvic::new(Dma1Peripheral::USART2_TX.get_stream_irqn()).enable();
+    cortexm4::nvic::Nvic::new(Dma1Peripheral::USART2_RX.get_stream_irqn()).enable();
 }
 
 /// Helper function called during bring-up that configures multiplexed I/O.
@@ -361,10 +339,14 @@ pub unsafe fn reset_handler() {
         ),
     );
 
+    lis3dsh.configure(
+        my_capsules::lis3dsh::Lis3dshDataRate::DataRate100Hz,
+        my_capsules::lis3dsh::Lis3dshScale::Scale2G,
+        my_capsules::lis3dsh::Lis3dshFilter::Filter800Hz,
+    );
+
     let grant_cap = create_capability!(capabilities::MemoryAllocationCapability);
     let grant_temperature = board_kernel.create_grant(&grant_cap);
-
-    lis3dsh.power_on();
 
     let temp = static_init!(
         capsules::temperature::TemperatureSensor<'static>,

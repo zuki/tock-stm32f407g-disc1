@@ -69,8 +69,6 @@ impl<S: 'static + spi::SpiMaster> Component for Lis3dshSpiComponent<S> {
             )
         );
         static_buffer.0.set_client(lis3dsh);
-        lis3dsh.configure();
-
         lis3dsh
     }
 }

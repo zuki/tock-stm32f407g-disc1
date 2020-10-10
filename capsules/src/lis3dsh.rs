@@ -23,11 +23,12 @@
 //! - `1`: Is Present
 //!   - `data`: unused
 //!   - Return: `SUCCESS` if no other command is in progress, `EBUSY` otherwise.
-//! - `2`: Power On
-//!   - `data`: unused
+//! - `2`: Set Power mode
+//!   - `data`: 0 to 9
 //!   - Return: `SUCCESS` if no other command is in progress, `EBUSY` otherwise.
-//! - `3`: Set Scale
+//! - `3`: Set Full scale selection and anti-aliasing filter bandwidth
 //!   - `data1`: 0, 1, 2, 3 or 4
+//!   - `data2`: 0, 1, 2 or 3
 //!   - Return: `SUCCESS` if no other command is in progress, `EBUSY` otherwise.
 //! - `4`: Read XYZ
 //!   - `data`: unused
@@ -35,9 +36,12 @@
 //! - `5`: Read Temperature
 //!   - `data`: unused
 //!   - Return: `SUCCESS` if no other command is in progress, `EBUSY` otherwise.
-//! - `6`: Set Test mode
-//!   - `data1`: 0, 1, 2
+//!
 //!   - Return: `SUCCESS` if no other command is in progress, `EBUSY` otherwise.
+//! - `6`: Read Temperature
+//!   - `data`: 0 - 5 (OUTX_L + data)
+//!   - Return: `SUCCESS` if no other command is in progress, `EBUSY` otherwise.
+//! 
 //!
 //! ### Subscribe
 //!
@@ -50,6 +54,7 @@
 //!     - `1` - 1 for is present, 0 for not present
 //!     - `4` - X rotation
 //!     - `5` - temperature in deg C
+//!     - `6` - accelleration value
 //!   - 'data2`: depends on command
 //!     - `4` - Y rotation
 //!   - 'data3`: depends on command
@@ -59,12 +64,17 @@
 //! -----
 //!
 //! ```rust
-//! let mux_spi = components::spi::SpiMuxComponent::new(&stm32f4xx::spi::SPI1)
-//!     .finalize(components::spi_mux_component_helper!(stm32f4xx::spi::Spi));
+//! let mux_spi = components::spi::SpiMuxComponent::new(&stm32f407vg::spi::SPI1)
+//!     .finalize(components::spi_mux_component_helper!(stm32f407vg::spi::Spi));
 //!
 //! let lis3dsh = my_components::lis3dsh::Lis3dshSpiComponent::new()
-//!     .finalize(my_components::lis3dsh_spi_component_helper!(stm32f4xx::spi::Spi, stm32f4xx::gpio::PinId::PE03, mux_spi));
+//!     .finalize(my_components::lis3dsh_spi_component_helper!(stm32f407vg::spi::Spi, stm32f407vg::gpio::PinId::PE03, mux_spi));
 //!
+//! lis3dsh.configure(
+//!     lis3dsh::Lis3dshDataRate::DataRate100Hz,
+//!     lis3dsh::Lis3dshScale::Scale2G,
+//!     lis3dsh::Lis3dshFilter::Filter800Hz,
+//! );
 //! ```
 //!
 //! NineDof Example
@@ -73,11 +83,8 @@
 //! let grant_cap = create_capability!(capabilities::MemoryAllocationCapability);
 //! let grant_ninedof = board_kernel.create_grant(&grant_cap);
 //!
-//! lis3dsh.power_on();
-//! let ninedof = static_init!(
-//!     capsules::ninedof::NineDof<'static>,
-//!     capsules::ninedof::NineDof::new(lis3dsh, grant_ninedof));
-//! hil::sensors::NineDof::set_client(lis3dsh, ninedof);
+//! let ninedof = components::ninedof::NineDofComponent::new(board_kernel)
+//!     .finalize(components::ninedof_component_helper!(lis3dsh));
 //!
 //! ```
 //!
@@ -87,23 +94,53 @@
 //! let grant_cap = create_capability!(capabilities::MemoryAllocationCapability);
 //! let grant_temp = board_kernel.create_grant(&grant_cap);
 //!
-//! l3gd20.power_on();
+//! l3gd20.set_power_mode();
 //! let temp = static_init!(
-//! capsules::temperature::TemperatureSensor<'static>,
+//!     capsules::temperature::TemperatureSensor<'static>,
 //!     capsules::temperature::TemperatureSensor::new(l3gd20, grant_temperature));
 //! kernel::hil::sensors::TemperatureDriver::set_client(l3gd20, temp);
 //!
 //! ```
 //!
-//! Author: Alexandru Radovici <msg4alex@gmail.com>
+//! Author: Keiji Suzuki
 //!
 
+#![allow(non_camel_case_types)]
+
 use core::cell::Cell;
+use enum_primitive::cast::FromPrimitive;
+use enum_primitive::enum_from_primitive;
 use kernel::common::cells::{OptionalCell, TakeCell};
+use kernel::common::registers::register_bitfields;
 use kernel::hil::sensors;
 use kernel::hil::spi;
 use kernel::ReturnCode;
 use kernel::{AppId, Callback, Driver};
+
+register_bitfields![u8,
+    CTRL_REG4 [
+        // Output data rate
+        ODR OFFSET(4) NUMBITS(4) [],
+        // Block data update
+        BDU OFFSET(3) NUMBITS(1) [],
+        // Z-axis enable
+        ZEN OFFSET(2) NUMBITS(1) [],
+        // Y-axis enable
+        YEN OFFSET(1) NUMBITS(1) [],
+        // X-axis enable
+        XEN OFFSET(0) NUMBITS(1) []
+    ],
+    CTRL_REG5 [
+        // Anti aliasing filter bandwidth
+        BW OFFSET(6) NUMBITS(2) [],
+        // Full scale selection
+        FSCALE OFFSET(3) NUMBITS(3) [],
+        // Self test enable
+        ST OFFSET(1) NUMBITS(2) [],
+        // SPI serial interface
+        SIM OFFSET(0) NUMBITS(1) []
+    ]
+];
 
 //use capsules::driver;
 pub const DRIVER_NUM: usize = 0x70223; // 暫定的: driver::NUM::Lis3dsh as usize;
@@ -219,28 +256,64 @@ const LIS3DSH_REG_TC2: u16 = 0x7D;          // r:   -    SM2タイマーカウ�
 const LIS3DSH_REG_OUTS2: u8 = 0x7F;         // r:   -    SM2メイン設定フラグ
 */
 
+// buffer size
 pub const LIS3DSH_TX_SIZE: usize = 10;
 pub const LIS3DSH_RX_SIZE: usize = 10;
-
+// buffers for read and write
 pub static mut TXBUFFER: [u8; LIS3DSH_TX_SIZE] = [0; LIS3DSH_TX_SIZE];
 pub static mut RXBUFFER: [u8; LIS3DSH_RX_SIZE] = [0; LIS3DSH_RX_SIZE];
 
-/* Sensitivity factors, datasheet pg. 12 */
-const LIS3DSH_FULLSCALE_2:  isize =  6; /* 0.06 mg/digit */
-const LIS3DSH_FULLSCALE_4:  isize = 12; /* 0.12 mg/digit */
-const LIS3DSH_FULLSCALE_6:  isize = 18; /* 0.18 mg/digit */
-const LIS3DSH_FULLSCALE_8:  isize = 24; /* 0.24 mg/digit */
-const LIS3DSH_FULLSCALE_16: isize = 73; /* 0.73 mg/digit */
+// Manual page Table 55, page 39
+enum_from_primitive! {
+    #[derive(Clone, Copy, PartialEq)]
+    pub enum Lis3dshDataRate {
+        Off = 0,
+        DataRate3_125Hz = 1,
+        DataRate6_26Hz = 2,
+        DataRate12_5Hz = 3,
+        DataRate25Hz = 4,
+        DataRate50Hz = 5,
+        DataRate100Hz = 6,
+        DataRate400Hz = 7,
+        DataRate800Hz = 8,
+        DataRate1600Hz = 9,
+    }
+}
+
+// Manual page 41
+enum_from_primitive! {
+    #[derive(Clone, Copy, PartialEq)]
+    pub enum Lis3dshFilter {
+        Filter800Hz = 0,
+        Filter400Hz = 1,
+        Filter200Hz = 2,
+        Filter50Hz = 3,
+    }
+}
+
+enum_from_primitive! {
+    #[derive(Clone, Copy, PartialEq)]
+    pub enum Lis3dshScale {
+        Scale2G = 0,
+        Scale4G = 1,
+        Scale6G = 2,
+        Scale8G = 3,
+        Scale16G = 4
+    }
+}
+
+// Manual page 41
+const SCALE_FACTOR: [u8; 5] = [2, 4, 6, 8, 16];
 
 #[derive(Copy, Clone, PartialEq)]
 enum Lis3dshStatus {
     Idle,
     IsPresent,
-    PowerOn,
-    SetScale,
+    SetPowerMode,
+    SetScaleAndFilter,
     ReadXYZ,
     ReadTemperature,
-    SetTestMode,
+    ReadValue,
 }
 
 pub struct Lis3dshSpi<'a> {
@@ -248,11 +321,12 @@ pub struct Lis3dshSpi<'a> {
     txbuffer: TakeCell<'static, [u8]>,
     rxbuffer: TakeCell<'static, [u8]>,
     status: Cell<Lis3dshStatus>,
-    scale: Cell<u8>,
+    data_rate: Cell<Lis3dshDataRate>,
+    scale: Cell<Lis3dshScale>,
+    filter: Cell<Lis3dshFilter>,
     callback: OptionalCell<Callback>,
     nine_dof_client: OptionalCell<&'a dyn sensors::NineDofClient>,
     temperature_client: OptionalCell<&'a dyn sensors::TemperatureClient>,
-    test_mode: Cell<u8>,
 }
 
 impl<'a> Lis3dshSpi<'a> {
@@ -267,49 +341,68 @@ impl<'a> Lis3dshSpi<'a> {
             txbuffer: TakeCell::new(txbuffer),
             rxbuffer: TakeCell::new(rxbuffer),
             status: Cell::new(Lis3dshStatus::Idle),
-            scale: Cell::new(0),
+            data_rate: Cell::new(Lis3dshDataRate::DataRate100Hz),
+            scale: Cell::new(Lis3dshScale::Scale2G),
+            filter: Cell::new(Lis3dshFilter::Filter800Hz),
             callback: OptionalCell::empty(),
             nine_dof_client: OptionalCell::empty(),
             temperature_client: OptionalCell::empty(),
-            test_mode: Cell::new(0),
         }
     }
 
-    pub fn is_present(&self) -> bool {
+    pub fn configure(
+        &self,
+        data_rate: Lis3dshDataRate,
+        scale: Lis3dshScale,
+        filter: Lis3dshFilter,
+    ) {
+        if self.status.get() == Lis3dshStatus::Idle {
+            self.data_rate.set(data_rate);
+            self.scale.set(scale);
+            self.filter.set(filter);
+            self.spi.configure(
+                spi::ClockPolarity::IdleHigh,
+                spi::ClockPhase::SampleTrailing,
+                1_000_000,
+            );
+            
+            self.set_power_mode(data_rate);
+        }
+    }
+
+    pub fn is_present(&self) {
         self.status.set(Lis3dshStatus::IsPresent);
         self.txbuffer.take().map(|buf| {
             buf[0] = LIS3DSH_REG_WHO_AM_I | 0x80;   // 読み込み
             buf[1] = 0x00;
             self.spi.read_write_bytes(buf, self.rxbuffer.take(), 2);
         });
-        false
     }
 
-    pub fn power_on(&self) {
-        self.status.set(Lis3dshStatus::PowerOn);
+    pub fn set_power_mode(&self, data_rate: Lis3dshDataRate) {
+        self.status.set(Lis3dshStatus::SetPowerMode);
+        self.data_rate.set(data_rate);
         self.txbuffer.take().map(|buf| {
-            buf[0] = LIS3DSH_REG_CTRL_REG4; // TODO 他の初期化
-            buf[1] = 0x67;      // 100MHzでX, Y, Z チャンネルを有効化
+            buf[0] = LIS3DSH_REG_CTRL_REG4;
+            buf[1] = (CTRL_REG4::ODR.val(data_rate as u8)
+                + CTRL_REG4::BDU::CLEAR
+                + CTRL_REG4::ZEN::SET
+                + CTRL_REG4::YEN::SET
+                + CTRL_REG4::XEN::SET)
+                .value;
             self.spi.read_write_bytes(buf, None, 2);
         });
     }
 
-    fn set_scale(&self, scale: u8) {
-        self.status.set(Lis3dshStatus::SetScale);
+    fn set_scale_and_filter(&self, scale: Lis3dshScale, filter: Lis3dshFilter) {
+        self.status.set(Lis3dshStatus::SetScaleAndFilter);
         self.scale.set(scale);
+        self.filter.set(filter);
         self.txbuffer.take().map(|buf| {
             buf[0] = LIS3DSH_REG_CTRL_REG5;
-            buf[1] = ((scale & 0x07) << 3) | ((self.test_mode.get() & 0x03) << 1);
-            self.spi.read_write_bytes(buf, None, 2);
-        });
-    }
-
-    fn set_test_mode(&self, test_mode: u8) {
-        self.status.set(Lis3dshStatus::SetTestMode);
-        self.test_mode.set(test_mode);
-        self.txbuffer.take().map(|buf| {
-            buf[0] = LIS3DSH_REG_CTRL_REG5;
-            buf[1] = ((self.scale.get() & 0x07) << 3) | ((test_mode & 0x03) << 1);
+            buf[1] = (CTRL_REG5::BW.val(filter as u8)
+                + CTRL_REG5::FSCALE.val(scale as u8))
+                .value;
             self.spi.read_write_bytes(buf, None, 2);
         });
     }
@@ -328,6 +421,15 @@ impl<'a> Lis3dshSpi<'a> {
         });
     }
 
+    fn read_value(&self, offset: u8) {
+        self.status.set(Lis3dshStatus::ReadValue);
+        self.txbuffer.take().map(|buf| {
+            buf[0] = (LIS3DSH_REG_OUT_X_L + offset) | 0x80;
+            buf[1] = 0x00;
+            self.spi.read_write_bytes(buf, self.rxbuffer.take(), 2);
+        });
+    }
+
     fn read_temperature(&self) {
         self.status.set(Lis3dshStatus::ReadTemperature);
         self.txbuffer.take().map(|buf| {
@@ -336,18 +438,10 @@ impl<'a> Lis3dshSpi<'a> {
             self.spi.read_write_bytes(buf, self.rxbuffer.take(), 2);
         });
     }
-
-    pub fn configure(&self) {
-        self.spi.configure(
-            spi::ClockPolarity::IdleHigh,
-            spi::ClockPhase::SampleTrailing,
-            1_000_000,
-        );
-    }
 }
 
 impl Driver for Lis3dshSpi<'_> {
-    fn command(&self, command_num: usize, data1: usize, _data2: usize, _: AppId) -> ReturnCode {
+    fn command(&self, command_num: usize, data1: usize, data2: usize, _: AppId) -> ReturnCode {
         match command_num {
             0 => ReturnCode::SUCCESS,
             // センサが正しく接続されているかチェックする
@@ -359,21 +453,30 @@ impl Driver for Lis3dshSpi<'_> {
                     ReturnCode::EBUSY
                 }
             }
-            // 電源オン
+            // 出力データレート設定
             2 => {
                 if self.status.get() == Lis3dshStatus::Idle {
-                    self.power_on();
-                    ReturnCode::SUCCESS
+                    if let Some(data_rate) = Lis3dshDataRate::from_usize(data1) {
+                        self.set_power_mode(data_rate);
+                        ReturnCode::SUCCESS
+                    } else {
+                        ReturnCode::EINVAL
+                    }
                 } else {
                     ReturnCode::EBUSY
                 }
             }
-            // スケール設定
+            // スケール, フィルター設定
             3 => {
                 if self.status.get() == Lis3dshStatus::Idle {
-                    let scale = data1 as u8;
-                    self.set_scale(scale);
-                    ReturnCode::SUCCESS
+                    let scale = Lis3dshScale::from_usize(data1);
+                    let filter = Lis3dshFilter::from_usize(data2);
+                    if scale.is_some() && filter.is_some() {
+                        self.set_scale_and_filter(scale.unwrap(), filter.unwrap());
+                        ReturnCode::SUCCESS
+                    } else {
+                        ReturnCode::EINVAL
+                    }                  
                 } else {
                     ReturnCode::EBUSY
                 }
@@ -396,16 +499,15 @@ impl Driver for Lis3dshSpi<'_> {
                     ReturnCode::EBUSY
                 }
             }
-            // テストモード設定
+            // 任意の軸の1バイトを読み取り
             6 => {
                 if self.status.get() == Lis3dshStatus::Idle {
-                    let test_mode = data1 as u8;
-                    self.set_test_mode(test_mode);
+                    self.read_value(data1 as u8);
                     ReturnCode::SUCCESS
                 } else {
                     ReturnCode::EBUSY
                 }
-            }     
+            }           
             // 未定義
             _ => ReturnCode::ENOSUPPORT,
         }
@@ -438,19 +540,37 @@ impl spi::SpiMasterClient for Lis3dshSpi<'_> {
     ) {
         self.status.set(match self.status.get() {
             Lis3dshStatus::IsPresent => {
+                let id: usize;
                 let present = if let Some(ref buf) = read_buffer {
                     if buf[1] == LIS3DSH_WHO_AM_I {
+                        id = buf[1] as usize;
                         true
                     } else {
+                        id = (((buf[0] as u16) << 8) | (buf[1] as u16)) as usize; 
                         false
                     }
                 } else {
+                    id = 0;
                     false
                 };
                 self.callback.map(|callback| {
-                    callback.schedule(1, if present { 1 } else { 0 }, 0);
+                    callback.schedule(if present { 1 } else { 0 }, id, 0);
                 });
                 Lis3dshStatus::Idle
+            }
+
+            Lis3dshStatus::SetPowerMode => {
+                self.callback.map(|callback| {
+                    callback.schedule(0, 0, 0);
+                });
+                Lis3dshStatus::Idle              
+            }
+
+            Lis3dshStatus::SetScaleAndFilter => {
+                self.callback.map(|callback| {
+                    callback.schedule(0, 0, 0);
+                });
+                Lis3dshStatus::Idle    
             }
 
             Lis3dshStatus::ReadXYZ => {
@@ -461,22 +581,19 @@ impl spi::SpiMasterClient for Lis3dshSpi<'_> {
                     if len >= 7 {
                         self.nine_dof_client.map(|client| {
                             // 整数のみを使って計算
-                            let scale = match self.scale.get() {
-                                0 => LIS3DSH_FULLSCALE_2,
-                                1 => LIS3DSH_FULLSCALE_4,
-                                2 => LIS3DSH_FULLSCALE_6,
-                                3 => LIS3DSH_FULLSCALE_8,
-                                _ => LIS3DSH_FULLSCALE_16,
-                            };
-                            let x: usize = ((buf[1] as i16 | ((buf[2] as i16) << 8)) as isize
-                                * scale
-                                / 100) as usize;   // unit = mg
-                            let y: usize = ((buf[3] as i16 | ((buf[4] as i16) << 8)) as isize
-                                * scale
-                                / 100) as usize;
-                            let z: usize = ((buf[5] as i16 | ((buf[6] as i16) << 8)) as isize
-                                * scale
-                                / 100) as usize;
+                            let scale_factor = self.scale.get() as usize;
+                            let x: usize = ((buf[1] as i16 | ((buf[2] as i16) << 8)) as i32
+                                * (SCALE_FACTOR[scale_factor] as i32)
+                                * 1000
+                                / 32768) as usize;   // unit = mg
+                            let y: usize = ((buf[3] as i16 | ((buf[4] as i16) << 8)) as i32
+                                * (SCALE_FACTOR[scale_factor] as i32)
+                                * 1000
+                                / 32768) as usize;
+                            let z: usize = ((buf[5] as i16 | ((buf[6] as i16) << 8)) as i32
+                                * (SCALE_FACTOR[scale_factor] as i32)
+                                * 1000
+                                / 32768) as usize;
                             client.callback(x, y, z);
                         });
                         x = (buf[1] as i16 | ((buf[2] as i16) << 8)) as usize;
@@ -531,6 +648,19 @@ impl spi::SpiMasterClient for Lis3dshSpi<'_> {
                         callback.schedule(0, 0, 0);
                     });
                 }
+                Lis3dshStatus::Idle
+            }
+
+            Lis3dshStatus::ReadValue => {
+                let mut v: usize = 0;
+                if let Some(ref buf) = read_buffer {
+                    if len >= 2 {
+                        v = buf[1] as usize;
+                    }
+                }
+                self.callback.map(|callback| {
+                    callback.schedule(v, 0, 0);
+                });
                 Lis3dshStatus::Idle
             }
 
