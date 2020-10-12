@@ -303,7 +303,7 @@ enum_from_primitive! {
 }
 
 // Manual page 41
-const SCALE_FACTOR: [u8; 5] = [2, 4, 6, 8, 16];
+const SCALE_FACTOR: [u32; 5] = [60, 120, 180, 240, 730]; // ug/digit
 
 #[derive(Copy, Clone, PartialEq)]
 enum Lis3dshStatus {
@@ -580,20 +580,17 @@ impl spi::SpiMasterClient for Lis3dshSpi<'_> {
                 let values = if let Some(ref buf) = read_buffer {
                     if len >= 7 {
                         self.nine_dof_client.map(|client| {
-                            // 整数のみを使って計算
+                            // 整数のみを使って計算（単位はmg）
                             let scale_factor = self.scale.get() as usize;
                             let x: usize = ((buf[1] as i16 | ((buf[2] as i16) << 8)) as i32
                                 * (SCALE_FACTOR[scale_factor] as i32)
-                                * 1000
-                                / 32768) as usize;   // unit = mg
+                                / 1000) as usize;   // unit = mg
                             let y: usize = ((buf[3] as i16 | ((buf[4] as i16) << 8)) as i32
                                 * (SCALE_FACTOR[scale_factor] as i32)
-                                * 1000
-                                / 32768) as usize;
+                                / 1000) as usize;
                             let z: usize = ((buf[5] as i16 | ((buf[6] as i16) << 8)) as i32
                                 * (SCALE_FACTOR[scale_factor] as i32)
-                                * 1000
-                                / 32768) as usize;
+                                / 1000) as usize;
                             client.callback(x, y, z);
                         });
                         x = (buf[1] as i16 | ((buf[2] as i16) << 8)) as usize;
