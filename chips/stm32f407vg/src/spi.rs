@@ -1,7 +1,7 @@
 use core::cell::Cell;
 use core::cmp;
 
-use kernel::common::cells::OptionalCell;
+use kernel::common::cells::{OptionalCell, TakeCell};
 use kernel::common::registers::{register_bitfields, ReadOnly, ReadWrite};
 use kernel::common::StaticRef;
 use kernel::hil;
@@ -9,10 +9,13 @@ use kernel::hil::gpio::Output;
 use kernel::hil::spi::{self, ClockPhase, ClockPolarity, SpiMasterClient};
 use kernel::{ClockInterface, ReturnCode};
 
-use crate::dma;
-use crate::dma::DmaPeripheral;
 use crate::gpio::PinId;
 use crate::rcc;
+
+const SPI_READ_IN_PROGRESS: u8 = 0b001;
+const SPI_WRITE_IN_PROGRESS: u8 = 0b010;
+const SPI_IN_PROGRESS: u8 = 0b100;
+const SPI_IDLE: u8 = 0b000;
 
 /// Serial peripheral interface
 #[repr(C)]
@@ -24,7 +27,7 @@ struct SpiRegisters {
     /// status register
     sr: ReadWrite<u32, SR::Register>,
     /// data register
-    dr: ReadWrite<u32, DR::Register>,
+    dr: ReadWrite<u8, DR::Register>,
     /// CRC polynomial register
     crcpr: ReadWrite<u32>,
     /// RX CRC register
@@ -36,6 +39,13 @@ struct SpiRegisters {
     /// I2S prescaler register
     i2spr: ReadWrite<u32, I2SPR::Register>,
 }
+
+register_bitfields![u8,
+    DR [
+        /// 8-bit data register
+        DR OFFSET(0) NUMBITS(8) []
+    ]
+];
 
 register_bitfields![u32,
     CR1 [
@@ -86,7 +96,7 @@ register_bitfields![u32,
     ],
     SR [
         /// TI frame format error
-        TIFRFE OFFSET(8) NUMBITS(1) [],
+        FRE OFFSET(8) NUMBITS(1) [],
         /// Busy flag
         BSY OFFSET(7) NUMBITS(1) [],
         /// Overrun flag
@@ -103,10 +113,6 @@ register_bitfields![u32,
         TXE OFFSET(1) NUMBITS(1) [],
         /// Receive buffer not empty
         RXNE OFFSET(0) NUMBITS(1) []
-    ],
-    DR [
-        /// 8-bit data register
-        DR OFFSET(0) NUMBITS(8) []
     ],
     I2SCFGR [
         /// I2S mode selection
@@ -138,11 +144,11 @@ register_bitfields![u32,
 
 // SPI1: APB2 bus
 const SPI1_BASE: StaticRef<SpiRegisters> =
-    unsafe { StaticRef::new(0x40013000 as *const SpiRegisters) };
+    unsafe { StaticRef::new(0x4001_3000 as *const SpiRegisters) };
 
 // SPI3: APB1 bus
-const SPI3_BASE: StaticRef<SpiRegisters> =
-    unsafe { StaticRef::new(0x40003C00 as *const SpiRegisters) };
+//const SPI3_BASE: StaticRef<SpiRegisters> =
+//    unsafe { StaticRef::new(0x40003C00 as *const SpiRegisters) };
 
 pub struct Spi<'a> {
     registers: StaticRef<SpiRegisters>,
@@ -151,59 +157,46 @@ pub struct Spi<'a> {
     // SPI slave support not yet implemented
     master_client: OptionalCell<&'a dyn hil::spi::SpiMasterClient>,
 
-    tx_dma: OptionalCell<&'a dma::Stream<'a>>,
-    tx_dma_pid: DmaPeripheral,
-    rx_dma: OptionalCell<&'a dma::Stream<'a>>,
-    rx_dma_pid: DmaPeripheral,
-
-    dma_len: Cell<usize>,
-    transfers_in_progress: Cell<u8>,
-
     active_slave: OptionalCell<PinId>,
+
+    tx_buffer: TakeCell<'static, [u8]>,
+    tx_position: Cell<usize>,
+
+    rx_buffer: TakeCell<'static, [u8]>,
+    rx_position: Cell<usize>,
+    len: Cell<usize>,
+
+    transfers: Cell<u8>,
 
     active_after: Cell<bool>,
 }
 
-// for use by `set_dma`
-pub struct TxDMA<'a>(pub &'a dma::Stream<'a>);
-pub struct RxDMA<'a>(pub &'a dma::Stream<'a>);
-
 pub static mut SPI1: Spi = Spi::new(
     SPI1_BASE,
     SpiClock(rcc::PeripheralClock::APB2(rcc::PCLK2::SPI1)),
-    DmaPeripheral::SPI1_TX,
-    DmaPeripheral::SPI1_RX,
 );
 
-pub static mut SPI3: Spi = Spi::new(
-    SPI3_BASE,
-    SpiClock(rcc::PeripheralClock::APB1(rcc::PCLK1::SPI3)),
-    DmaPeripheral::SPI3_TX,
-    DmaPeripheral::SPI3_RX,
-);
-
-impl<'a> Spi<'a> {
+impl Spi<'_> {
     const fn new(
         base_addr: StaticRef<SpiRegisters>,
         clock: SpiClock,
-        tx_dma_pid: DmaPeripheral,
-        rx_dma_pid: DmaPeripheral,
-    ) -> Spi<'a> {
-        Spi {
+    ) -> Self {
+        Self {
             registers: base_addr,
             clock,
 
             master_client: OptionalCell::empty(),
-
-            tx_dma: OptionalCell::empty(),
-            tx_dma_pid: tx_dma_pid,
-            rx_dma: OptionalCell::empty(),
-            rx_dma_pid: rx_dma_pid,
-
-            dma_len: Cell::new(0),
-            transfers_in_progress: Cell::new(0),
-
             active_slave: OptionalCell::empty(),
+
+            tx_buffer: TakeCell::empty(),
+            tx_position: Cell::new(0),
+
+            rx_buffer: TakeCell::empty(),
+            rx_position: Cell::new(0),
+
+            len: Cell::new(0),
+
+            transfers: Cell::new(SPI_IDLE),
 
             active_after: Cell::new(false),
         }
@@ -221,19 +214,57 @@ impl<'a> Spi<'a> {
         self.clock.disable();
     }
 
-    pub fn set_dma(&self, tx_dma: TxDMA<'a>, rx_dma: RxDMA<'a>) {
-        self.tx_dma.set(tx_dma.0);
-        self.rx_dma.set(rx_dma.0);
-    }
 
     pub fn handle_interrupt(&self) {
-        // Used only during debugging. Since we use DMA, we do not enable SPI
-        // interrupts during normal operations
-    }
+        if self.registers.sr.is_set(SR::TXE) {
+            if self.tx_buffer.is_some() && self.tx_position.get() < self.len.get() {
+                self.tx_buffer.map(|buf| {
+                    self.registers
+                        .dr
+                        .write(DR::DR.val(buf[self.tx_position.get()]));
+                    self.tx_position.set(self.tx_position.get() + 1);
+                });
+            } else {
+                self.registers.cr2.modify(CR2::TXEIE::CLEAR);
+                self.transfers
+                    .set(self.transfers.get() & !SPI_WRITE_IN_PROGRESS);
+            }
+        }
 
-    // for use by dma
-    pub fn get_address_dr(&self) -> u32 {
-        &self.registers.dr as *const ReadWrite<u32, DR::Register> as u32
+        if self.registers.sr.is_set(SR::RXNE) {
+            let byte = self.registers.dr.read(DR::DR) as u8;
+            if self.rx_buffer.is_some() && self.rx_position.get() < self.len.get() {           
+                self.rx_buffer.map(|buf| {
+                    buf[self.rx_position.get()] = byte;
+                });
+            }
+            self.rx_position.set(self.rx_position.get() + 1);
+        }
+
+        if self.rx_buffer.is_some() && self.rx_position.get() >= self.len.get() {
+            self.registers.cr2.modify(CR2::RXNEIE::CLEAR);
+            self.transfers
+                .set(self.transfers.get() & !SPI_READ_IN_PROGRESS);
+        }
+
+        if self.transfers.get() == SPI_IN_PROGRESS {
+            // we release the line and put the SPI in IDLE as the client might
+            // initiate another SPI transfer right away
+            if !self.active_after.get() {
+                self.active_slave.map(|p| {
+                    p.get_pin().as_ref().map(|pin| {
+                        pin.set();
+                    });
+                });
+            }
+            self.transfers.set(SPI_IDLE);
+            self.master_client.map(|client| {
+                self.tx_buffer
+                    .take()
+                    .map(|buf| client.read_write_done(buf, self.rx_buffer.take(), self.len.get()))
+            });
+            self.transfers.set(SPI_IDLE);
+        }
     }
 
     fn set_active_slave(&self, slave_pin: PinId) {
@@ -283,22 +314,6 @@ impl<'a> Spi<'a> {
         }
     }
 
-    fn enable_tx(&self) {
-        self.registers.cr2.modify(CR2::TXDMAEN::SET);
-    }
-
-    fn disable_tx(&self) {
-        self.registers.cr2.modify(CR2::TXDMAEN::CLEAR);
-    }
-
-    fn enable_rx(&self) {
-        self.registers.cr2.modify(CR2::RXDMAEN::SET);
-    }
-
-    fn disable_rx(&self) {
-        self.registers.cr2.modify(CR2::RXDMAEN::CLEAR);
-    }
-
     fn read_write_bytes(
         &self,
         write_buffer: Option<&'static mut [u8]>,
@@ -309,43 +324,54 @@ impl<'a> Spi<'a> {
             return ReturnCode::EINVAL;
         }
 
-        self.active_slave.map(|p| {
-            p.get_pin().as_ref().map(|pin| {
-                pin.clear();
+        if self.transfers.get() == 0 {
+            self.registers.cr2.modify(CR2::RXNEIE::CLEAR);
+            self.active_slave.map(|p| {
+                p.get_pin().as_ref().map(|pin| {
+                    pin.clear();
+                });
             });
-        });
 
-        let mut count: usize = len;
-        write_buffer
-            .as_ref()
-            .map(|buf| count = cmp::min(count, buf.len()));
-        read_buffer
-            .as_ref()
-            .map(|buf| count = cmp::min(count, buf.len()));
+            self.transfers.set(self.transfers.get() | SPI_IN_PROGRESS);
 
-        self.dma_len.set(count);
+            let mut count: usize = len;
+            write_buffer
+                .as_ref()
+                .map(|buf| count = cmp::min(count, buf.len()));
+            read_buffer
+                .as_ref()
+                .map(|buf| count = cmp::min(count, buf.len()));
 
-        self.transfers_in_progress.set(0);
+            if write_buffer.is_some() {
+                self.transfers
+                    .set(self.transfers.get() | SPI_WRITE_IN_PROGRESS);
+            }
 
-        read_buffer.map(|rx_buffer| {
-            self.transfers_in_progress
-                .set(self.transfers_in_progress.get() + 1);
-            self.rx_dma.map(move |dma| {
-                dma.do_transfer(rx_buffer, count);
+            if read_buffer.is_some() {
+                self.transfers
+                    .set(self.transfers.get() | SPI_READ_IN_PROGRESS);
+            }
+
+            self.rx_position.set(0);
+
+            read_buffer.map(|buf| {
+                self.rx_buffer.replace(buf);
+                self.len.set(count);
             });
-            self.enable_rx();
-        });
 
-        write_buffer.map(|tx_buffer| {
-            self.transfers_in_progress
-                .set(self.transfers_in_progress.get() + 1);
-            self.tx_dma.map(move |dma| {
-                dma.do_transfer(tx_buffer, count);
+            self.registers.cr2.modify(CR2::RXNEIE::SET);
+
+            write_buffer.map(|buf| {
+                self.tx_buffer.replace(buf);
+                self.len.set(count);
+                self.tx_position.set(0);
+                self.registers.cr2.modify(CR2::TXEIE::SET);
             });
-            self.enable_tx();
-        });
 
-        ReturnCode::SUCCESS
+            ReturnCode::SUCCESS
+        } else {
+            ReturnCode::EBUSY
+        }
     }
 }
 
@@ -383,7 +409,7 @@ impl spi::SpiMaster for Spi<'_> {
         // loop till TXE (Transmit Buffer Empty) becomes 1
         while !self.registers.sr.is_set(SR::TXE) {}
 
-        self.registers.dr.modify(DR::DR.val(out_byte as u32));
+        self.registers.dr.modify(DR::DR.val(out_byte));
     }
 
     fn read_byte(&self) -> u8 {
@@ -409,25 +435,23 @@ impl spi::SpiMaster for Spi<'_> {
         if self.is_busy() {
             return ReturnCode::EBUSY;
         }
-
+        // 割り込みで処理
         self.read_write_bytes(Some(write_buffer), read_buffer, len)
     }
 
     /// We *only* support 1Mhz. If `rate` is set to any value other than
     /// `1_000_000`, then this function panics
     fn set_rate(&self, rate: u32) -> u32 {
-        match rate {
-            1_000_000 => self.set_cr(|| {
-                // HSI is 16Mhz and Fpclk is also 16Mhz. 0b011 is Fpclk / 16
-                self.registers.cr1.modify(CR1::BR.val(0b011));
-            }),
-            4_000_000 => self.set_cr(|| {
-                // HSI is 16Mhz and Fpclk is also 16Mhz. 0b001 is Fpclk / 4
-                self.registers.cr1.modify(CR1::BR.val(0b001));
-            }),
-            _ => panic!("rate must be 1_000_000, 4_000_000"),
+        if rate != 1_000_000 {
+            panic!("rate must be 1_000_000");
         }
-        rate
+        
+        self.set_cr(|| {
+            // HSI is 16Mhz and Fpclk is also 16Mhz. 0b011 is Fpclk / 16
+            self.registers.cr1.modify(CR1::BR.val(0b011));
+        });
+
+        1_000_000
     }
 
     /// We *only* support 1Mhz. If we need to return any other value other than
@@ -466,43 +490,6 @@ impl spi::SpiMaster for Spi<'_> {
 
     fn specify_chip_select(&self, cs: Self::ChipSelect) {
         self.set_active_slave(cs);
-    }
-}
-
-impl dma::StreamClient for Spi<'_> {
-    fn transfer_done(&self, pid: dma::DmaPeripheral) {
-        if pid == self.tx_dma_pid {
-            self.disable_tx();
-        }
-
-        if pid == self.rx_dma_pid {
-            self.disable_rx();
-        }
-
-        self.transfers_in_progress
-            .set(self.transfers_in_progress.get() - 1);
-
-        if self.transfers_in_progress.get() == 0 {
-            if !self.active_after.get() {
-                self.active_slave.map(|p| {
-                    p.get_pin().as_ref().map(|pin| {
-                        pin.set();
-                    });
-                });
-            }
-
-            let tx_buffer = self.tx_dma.and_then(|tx_dma| tx_dma.return_buffer());
-            let rx_buffer = self.rx_dma.and_then(|rx_dma| rx_dma.return_buffer());
-
-            let length = self.dma_len.get();
-            self.dma_len.set(0);
-
-            self.master_client.map(|client| {
-                tx_buffer.map(|t| {
-                    client.read_write_done(t, rx_buffer, length);
-                });
-            });
-        }
     }
 }
 

@@ -166,3 +166,234 @@ x: (25855,  1.551) y: (5366,  0.321) z: (-5372, -0.322)
 x: (28415,  1.704) y: (4856,  0.291) z: (27909,  1.674)
 x: (25599,  1.535) y: (-24328,  -1.459) z: (-27644,  -1.658)
 ```
+
+## DMAを使わないspiドライバ
+
+上の値は`chips/stm32f4xx`のspiドライバを元に作成したspiドライバによるものである。この元ドライバは
+DMAを使っているが、SPI３がつながっているDMA1コントローラしか対応していなかった。TM32F407G-DISC1の
+LIS3DSHはSPI1につながっており、SPI1はDMA2に接続しているため、spiドライバはそのままでは使えず、対応を
+試みたのが上の結果だった。`chips/stm32f303xc`のspiドライバを見たところ、SPI1を使っておりDMAは
+使っていないがそのまま使えそうだったので、今度はこのドライバを使うことにした。
+
+しかし、stm32f3はRx, TxバッファがFIFOになっており、stm32f303xcのspiドライバは`SPIx_SR::FRLVL`を
+見て連続受信するようになっているが、stm32f4のRx, Txバッファは1バイトしかなく`SPIx_SR::FRLVL`フラグも
+ないため、この部分を改造する必要があった。DMAを使用しない改造版も最初は結果はDMAを使ったものと同じように
+バラけた値が得られた。
+
+調査した結果、そもそも読み取りがうまく行っていないことが判明した。たとえば、WHO_AM_I idの値を
+読み込むと`0xFF`という意味のない値であった。なお、DMAを使用したドライバも読み取りがうまく行っていない
+ことが判明した（2バイト目の取得前に処理が終わっているように思われる）がこちらは修正方法がまだわからない。
+
+修正後は、以下のように上向きにした場合のZ軸の値がほぼ1で、下向きにした場合はほぼ−1になっている。また、
+WHO_AM_I idの値も`正しく`0x3F`になったので、これで正しいと思われる。
+
+### (1) 上向き
+
+```
+LIS3DSH sensor is present: id = 3F
+LIS3DSH device set power mode
+LIS3DSH device set scale
+
+x: (2162,  0.129) y: (-51,  -0.003) z: (16243,  0.974)
+x: (2332,  0.139) y: (-33,  -0.001) z: (16186,  0.971)
+x: (2692,  0.161) y: (135,   0.008) z: (17300,  1.037)
+x: (2928,  0.175) y: (-112, -0.006) z: (16511,  0.990)
+x: (2953,  0.177) y: (-391, -0.023) z: (16205,  0.972)
+x: (2733,  0.163) y: (-369, -0.022) z: (16811,  1.008)
+x: (2779,  0.166) y: (94,    0.005) z: (16768,  1.006)
+x: (3205,  0.192) y: (-96,  -0.005) z: (16826,  1.009)
+x: (2517,  0.151) y: (-18,  -0.001) z: (17199,  1.031)
+x: (2826,  0.169) y: (31,    0.001) z: (16682,  1.000)
+
+```
+
+### (2) 下向き
+
+```
+x: (-734,  -0.044) y: (-167, -0.010) z: (-16061,  -0.963)
+x: (3,      0.000) y: (1597,  0.095) z: (-17361,  -1.041)
+x: (-907,  -0.054) y: (-832, -0.049) z: (-15690,  -0.941)
+x: (-810,  -0.048) y: (33,    0.001) z: (-16318,  -0.979)
+x: (-386,  -0.023) y: (-695, -0.041) z: (-15987,  -0.959)
+x: (-915,  -0.054) y: (-466, -0.027) z: (-15948,  -0.956)
+x: (-651,  -0.039) y: (-401, -0.024) z: (-16078,  -0.964)
+x: (-1354, -0.081) y: (-290, -0.017) z: (-16205,  -0.972)
+x: (-988,  -0.059) y: (-579, -0.034) z: (-15824,  -0.949)
+x: (-1010, -0.060) y: (-714, -0.042) z: (-15771,  -0.946)
+```
+
+## NinedorfドライバからLIS3DSHを使用する
+
+NinedofrドライバによるLIS3DSHの読み取りもできていた。下記の出力で単位はミリGである。
+
+```
+[Sensors] Starting Ninedorf App.
+Acceleration: X: 117 Y: 5 Z: 1050
+```
+
+ただし、LIS3DSHを使う複数のアプリを同時実行させるとpanicとなる。
+
+```
+[Sensors] Starting Ninedorf App.
+LIS3DSH sensor is present: id = 3F
+Acceleration: X: 136 Y: 27 Z: 1000
+
+panicked at 'Process lis3dsh had a fault', kernel/src/process.rs:987:17
+        Kernel version 1a353a3
+
+---| No debug queue found. You can set it with the DebugQueue component.
+
+---| Fault Status |---
+Data Access Violation:              true
+Forced Hard Fault:                  true
+Faulting Memory Address:            0x0000000C
+Fault Status Register (CFSR):       0x00000082
+Hard Fault Status Register (HFSR):  0x40000000
+
+---| App Status |---
+App: lis3dsh   -   [Fault]
+ Events Queued: 0   Syscall Count: 16   Dropped Callback Count: 0
+ Restart Count0
+
+ ╔═══════════╤═════════════════════╤════════════════════╗
+ ║  Address  │ Region Name    Used | Allocated (bytes)  ║
+ ╚0x20006000═╪═════════════════════╪════════════════════╝
+             │ ▼ Grant        1140 |   1140          
+  0x20005B8C ┼─────────────────────────────────────────
+             │ Unused
+  0x20005088 ┼─────────────────────────────────────────
+             │ ▲ Heap         1536 |   4356             S
+  0x20004A88 ┼───────────────────────────────────────── R
+             │ Data            648 |    648             A
+  0x20004800 ┼───────────────────────────────────────── M
+             │ ▼ Stack         616 |   2048          
+  0x20004598 ┼─────────────────────────────────────────
+             │ Unused
+  0x20004000 ┴─────────────────────────────────────────
+             .....
+  0x08084000 ┬───────────────────────────────────────── F
+             │ App Flash     16340                      L
+  0x0808002C ┼───────────────────────────────────────── A
+             │ Protected        44                      S
+  0x08080000 ┴───────────────────────────────────────── H
+
+  R0 : 0x00080010    R6 : 0x08082A08
+  R1 : 0x20004000    R7 : 0x00080010
+  R2 : 0x00000024    R8 : 0x00000000
+  R3 : 0x00080083    R10: 0x00000000
+  R4 : 0xFFFFFFFF    R11: 0x00000000
+  R5 : 0x20004000    R12: 0x00000000
+  R9 : 0x000001C2 (Static Base Register)
+  SP : 0x20004758 (Process Stack Pointer)
+  LR : 0x08080E73
+  PC : 0x08080028
+ YPC : 0x08080630
+
+ APSR: N 0 Z 0 C 0 V 0 Q 0
+       GE 0 0 0 0
+ EPSR: ICI.IT 0x00
+       ThumbBit true 
+
+ Cortex-M MPU
+  Region 0: [0x20004000:0x20006000], length: 8192 bytes; ReadWrite (0x3)
+    Sub-region 0: [0x20004000:0x20004400], Enabled
+    Sub-region 1: [0x20004400:0x20004800], Enabled
+    Sub-region 2: [0x20004800:0x20004C00], Enabled
+    Sub-region 3: [0x20004C00:0x20005000], Enabled
+    Sub-region 4: [0x20005000:0x20005400], Enabled
+    Sub-region 5: [0x20005400:0x20005800], Disabled
+    Sub-region 6: [0x20005800:0x20005C00], Disabled
+    Sub-region 7: [0x20005C00:0x20006000], Disabled
+  Region 1: [0x08080000:0x08084000], length: 16384 bytes; UnprivilegedReadOnly )
+    Sub-region 0: [0x08080000:0x08080800], Enabled
+    Sub-region 1: [0x08080800:0x08081000], Enabled
+    Sub-region 2: [0x08081000:0x08081800], Enabled
+    Sub-region 3: [0x08081800:0x08082000], Enabled
+    Sub-region 4: [0x08082000:0x08082800], Enabled
+    Sub-region 5: [0x08082800:0x08083000], Enabled
+    Sub-region 6: [0x08083000:0x08083800], Enabled
+    Sub-region 7: [0x08083800:0x08084000], Enabled
+  Region 2: Unused
+  Region 3: Unused
+  Region 4: Unused
+  Region 5: Unused
+  Region 6: Unused
+  Region 7: Unused
+
+To debug, run `make debug RAM_START=0x20004000 FLASH_INIT=0x8080055`
+
+in the app's folder and open the .lst file.
+
+App: ninedorf   -   [Yielded]
+
+ Events Queued: 0   Syscall Count: 20   Dropped Callback Count: 0
+ Restart Count0
+
+ ╔═══════════╤═════════════════════╤════════════════════╗
+ ║  Address  │ Region Name    Used | Allocated (bytes)  ║
+ ╚0x20008000═╪═════════════════════╪════════════════════╝
+             │ ▼ Grant        1176 |   1176          
+  0x20007B68 ┼─────────────────────────────────────────
+             │ Unused
+  0x20007074 ┼─────────────────────────────────────────
+             │ ▲ Heap         1536 |   4340             S
+  0x20006A74 ┼───────────────────────────────────────── R
+             │ Data            628 |    628             A
+  0x20006800 ┼───────────────────────────────────────── M
+             │ ▼ Stack         472 |   2048          
+  0x20006628 ┼─────────────────────────────────────────
+             │ Unused
+  0x20006000 ┴─────────────────────────────────────────
+             .....
+  0x08086000 ┬───────────────────────────────────────── F
+             │ App Flash      8148                      L
+  0x0808402C ┼───────────────────────────────────────── A
+             │ Protected        44                      S
+  0x08084000 ┴───────────────────────────────────────── H
+
+  R0 : 0x20007068    R6 : 0x00000024
+  R1 : 0x20006914    R7 : 0x20007038
+  R2 : 0x00000000    R8 : 0x20006A6C
+  R3 : 0x00000000    R10: 0x00000000
+  R4 : 0x20007068    R11: 0x00000000
+  R5 : 0x00000000    R12: 0xF35D77EB
+  R9 : 0x20006800 (Static Base Register)
+  SP : 0x20006628 (Process Stack Pointer)
+  LR : 0x08084267
+  PC : 0x08084248
+ YPC : 0x08084248
+
+ APSR: N 0 Z 1 C 1 V 0 Q 0
+       GE 0 0 0 0
+ EPSR: ICI.IT 0x00
+       ThumbBit true 
+
+ Cortex-M MPU
+  Region 0: [0x20006000:0x20008000], length: 8192 bytes; ReadWrite (0x3)
+    Sub-region 0: [0x20006000:0x20006400], Enabled
+    Sub-region 1: [0x20006400:0x20006800], Enabled
+    Sub-region 2: [0x20006800:0x20006C00], Enabled
+    Sub-region 3: [0x20006C00:0x20007000], Enabled
+    Sub-region 4: [0x20007000:0x20007400], Enabled
+    Sub-region 5: [0x20007400:0x20007800], Disabled
+    Sub-region 6: [0x20007800:0x20007C00], Disabled
+    Sub-region 7: [0x20007C00:0x20008000], Disabled
+  Region 1: [0x08084000:0x08086000], length: 8192 bytes; UnprivilegedReadOnly ()
+    Sub-region 0: [0x08084000:0x08084400], Enabled
+    Sub-region 1: [0x08084400:0x08084800], Enabled
+    Sub-region 2: [0x08084800:0x08084C00], Enabled
+    Sub-region 3: [0x08084C00:0x08085000], Enabled
+    Sub-region 4: [0x08085000:0x08085400], Enabled
+    Sub-region 5: [0x08085400:0x08085800], Enabled
+    Sub-region 6: [0x08085800:0x08085C00], Enabled
+    Sub-region 7: [0x08085C00:0x08086000], Enabled
+  Region 2: Unused
+  Region 3: Unused
+  Region 4: Unused
+  Region 5: Unused
+  Region 6: Unused
+  Region 7: Unused
+
+To debug, run `make debug RAM_START=0x20006000 FLASH_INIT=0x8084055`
+in the app's folder and open the .lst file.
+```

@@ -5,13 +5,13 @@ use cortexm4;
 use kernel::Chip;
 
 use stm32f4xx::adc;
-use crate::dma;
+use stm32f4xx::dma1;
 use crate::exti;
 use stm32f4xx::i2c;
 use crate::nvic;
-use crate::spi;
 use crate::tim2;
-use crate::usart;
+use crate::spi;
+use stm32f4xx::usart;
 
 pub struct Stm32f407 {
     mpu: cortexm4::mpu::MPU,
@@ -40,38 +40,24 @@ impl Chip for Stm32f407 {
             loop {
                 if let Some(interrupt) = cortexm4::nvic::next_pending() {
                     match interrupt {
-                        nvic::DMA1_Stream1 => dma::DmaPeripheral::USART3_RX
+                        nvic::DMA1_Stream1 => dma1::Dma1Peripheral::USART3_RX
                             .get_stream()
                             .handle_interrupt(),
-                        nvic::DMA1_Stream2 => dma::DmaPeripheral::SPI3_RX
+                        nvic::DMA1_Stream2 => dma1::Dma1Peripheral::SPI3_RX
                             .get_stream()
                             .handle_interrupt(),
-                        nvic::DMA1_Stream3 => dma::DmaPeripheral::USART3_TX
+                        nvic::DMA1_Stream3 => dma1::Dma1Peripheral::USART3_TX
                             .get_stream()
                             .handle_interrupt(),
-                        nvic::DMA1_Stream5 => dma::DmaPeripheral::USART2_RX
+                        nvic::DMA1_Stream5 => dma1::Dma1Peripheral::USART2_RX
                             .get_stream()
                             .handle_interrupt(),
-                        nvic::DMA1_Stream6 => dma::DmaPeripheral::USART2_TX
+                        nvic::DMA1_Stream6 => dma1::Dma1Peripheral::USART2_TX
                             .get_stream()
                             .handle_interrupt(),
-                        nvic::DMA1_Stream7 => dma::DmaPeripheral::SPI3_TX
+                        nvic::DMA1_Stream7 => dma1::Dma1Peripheral::SPI3_TX
                             .get_stream()
                             .handle_interrupt(),
-                        nvic::DMA2_Stream2 => dma::DmaPeripheral::SPI1_RX
-                            .get_stream()
-                            .handle_interrupt(),
-                        nvic::DMA2_Stream3 => dma::DmaPeripheral::SPI1_TX
-                            .get_stream()
-                            .handle_interrupt(),
-                        nvic::DMA2_Stream5 => dma::DmaPeripheral::USART1_RX
-                            .get_stream()
-                            .handle_interrupt(),
-                        nvic::DMA2_Stream7 => dma::DmaPeripheral::USART1_TX
-                            .get_stream()
-                            .handle_interrupt(),
-
-                        nvic::USART1 => usart::USART1.handle_interrupt(),
                         nvic::USART2 => usart::USART2.handle_interrupt(),
                         nvic::USART3 => usart::USART3.handle_interrupt(),
 
@@ -81,7 +67,6 @@ impl Chip for Stm32f407 {
                         nvic::I2C1_ER => i2c::I2C1.handle_error(),
 
                         nvic::SPI1 => spi::SPI1.handle_interrupt(),
-                        nvic::SPI3 => spi::SPI3.handle_interrupt(),
 
                         nvic::EXTI0 => exti::EXTI.handle_interrupt(),
                         nvic::EXTI1 => exti::EXTI.handle_interrupt(),
