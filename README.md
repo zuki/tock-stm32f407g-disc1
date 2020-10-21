@@ -8,3 +8,8 @@
 
 TockとTockアプリケーションをコンパイルするためのシステムのセットアップについては公式の
 [getting started guide](https://github.com/helena-project/tock/blob/master/doc/Getting_Started.md)にしたがってください。
+
+# ドキュメント
+
+
+[Tock/docの翻訳](https://zuki.github.io/tock-stm32f407g-disc1)
