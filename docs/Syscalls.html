@@ -1,0 +1,637 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>システムコール - Tockドキュメント</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="Overview.html"><strong aria-hidden="true">1.</strong> Tockの概要</a></li><li class="chapter-item expanded "><a href="Design.html"><strong aria-hidden="true">2.</strong> Tockの設計</a></li><li class="chapter-item expanded "><a href="threat_model/index.html"><strong aria-hidden="true">3.</strong> Threat Model</a></li><li class="chapter-item expanded affix "><li class="part-title">Tockの実装</li><li class="chapter-item expanded "><a href="Lifetimes.html"><strong aria-hidden="true">4.</strong> ライフタイム</a></li><li class="chapter-item expanded "><a href="Mutable_References.html"><strong aria-hidden="true">5.</strong> 可変参照</a></li><li class="chapter-item expanded "><a href="Soundness.html"><strong aria-hidden="true">6.</strong> 安全性</a></li><li class="chapter-item expanded "><a href="Compilation.html"><strong aria-hidden="true">7.</strong> コンパイル</a></li><li class="chapter-item expanded "><a href="TockBinaryFormat.html"><strong aria-hidden="true">8.</strong> TBF: Tockバイナリフォーマット</a></li><li class="chapter-item expanded "><a href="Memory_Layout.html"><strong aria-hidden="true">9.</strong> メモリレイアウト</a></li><li class="chapter-item expanded "><a href="Memory_Isolation.html"><strong aria-hidden="true">10.</strong> メモリ隔離</a></li><li class="chapter-item expanded "><a href="Registers.html"><strong aria-hidden="true">11.</strong> レジスタ</a></li><li class="chapter-item expanded "><a href="Startup.html"><strong aria-hidden="true">12.</strong> 起動</a></li><li class="chapter-item expanded "><a href="Syscalls.html" class="active"><strong aria-hidden="true">13.</strong> システムコール</a></li><li class="chapter-item expanded "><a href="Userland.html"><strong aria-hidden="true">14.</strong> ユーザランド</a></li><li class="chapter-item expanded "><a href="Networking_Stack.html"><strong aria-hidden="true">15.</strong> Networking Stack</a></li><li class="chapter-item expanded "><a href="Configuration.html"><strong aria-hidden="true">16.</strong> 構成</a></li><li class="chapter-item expanded affix "><li class="part-title">インターフェースの詳細</li><li class="chapter-item expanded "><a href="syscalls/index.html"><strong aria-hidden="true">17.</strong> システムコールインターフェース</a></li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">17.1.</strong> コアカーネル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/memop.html"><strong aria-hidden="true">17.1.1.</strong> memop</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">17.2.</strong> カプセル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/00000_alarm.html"><strong aria-hidden="true">17.2.1.</strong> Alarm</a></li><li class="chapter-item expanded "><a href="syscalls/00001_console.html"><strong aria-hidden="true">17.2.2.</strong> Console</a></li><li class="chapter-item expanded "><a href="syscalls/00002_leds.html"><strong aria-hidden="true">17.2.3.</strong> LED</a></li><li class="chapter-item expanded "><a href="syscalls/00003_buttons.html"><strong aria-hidden="true">17.2.4.</strong> Button</a></li><li class="chapter-item expanded "><a href="syscalls/00004_gpio.html"><strong aria-hidden="true">17.2.5.</strong> GPIO</a></li><li class="chapter-item expanded "><a href="syscalls/00005_adc.html"><strong aria-hidden="true">17.2.6.</strong> ADC</a></li><li class="chapter-item expanded "><a href="syscalls/00007_analog_comparator.html"><strong aria-hidden="true">17.2.7.</strong> AnalogComparator</a></li><li class="chapter-item expanded "><a href="syscalls/00008_low_level_debug.html"><strong aria-hidden="true">17.2.8.</strong> Low-Level Debug</a></li><li class="chapter-item expanded "><a href="syscalls/30002_udp.html"><strong aria-hidden="true">17.2.9.</strong> UDP</a></li><li class="chapter-item expanded "><a href="syscalls/60000_ambient_temperature.html"><strong aria-hidden="true">17.2.10.</strong> Ambient Temp</a></li><li class="chapter-item expanded "><a href="syscalls/60001_humidity.html"><strong aria-hidden="true">17.2.11.</strong> Humidity</a></li><li class="chapter-item expanded "><a href="syscalls/60002_luminance.html"><strong aria-hidden="true">17.2.12.</strong> Luminance</a></li><li class="chapter-item expanded "><a href="syscalls/70005_l3gd20.html"><strong aria-hidden="true">17.2.13.</strong> L3GD20</a></li><li class="chapter-item expanded "><a href="syscalls/70006_lsm303dlhc.html"><strong aria-hidden="true">17.2.14.</strong> LSM303DLHC</a></li><li class="chapter-item expanded "><a href="syscalls/80005_hd44780.html"><strong aria-hidden="true">17.2.15.</strong> HD44780</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="reference/index.html"><strong aria-hidden="true">18.</strong> Internal Kernel Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="reference/trd1-trds.html"><strong aria-hidden="true">18.1.</strong> TRD 1: Tock Reference</a></li><li class="chapter-item expanded "><a href="reference/trd102-adc.html"><strong aria-hidden="true">18.2.</strong> TRD 102: ADC</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Tockのセットアップと使用法</li><li class="chapter-item expanded "><a href="Getting_Started.html"><strong aria-hidden="true">19.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="Porting.html"><strong aria-hidden="true">20.</strong> Tockのポーティング</a></li><li class="chapter-item expanded "><a href="OutOfTree.html"><strong aria-hidden="true">21.</strong> ツリー外のボード</a></li><li class="chapter-item expanded "><a href="debugging/index.html"><strong aria-hidden="true">22.</strong> Debugging Help</a></li><li class="chapter-item expanded "><a href="Style.html"><strong aria-hidden="true">23.</strong> Style</a></li><li class="chapter-item expanded affix "><li class="part-title">Management of Tock</li><li class="chapter-item expanded "><a href="wg/index.html"><strong aria-hidden="true">24.</strong> Working Groups</a></li><li class="chapter-item expanded "><a href="CodeReview.html"><strong aria-hidden="true">25.</strong> Code Review Process</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Tockドキュメント</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#システムコール" id="システムコール">システムコール</a></h1>
+<p>このドキュメントでは、カーネルとアプリケーションの両者に関して、Tockにおいて
+<a href="https://en.wikipedia.org/wiki/System_call">システムコール</a>が
+どのように動作するかを説明します。これは、ドライバやアプリケーションでの
+システムコールの使い方のチュートリアルではなく、現在のシステムコールの実装の
+背後にある設計上の考慮事項を説明したものです。</p>
+<!-- toc -->
+<ul>
+<li><a href="#%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%82%B3%E3%83%BC%E3%83%AB">システムコール</a>
+<ul>
+<li><a href="#tock%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%82%B3%E3%83%BC%E3%83%AB%E3%81%AE%E6%A6%82%E8%A6%81">Tockにおけるシステムコールの概要</a></li>
+<li><a href="#%E3%83%97%E3%83%AD%E3%82%BB%E3%82%B9%E3%81%AE%E7%8A%B6%E6%85%8B">プロセスの状態</a></li>
+<li><a href="#%E8%B5%B7%E5%8B%95">起動</a></li>
+<li><a href="#%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%82%B3%E3%83%BC%E3%83%AB-1">システムコール</a>
+<ul>
+<li><a href="#0-yield">0: Yield</a>
+<ul>
+<li><a href="#%E5%BC%95%E6%95%B0">引数</a></li>
+<li><a href="#%E3%83%AA%E3%82%BF%E3%83%BC%E3%83%B3">リターン</a></li>
+</ul>
+</li>
+<li><a href="#1-subscribe">1: Subscribe</a>
+<ul>
+<li><a href="#%E5%BC%95%E6%95%B0-1">引数</a></li>
+<li><a href="#%E3%83%AA%E3%82%BF%E3%83%BC%E3%83%B3-1">リターン</a></li>
+</ul>
+</li>
+<li><a href="#2-command">2: Command</a>
+<ul>
+<li><a href="#%E5%BC%95%E6%95%B0-2">引数</a></li>
+<li><a href="#%E3%83%AA%E3%82%BF%E3%83%BC%E3%83%B3-2">リターン</a></li>
+</ul>
+</li>
+<li><a href="#3-allow">3: Allow</a>
+<ul>
+<li><a href="#%E5%BC%95%E6%95%B0-3">引数</a></li>
+<li><a href="#%E3%83%AA%E3%82%BF%E3%83%BC%E3%83%B3-3">リターン</a></li>
+</ul>
+</li>
+<li><a href="#4-memop">4: Memop</a>
+<ul>
+<li><a href="#%E5%BC%95%E6%95%B0-4">引数</a></li>
+<li><a href="#%E3%83%AA%E3%82%BF%E3%83%BC%E3%83%B3-4">リターン</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%82%B9%E3%82%A4%E3%83%83%E3%83%81">コンテキストスイッチ</a>
+<ul>
+<li><a href="#%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%82%B9%E3%82%A4%E3%83%83%E3%83%81%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%95%E3%82%A7%E3%83%BC%E3%82%B9">コンテキストスイッチインターフェース</a></li>
+<li><a href="#cortex-m%E3%82%A2%E3%83%BC%E3%82%AD%E3%83%86%E3%82%AF%E3%83%81%E3%83%A3%E3%81%AE%E8%A9%B3%E7%B4%B0">Cortex-Mアーキテクチャの詳細</a></li>
+<li><a href="#risc-v-architecture-details">RISC-V Architecture Details</a></li>
+</ul>
+</li>
+<li><a href="#%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%82%B3%E3%83%BC%E3%83%AB%E3%81%8C%E3%83%89%E3%83%A9%E3%82%A4%E3%83%90%E3%83%BC%E3%81%AB%E6%8E%A5%E7%B6%9A%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95">システムコールがドライバーに接続する方法</a></li>
+<li><a href="#%E5%89%B2%E3%82%8A%E5%BD%93%E3%81%A6%E3%82%89%E3%82%8C%E3%81%9F%E3%83%89%E3%83%A9%E3%82%A4%E3%83%90%E7%95%AA%E5%8F%B7">割り当てられたドライバ番号</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h2><a class="header" href="#tockにおけるシステムコールの概要" id="tockにおけるシステムコールの概要">Tockにおけるシステムコールの概要</a></h2>
+<p>システムコールは、アプリケーションからカーネルに情報を送信するために使用
+される方法です。アプリケーションは、カーネル内の関数を直接呼び出すのでは
+なく、サービスコール(<code>svc</code>)割り込みをトリガしてカーネルへのコンテキスト
+スイッチを発生させます。カーネルは割り込みコール時のレジスタとスタックの
+値を使用して、システムコールをどのようにルートするか、どのドライバ関数を
+どのデータ値で呼び出すかを決定します。</p>
+<p>システムコールの使用には3つの利点があります。第一に、サービスコール割り込みの
+トリガ動作をプロセッサの状態変更に使用することができます。（アプリケーションが
+実行されている）非特権モードにおいてメモリ保護ユニット（MPU）によって制限
+されるのではなく、サービスコールの後、カーネルがシステムリソースを完全に
+制御できる特権モードに切り替わります（詳細はARMの<a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0553a/CHDIGFCA.html">プロセッサモード</a>)を参照してください）。第二に、カーネルへのコンテキスト
+スイッチにより、カーネルはアプリケーションに戻る前に他のリソース処理を行う
+ことが可能になります。これには他のアプリケーションの実行やキューに入って
+いるコールバックの処理など、多くの操作が含まれます。最後に、そして最も重要な
+ことは、システムコールを使うことで、アプリケーションをカーネルから独立して
+構築することが可能になります。カーネル全体のコードベースは変更される可能性が
+ありますが、システムコールインタフェースが同一である限り、アプリケーションは
+そのプラットフォーム上で動作するために再コンパイルする必要さえありません。
+カーネルから分離されたアプリケーションは、もはやカーネルと同時にロードする
+必要はありません。後でアップロードしたり、修正したり、新しいバージョンを
+アップロードしたりすることが、プラットフォーム上で動作するカーネルを修正する
+必要なく行なえます。</p>
+<h2><a class="header" href="#プロセスの状態" id="プロセスの状態">プロセスの状態</a></h2>
+<p>Tockでは、プロセスは次の3つの状態のいずれかにあります。</p>
+<ul>
+<li><strong>Running</strong>: 通常の動作。Runningプロセスは実行がスケジューリングされる
+資格がありますが、割り込みハンドラや他のプロセスの実行を許可するために
+Tockによって一時停止される可能性があります。通常の動作中は、プロセスは
+明示的にyieldされるまでRunning状態を維持します。他のカーネル操作
+からのコールバックはRunningプロセスには配信されません(つまり、コールバック
+はプロセスを中断しません)。これらのコールバックはプロセスがyieldするまで
+キューに置かれます。</li>
+<li><strong>Yielded</strong>: 中断された動作。YieldedプロセスはTockによってスケジュール
+されません。プロセスは、I/Oやその他の操作が完了するのを待っており、すぐに
+有用な作業を行う必要がない場合に、yieldします。カーネルがYieldedプロセスに
+コールバックを発行すると、プロセスはRunning状態に遷移します。</li>
+<li><strong>Fault</strong>: 誤った動作。Fault状態のプロセスは、Tockによって
+スケジューリングされません。プロセスは、アドレス空間外のメモリへのアクセス
+などの不正な操作を行うとFault状態になります。</li>
+</ul>
+<h2><a class="header" href="#起動" id="起動">起動</a></h2>
+<p>プロセスの初期化時に、関数呼び出しタスクが一つそのコールバックキューに追加されます。
+この関数は、プロセスのTBFヘッダのENTRYポイントによって決定されており（通常は
+<code>_start</code>シンボル）、レジスタ<code>r0</code> - <code>r3</code>を通じて次の引数が渡されます。</p>
+<ul>
+<li>r0：プロセスコードのベースアドレス</li>
+<li>r1：メモリ領域に割り当てられたプロセスのベースアドレス</li>
+<li>r2：その領域におけるメモリの合計量</li>
+<li>r3：現在のプロセスのメモリブレーク</li>
+</ul>
+<h2><a class="header" href="#システムコール-1" id="システムコール-1">システムコール</a></h2>
+<p>Yield（失敗することはありません）を除くすべてのシステムコールは整数のリターン
+コード値をユーザ空間に返します。負のリターンコードはエラーを示します。ゼロ以上の
+値は成功を示します。システムコールのリターン値が有用なデータをエンコードする場合が
+あります。たとえば、<code>gpio</code>ドライバーではピンの値を読み取るコマンドは、ピンの
+状態に基づいて0または1を返します。</p>
+<p>現在、次のリターンコードが定義されており、<code>tock.h</code>ヘッダによりCからも
+<code>#defines</code>して使用できます（<code>TOCK_</code>が前置する）。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum ReturnCode {
+    SuccessWithValue { value: usize }, // 成功値は &gt;= 0 でなければならない
+    SUCCESS,
+    FAIL, //.......... 一般的な失敗状態
+    EBUSY, //......... 対象のシステムがビジー; リトライせよ
+    EALREADY, //...... 要求された状態はすでにセットされている
+    EOFF, //.......... コンポーネントの電源が入っていない
+    ERESERVE, //...... 使用前に予約が必要
+    EINVAL, //........ 不正なパラメタが渡された
+    ESIZE, //......... 渡されたパラメタが大きすぎる
+    ECANCEL, //....... 呼び出しにより操作がキャンセルされた
+    ENOMEM, //........ 要求されたメモリが利用できない
+    ENOSUPPORT, //.... 操作またはコマンドはサポートされていない
+    ENODEVICE, //..... 装置が存在しない
+    EUNINSTALLED, //.. 装置が物理的に設置されていない
+    ENOACK, //........ パケット送信が確認されなかった
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3><a class="header" href="#0-yield" id="0-yield">0: Yield</a></h3>
+<p>Yieldは、現在のプロセスをRunning状態からYielded状態に移行し、別のコールバックが
+プロセスを再スケジュールするまでプロセスは再度実行されません。</p>
+<p>Yieldが呼び出された際、プロセスが実行待機のコールバックをキューに入れていた
+場合、スケジューラが他の操作を最初に優先することを選択しない限り、プロセスは
+直ちにRunning状態に戻り、最初のコールバックが実行されます。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>yield()
+<span class="boring">}
+</span></code></pre></pre>
+<h4><a class="header" href="#引数" id="引数">引数</a></h4>
+<p>なし.</p>
+<h4><a class="header" href="#リターン" id="リターン">リターン</a></h4>
+<p>なし.</p>
+<h3><a class="header" href="#1-subscribe" id="1-subscribe">1: Subscribe</a></h3>
+<p>Subscribeはさまざまなイベントにより実行されるコールバック関数を割り当てます。</p>
+<p>コールバック関数は（<code>driver</code>と<code>subscribe_number</code>）ペア、別名<em>コールバックID</em>に
+より一意に識別されます。<code>subscribe</code>を呼び出す際、このコールバックIDに対して
+保留中のコールバックが存在する場合、それらはキューから削除され、新しいコールバック
+関数がそのコールバックIDにバインドされます。</p>
+<p>プロセスはコールバック引数としてnullポインタを渡することで（このコールバックIDを
+持つ保留中のコールバックをフラッシュすることに加えて）ドライバに以前に設定された
+コールバックを無効にするように要求できます。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>subscribe(driver: u32, subscribe_number: u32, callback: u32, userdata: u32) -&gt; ReturnCode as u32
+<span class="boring">}
+</span></code></pre></pre>
+<h4><a class="header" href="#引数-1" id="引数-1">引数</a></h4>
+<ul>
+<li><code>driver</code>: どのドライバをコールするかを指定する整数。</li>
+<li><code>subscribe_number</code>:どの関数をサブスクライブさせるかを示す整数インデックス</li>
+<li><code>callback</code>: このイベントが生じた際に実行させるコールバック関数へのポインタ。
+すべてのコールバックはCスタイルの関数シグニチャ
+<code>void callback(int arg1, int arg2, int arg3, void* data)</code>に従う。</li>
+<li><code>userdata</code>: カーネルにより<code>callback</code>の最後の引数として渡される任意の型の
+値へのポインタ。</li>
+</ul>
+<p>個々のドライバーは、そのコールバックを生成する可能性のあるイベントと<code>subscribe_number</code>とのマッピングと、各<code>コールバック</code>引数の意味を定義します。</p>
+<h4><a class="header" href="#リターン-1" id="リターン-1">リターン</a></h4>
+<ul>
+<li><code>ENODEVICE</code>。<code>driver</code>が有効なカーネルドライバーを参照していない場合。</li>
+<li><code>ENOSUPPORT</code>。ドライバ存在するが、<code>subscribe_number</code>をサポートしていない場合。</li>
+<li>特定のドライバーに基づくその他のリターンコード。</li>
+</ul>
+<h3><a class="header" href="#2-command" id="2-command">2: Command</a></h3>
+<p>Commandは、特定の動作を実行するようにドライバーに指示します。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>command(driver: u32, command_number: u32, argument1: u32, argument2: u32) -&gt; ReturnCode as u32
+<span class="boring">}
+</span></code></pre></pre>
+<h4><a class="header" href="#引数-2" id="引数-2">引数</a></h4>
+<ul>
+<li><code>driver</code>: どのドライバをコールするかを指定する整数。</li>
+<li><code>command_number</code>: 要求するコマンドを指定する整数。</li>
+<li><code>argument1</code>: コマンド固有の引数。</li>
+<li><code>argument2</code>: コマンド固有の引数。</li>
+</ul>
+<p><code>command_number</code>は、ユーザ空間からどのコマンドが呼び出されたのかをドライバーに
+通知し、2つの<code>argument</code>はドライバーとコマンド番号に固有です。実際に使用されて
+いる引数の一例は、<code>led</code>ドライバにあります。ここでは、LEDを点灯するコマンドが
+LEDの指定に引数を使用しています。</p>
+<p>TockにおけるCommandシステムコールに関する規約の1つは、実行中のカーネルで
+ドライバがサポートされている場合、コマンド番号0は常に0以上の値を返すというものです。
+これは、すべてのアプリケーションは任意のドライバ番号に対してコマンド番号0を呼び出して、
+ドライバが存在するか、関連する機能がサポートされているかを判別できることを意味します。
+ほとんどの場合、このコマンド番号は0を返し、ドライバーが存在することを示します。
+ただし、ボード上に何個のLEDが存在するかを示す<code>led</code>ドライバの場合のように、
+存在するデバイスの数のような追加の意味をリターン値に持たせることも可能です。</p>
+<h4><a class="header" href="#リターン-2" id="リターン-2">リターン</a></h4>
+<ul>
+<li><code>ENODEVICE</code>。<code>driver</code>が有効なカーネルドライバを参照していない場合。</li>
+<li><code>ENOSUPPORT</code>。ドライバは存在するが、<code>command_number</code>をサポートしていない場合。</li>
+<li>特定のドライバーに基づくその他のリターンコード。</li>
+</ul>
+<h3><a class="header" href="#3-allow" id="3-allow">3: Allow</a></h3>
+<p>Allowはカーネルとアプリケーション間で共有されるものとしてあるメモリ領域を
+マーク付けします。NULLポインタを渡すと対応するドライバに共有メモリ領域への
+アクセスの停止を要求します。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>allow(driver: u32, allow_number: u32, pointer: usize, size: u32) -&gt; ReturnCode as u32
+<span class="boring">}
+</span></code></pre></pre>
+<h4><a class="header" href="#引数-3" id="引数-3">引数</a></h4>
+<ul>
+<li><code>driver</code>: どのドライバにアクセスを与えるかを指定する整数。</li>
+<li><code>allow_number</code>: このバッファの目的を指定するドライバ固有の整数。</li>
+<li><code>pointer</code>: プロセスメモリ空間におけるバッファの開始地点へのポインタ。</li>
+<li><code>size</code>: バッファの長さを指定する整数のバイト数。</li>
+</ul>
+<p>多くのドライバコマンドは実行前にバッファがAllowされていることを要求します。
+一度Allowれたバッファは使用するために再度Allowされる必要はありません。</p>
+<p>この記事を書いている時点では、ほとんどのTockドライバは各アプリケーションに複数の
+仮想デバイスを提供していません。アプリケーションがあるドライバの複数のユーザを必要と
+する場合（たとえば、I2Cを使った2つのライブラリがある場合）、各ライブラリは操作を
+開始する前にバッファを再度許可する必要があります。</p>
+<h4><a class="header" href="#リターン-3" id="リターン-3">リターン</a></h4>
+<ul>
+<li><code>ENODEVICE</code>。<code>driver</code>が有効なカーネルドライバを参照していない場合。</li>
+<li><code>ENOSUPPORT</code>。ドライバは存在するが、<code>allow_number</code>をサポートしていない場合。</li>
+<li><code>EINVAL</code> the buffer referred to by <code>pointer</code>と<code>size</code>で参照された
+バッファが完全に、またはその一部がプロセスがアクセス可能なRAMの外にある。</li>
+<li>Other return codes based on the specific driver.</li>
+</ul>
+<h3><a class="header" href="#4-memop" id="4-memop">4: Memop</a></h3>
+<p>Memopはプロセスが利用可能なメモリセグメントを拡張し、割り当てられたメモリ空間への
+ポインタをプロセスが取得可能にし、スタックとヒープの開始位置をプロセスがカーネルに
+伝えるメカニズムを提供し、その他、プロセスメモリに関わる操作を行います。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>memop(op_type: u32, argument: u32) -&gt; [[ VARIES ]] as u32
+<span class="boring">}
+</span></code></pre></pre>
+<h4><a class="header" href="#引数-4" id="引数-4">引数</a></h4>
+<ul>
+<li><code>op_type</code>: これが<code>brk</code> (0)であるか、<code>sbrk</code> (1)であるか、その他のmemop
+コールであるかを指定する整数。</li>
+<li><code>argument</code>: <code>brk</code>, <code>sbrk</code>, その他のコールに対する引数。</li>
+</ul>
+<p>memopの操作は各々固有のものであり、各コールの詳細は
+<a href="syscalls/memop.html">memopシステムコールドキュメント</a>で見ることができます。</p>
+<h4><a class="header" href="#リターン-4" id="リターン-4">リターン</a></h4>
+<ul>
+<li>各memopコールによる。</li>
+</ul>
+<h2><a class="header" href="#コンテキストスイッチ" id="コンテキストスイッチ">コンテキストスイッチ</a></h2>
+<p>コンテキストスイッチの処理はチップ固有ではなく実際にアーキテクチャに依存している
+数少ないTockのコードの一つです。このコードは該当するアーキテクチャの<code>arch/</code>
+フォルダの<code>lib.rs</code>にあります。このコードはプロセッサの低レベルの機能を扱うため、
+Rustの関数呼び出しとしてラップされたアセンブリで書かれています。</p>
+<h3><a class="header" href="#コンテキストスイッチインターフェース" id="コンテキストスイッチインターフェース">コンテキストスイッチインターフェース</a></h3>
+<p>（<code>/arch</code>フォルダにある）アーキテクチャークレートは、カーネルがユーザ空間に正しく
+切り替えられるようにするために必要な関数を定義する<code>UserspaceKernelBoundary</code>
+トレイトの実装を担当しています。これらの関数は、どのレジスタをスタックに保存するか、
+スタックポインタをどこに保存するか、どのデータをTockシステムコールインタフェースに
+渡すかなど、アーキテクチャ固有のコンテキストスイッチの実現方法の詳細を処理します。</p>
+<h3><a class="header" href="#cortex-mアーキテクチャの詳細" id="cortex-mアーキテクチャの詳細">Cortex-Mアーキテクチャの詳細</a></h3>
+<p>すべてのアプリケーションが実行される前だがプロセスが作成された後に、カーネルで
+開始され、カーネルは<code>switch_to_user</code>を呼び出します。このコードはPIC
+ベースレジスタとプロセススタックポインタを含むアプリケーション用のレジスタを設定した
+後、<code>svc</code>のコールによりサービスコール割り込みをトリガします。<code>svc</code>ハンドラコードは
+システムがアプリケーションへの切り替えとカーネルへの切り替えのどちらを希望しているかを
+自動的に判断し、プロセッサモードを設定します。最後に <code>svc</code>ハンドラは復帰し、PCを
+アプリのエントリーポイントに向けます。</p>
+<p>アプリケーションは実行中は非特権モードにあります。カーネルリソースを使用する必要が
+ある場合、<code>svc</code>命令を実行してシステムコールを発行します。<code>svc_handler</code>は、
+アプリからカーネルに切り替えるべきだと判断し、プロセッサモードを特権モードに設定
+して復帰します。スタックは（プロセススタックポインタではなく）カーネルスタック
+ポインタに変更されたので、実行は<code>svc</code>の直後に<code>switch_to_user</code>へと返り、
+アプリケーションが起動されます。<code>switch_to_user</code>はレジスタを保存してカーネルへと
+返り、システムコールが処理されることになります。</p>
+<p>次の<code>switch_to_user</code>呼び出しでは、アプリケーションは、実行をカーネルに切り替えた
+システムコールの後の命令を指しているプロセススタックポインタに基づいて実行を再開
+します。</p>
+<p>システムコールはユーザ空間のメモリを上書きする可能性があります。カーネルはAllowに
+より以前に与えられたバッファに書き込む場合があるからです。カーネルはリターン値
+レジスタ（<code>r0</code>）以外のユーザ空間レジスタの上書きはしません。しかし、Yieldは戻る前に
+ユーザ空間のコールバックを呼び出すことができるので、より多くのレジスタを上書きする
+ものとして扱わなければなりません。このコールバックは、r0-r3, r12, lrを上書きする
+可能性があります。Yieldに関する詳細はlibtock-cのsyscallコードにある<a href="https://github.com/tock/libtock-c/blob/f5004277ec88c2afe8f473a06b74aa2faba70d68/libtock/tock.c#L49">このコメント</a>を
+参照してください。</p>
+<h3><a class="header" href="#risc-v-architecture-details" id="risc-v-architecture-details">RISC-V Architecture Details</a></h3>
+<p>Tock assumes that a RISC-V platform that supports context switching has two
+privilege modes: machine mode and user mode.</p>
+<p>The RISC-V architecture provides very lean support for context switching,
+providing significant flexibility in software on how to support context
+switches. The hardware guarantees the following will happen during a context
+switch: when switching from kernel mode to user mode by calling the <code>mret</code>
+instruction, the PC is set to the value in the <code>mepc</code> CSR, and the privilege
+mode is set to the value in the <code>MPP</code> bits of the <code>mstatus</code> CSR. When switching
+from user mode to kernel mode using the <code>ecall</code> instruction, the PC of the
+<code>ecall</code> instruction is saved to the <code>mepc</code> CSR, the correct bits are set in the
+<code>mcause</code> CSR, and the privilege mode is restored to machine mode. The kernel can
+store 32 bits of state in the <code>mscratch</code> CSR.</p>
+<p>Tock handles context switching using the following process. When switching to
+userland, all register contents are saved to the kernel's stack. Additionally, a
+pointer to a per-process struct of stored process state and the PC of where in
+the kernel to resume executing after the app switches back to kernel mode are
+stored to the kernel's stack. Then, the PC of the app to start executing is put
+into the <code>mepc</code> CSR, the kernel stack pointer is saved in <code>mscratch</code>, and the
+previous contents of the app's registers from the per-process stored state
+struct are copied back into the registers. Then <code>mret</code> is called to switch to
+user mode and begin executing the app.</p>
+<p>When the app calls a syscall, it uses the <code>ecall</code> instruction. This causes the
+trap handler to execute. The trap handler checks <code>mscratch</code>, and if the value is
+nonzero then it contains the stack pointer of the kernel and this trap must have
+happened while the system was executing an application. Then, the kernel stack
+pointer from <code>mscratch</code> is used to find the pointer to the stored state struct,
+and all app registers are saved. The trap handler also saves the app PC from the
+<code>mepc</code> CSR and the <code>mcause</code> CSR. It then loads the kernel address of where to
+resume the context switching code to <code>mepc</code> and calls <code>mret</code> to exit the trap
+handler. Back in the context switching code, the kernel restores its registers
+from its stack. Then, using the contents of <code>mcause</code> the kernel decides why the
+application stopped executing, and if it was a syscall which syscall the app
+called. Returning the context switch reason ends the context switching process.</p>
+<p>All values for the syscall functions are passed in registers <code>a0-a4</code>. No values
+are stored to the application stack. The return value for syscalls is set in a0.
+In most syscalls the kernel will not clobber any userspace registers except for
+this return value register (<code>a0</code>). However, the <code>yield()</code> syscall results in a
+callback getting run in the app. This can clobber all caller saved registers, as
+well as the return address (<code>ra</code>) register.</p>
+<h2><a class="header" href="#システムコールがドライバーに接続する方法" id="システムコールがドライバーに接続する方法">システムコールがドライバーに接続する方法</a></h2>
+<p>システムコールが行われた後、そのコールは<code>sched.rs</code>にあるTockカーネルにより
+一連の手順を経て処理、ルーティングされます。</p>
+<ol>
+<li>カーネルは、プラットフォームが提供するシステムコールフィルタ関数を呼び出して、
+そのシステムコールを処理すべきか判断します。これは<code>yield</code>には適用されません。
+フィルタ関数はシステムコールと、システムコールを発行したプロセスを受け取り、
+システムコールが処理されるべきか、またはプロセスにエラーが返されるべきかを
+知らせるために<code>Result((), ReturnCode)</code>を返します。</li>
+</ol>
+<p>フィルタ関数がシステムコールを拒否する場合、<code>Err(ReturnCode)</code>を返し、
+<code>ReturnCode</code>がシステムコールのリターンコードとしてアプリに提供されます。
+それ以外はシステムコールを処理します。</p>
+<p><em>フィルタインタフェースは現段階ではunsatableであり、変更される可能性があります。</em></p>
+<ol start="2">
+<li>
+<p>システムコール番号が有効なシステムコール型と照合されます。yieldとmemopは
+カーネルによって処理される特別な機能を持っています。<code>commadn</code>と<code>subscribe</code>、
+<code>allow</code>はドライバに転送され処理されます。</p>
+</li>
+<li>
+<p><code>command</code>、<code>subscribe</code>、<code>allow</code>の各システムコールを転送するために、
+各ボードは<code>Platform</code>トレイトを実装した構造体を作成します。このトレイトを
+実装するには、ドライバ番号という1つの引数を取り、それがサポートされていれば
+正しいドライバへの参照を、サポートされていなければ<code>None</code>を返す<code>with_driver()</code>
+関数を実装するだけです。カーネルは残りのシステムコール引数を使ってドライバ上で
+適切なシステムコール関数を呼び出します。</p>
+</li>
+</ol>
+<p><code>Platform</code>トレイトを実装したボードの例は次のようになります。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct TestBoard {
+    console: &amp;'static Console&lt;'static, usart::USART&gt;,
+}
+
+impl Platform for TestBoard {
+    fn with_driver&lt;F, R&gt;(&amp;self, driver_num: usize, f: F) -&gt; R
+        where F: FnOnce(Option&lt;&amp;kernel::Driver&gt;) -&gt; R
+    {
+
+        match driver_num {
+            0 =&gt; f(Some(self.console)), // 実際のコードでは0ではなく
+                                        // capsules::console::DRIVER_NUMを使用する
+            _ =&gt; f(None),
+        }
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>TestBoard</code>はUARTコンソールという1つのドライバをサポートしており、それを
+ドライバ番号0にマップしています。ドライバ番号0に対するすべての<code>command</code>、
+<code>subscribe</code>、<code>allow</code>システムコールはコンソールに転送され、その他のすべての
+ドライブ番号は<code>ReturnCode::ENODEVICE</code>を返します。</p>
+<h2><a class="header" href="#割り当てられたドライバ番号" id="割り当てられたドライバ番号">割り当てられたドライバ番号</a></h2>
+<p>ドキュメント化されているドライバはすべて<a href="syscalls/README.html">doc/syscalls</a>
+フォルダにあります。</p>
+<p><code>with_driver()</code>関数はドライバを識別するための引数<code>driver_num</code>を取ります。
+最上位のビットがセットされた<code>driver_num</code>はプライベートであり、ツリー外のドライバで
+使用可能です。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="Startup.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="Userland.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="Startup.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="Userland.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

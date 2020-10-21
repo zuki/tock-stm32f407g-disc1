@@ -1,0 +1,333 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Tockの概要 - Tockドキュメント</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="Overview.html"><strong aria-hidden="true">1.</strong> Tockの概要</a></li><li class="chapter-item expanded "><a href="Design.html"><strong aria-hidden="true">2.</strong> Tockの設計</a></li><li class="chapter-item expanded "><a href="threat_model/index.html"><strong aria-hidden="true">3.</strong> Threat Model</a></li><li class="chapter-item expanded affix "><li class="part-title">Tockの実装</li><li class="chapter-item expanded "><a href="Lifetimes.html"><strong aria-hidden="true">4.</strong> ライフタイム</a></li><li class="chapter-item expanded "><a href="Mutable_References.html"><strong aria-hidden="true">5.</strong> 可変参照</a></li><li class="chapter-item expanded "><a href="Soundness.html"><strong aria-hidden="true">6.</strong> 安全性</a></li><li class="chapter-item expanded "><a href="Compilation.html"><strong aria-hidden="true">7.</strong> コンパイル</a></li><li class="chapter-item expanded "><a href="TockBinaryFormat.html"><strong aria-hidden="true">8.</strong> TBF: Tockバイナリフォーマット</a></li><li class="chapter-item expanded "><a href="Memory_Layout.html"><strong aria-hidden="true">9.</strong> メモリレイアウト</a></li><li class="chapter-item expanded "><a href="Memory_Isolation.html"><strong aria-hidden="true">10.</strong> メモリ隔離</a></li><li class="chapter-item expanded "><a href="Registers.html"><strong aria-hidden="true">11.</strong> レジスタ</a></li><li class="chapter-item expanded "><a href="Startup.html"><strong aria-hidden="true">12.</strong> 起動</a></li><li class="chapter-item expanded "><a href="Syscalls.html"><strong aria-hidden="true">13.</strong> システムコール</a></li><li class="chapter-item expanded "><a href="Userland.html"><strong aria-hidden="true">14.</strong> ユーザランド</a></li><li class="chapter-item expanded "><a href="Networking_Stack.html"><strong aria-hidden="true">15.</strong> Networking Stack</a></li><li class="chapter-item expanded "><a href="Configuration.html"><strong aria-hidden="true">16.</strong> 構成</a></li><li class="chapter-item expanded affix "><li class="part-title">インターフェースの詳細</li><li class="chapter-item expanded "><a href="syscalls/index.html"><strong aria-hidden="true">17.</strong> システムコールインターフェース</a></li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">17.1.</strong> コアカーネル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/memop.html"><strong aria-hidden="true">17.1.1.</strong> memop</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">17.2.</strong> カプセル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/00000_alarm.html"><strong aria-hidden="true">17.2.1.</strong> Alarm</a></li><li class="chapter-item expanded "><a href="syscalls/00001_console.html"><strong aria-hidden="true">17.2.2.</strong> Console</a></li><li class="chapter-item expanded "><a href="syscalls/00002_leds.html"><strong aria-hidden="true">17.2.3.</strong> LED</a></li><li class="chapter-item expanded "><a href="syscalls/00003_buttons.html"><strong aria-hidden="true">17.2.4.</strong> Button</a></li><li class="chapter-item expanded "><a href="syscalls/00004_gpio.html"><strong aria-hidden="true">17.2.5.</strong> GPIO</a></li><li class="chapter-item expanded "><a href="syscalls/00005_adc.html"><strong aria-hidden="true">17.2.6.</strong> ADC</a></li><li class="chapter-item expanded "><a href="syscalls/00007_analog_comparator.html"><strong aria-hidden="true">17.2.7.</strong> AnalogComparator</a></li><li class="chapter-item expanded "><a href="syscalls/00008_low_level_debug.html"><strong aria-hidden="true">17.2.8.</strong> Low-Level Debug</a></li><li class="chapter-item expanded "><a href="syscalls/30002_udp.html"><strong aria-hidden="true">17.2.9.</strong> UDP</a></li><li class="chapter-item expanded "><a href="syscalls/60000_ambient_temperature.html"><strong aria-hidden="true">17.2.10.</strong> Ambient Temp</a></li><li class="chapter-item expanded "><a href="syscalls/60001_humidity.html"><strong aria-hidden="true">17.2.11.</strong> Humidity</a></li><li class="chapter-item expanded "><a href="syscalls/60002_luminance.html"><strong aria-hidden="true">17.2.12.</strong> Luminance</a></li><li class="chapter-item expanded "><a href="syscalls/70005_l3gd20.html"><strong aria-hidden="true">17.2.13.</strong> L3GD20</a></li><li class="chapter-item expanded "><a href="syscalls/70006_lsm303dlhc.html"><strong aria-hidden="true">17.2.14.</strong> LSM303DLHC</a></li><li class="chapter-item expanded "><a href="syscalls/80005_hd44780.html"><strong aria-hidden="true">17.2.15.</strong> HD44780</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="reference/index.html"><strong aria-hidden="true">18.</strong> Internal Kernel Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="reference/trd1-trds.html"><strong aria-hidden="true">18.1.</strong> TRD 1: Tock Reference</a></li><li class="chapter-item expanded "><a href="reference/trd102-adc.html"><strong aria-hidden="true">18.2.</strong> TRD 102: ADC</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Tockのセットアップと使用法</li><li class="chapter-item expanded "><a href="Getting_Started.html"><strong aria-hidden="true">19.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="Porting.html"><strong aria-hidden="true">20.</strong> Tockのポーティング</a></li><li class="chapter-item expanded "><a href="OutOfTree.html"><strong aria-hidden="true">21.</strong> ツリー外のボード</a></li><li class="chapter-item expanded "><a href="debugging/index.html"><strong aria-hidden="true">22.</strong> Debugging Help</a></li><li class="chapter-item expanded "><a href="Style.html"><strong aria-hidden="true">23.</strong> Style</a></li><li class="chapter-item expanded affix "><li class="part-title">Management of Tock</li><li class="chapter-item expanded "><a href="wg/index.html"><strong aria-hidden="true">24.</strong> Working Groups</a></li><li class="chapter-item expanded "><a href="CodeReview.html"><strong aria-hidden="true">25.</strong> Code Review Process</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Tockドキュメント</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#tockの概要" id="tockの概要">Tockの概要</a></h1>
+<p>Tock は、Cortex-M、および、RISC-Vマイクロコントローラ用のセキュアな組み込み
+オペレーティングシステムです。Tockは、ハードウェアがメモリ保護ユニット（MPU）を
+持っていることを前提としています。MPUを持たないシステムでは複数の信頼できない
+プロセスを同時にサポートすることも、Tockの安全性とセキュリティな特性の維持をする
+こともできないからです。Tockカーネルとその拡張機能（<em>カプセル</em>と呼ばれる）は
+Rustで書かれています。</p>
+<p>Tockは、任意の言語で書かれた複数の独立した信頼できないプロセスを実行することができます。
+Tockが同時にサポートできるプロセスの数は、MCUのフラッシュとRAMにより制限されます。
+Tockはさまざまなスケジュールアルゴリズムの使用を設定できますが、Tockのデフォルト
+スケジューラはプリエンプティブであり、ラウンドロビン方式を使用します。Tockはマイクロ
+カーネルアーキテクチャを採用しています。複雑なドライバとサービスの多くは信頼できない
+プロセスとして実装されており、アプリケーションなどの他のプロセスをプロセス間通信(IPC)を
+介して呼び出すことができます。</p>
+<p>このドキュメントでは、Tockのアーキテクチャの概要、Tockにおける異なるクラスのコード、
+Tockが使用する保護機構、そしてこの構造がソフトウェアのディレクトリ構造にどのように
+反映されているかについて説明します。</p>
+<!-- npm i -g markdown-toc; markdown-toc -i Overview.md -->
+<!-- toc -->
+<ul>
+<li><a href="#tock%E3%81%AE%E6%A6%82%E8%A6%81">Tockの概要</a>
+<ul>
+<li><a href="#tock%E3%81%AE%E3%82%A2%E3%83%BC%E3%82%AD%E3%83%86%E3%82%AF%E3%83%81%E3%83%A3">Tockのアーキテクチャ</a></li>
+<li><a href="#tock%E3%81%AE%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E6%A7%8B%E9%80%A0">Tockのディレクトリ構造</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h2><a class="header" href="#tockのアーキテクチャ" id="tockのアーキテクチャ">Tockのアーキテクチャ</a></h2>
+<p><img src="tock-stack.png" alt="Tock architecture" /></p>
+<p>上の図は、Tockのアーキテクチャを示しています。コードは3つのカテゴリ、<em>コアカーネル</em>、
+<em>カプセル</em>、<em>プロセス</em>のいずれかに分類されます。</p>
+<p>コアカーネルとカプセルはRustで書かれています。Rustは型安全なシステム言語です。この
+言語とそのカーネル設計への影響については他のドキュメントで詳しく説明されていますが、
+鍵となるのは、Rustのコードはメモリを意図したものと異なる使用ができない（たとえば、
+バッファオーバーフロー、偽ポインタ、デッドスタックフレームポインタの保持など）ことです。
+これらの制約は、OSカーネルがしなければならない多くのこと（たとえば、データシートで
+指定されているメモリアドレスに存在するペリフェラルのアクセスなど）を妨げるため、非常に
+小さなコアカーネルは「安全でない」Rustコードを使用することでこれらの制約を破る
+ことが許されています。しかし、カプセルは安全でない機能を使用することはできません。
+これは、コアカーネルのコードは非常に小さく慎重に書かれているが、カーネルに追加される
+新たなカプセルは安全なコードであり、信頼される必要はないということを意味します。</p>
+<p>プロセスは任意の言語で書くことができます。カーネルは、ハードウェアメモリ保護ユニット
+（MPU）を使用して、自分自身と他のプロセスを不正なプロセスコードから保護します。
+プロセスが許可されていないメモリにアクセスしようとすると、MPUは例外を発生させます。
+カーネルはこの例外を処理してプロセスを終了させます。</p>
+<p>カーネルは4つの主要なシステムコールを提供します。</p>
+<ul>
+<li>command: プロセスからカーネルのコールを行います。</li>
+<li>subscribe: カーネルからコールされるプロセスのコールバックを登録します。</li>
+<li>allow: プロセス内のメモリにカーネルがアクセスできるようにします。</li>
+<li>yield: コールバックが呼び出されるまでプロセスを一時停止します。</li>
+</ul>
+<p>yield以外のすべてのシステムコールはノンブロッキングです。長時間かかる可能性のある
+コマンド（UART経由のメッセージ送信など）はすぐに戻り、処理が完了するとコールバックが
+発行されます。yieldシステムコールは、コールバックが呼び出されるまでプロセスをブロック
+します。通常、ユーザーランドのコードは、コマンドを実行し、yieldを使用してコールバックが
+完了するまで待機するというブロック関数を実装します。</p>
+<p>command、subscribe, allowの各システムコールはすべて、最初の引数としてドライバIDを
+受け取ります。これは、システムコールがカーネル内のどのドライバを対象としているかを
+示します。ドライバはシステムコールを実装したカプセルです。</p>
+<h2><a class="header" href="#tockのディレクトリ構造" id="tockのディレクトリ構造">Tockのディレクトリ構造</a></h2>
+<p>Tockにはいくつかの主要なコードディレクトリがあります。</p>
+<ul>
+<li>
+<p><strong>arch</strong>: アーキテクチャ固有のコードを格納します。つまり、Cortex-M0やCortex-M4
+固有のコードです。これには、コンテキストスイッチの実行やシステムコール（ユーザーコード
+からカーネルコードへのトラップ）を行うコードが含まれます。</p>
+</li>
+<li>
+<p><strong>boards</strong>: imix、Hail、nrf52dkなどの特定のTockプラットフォーム用のコードを
+格納します。通常、これはカーネルが持つすべてのカプセル、MCUのIOピンを適切な状態に
+設定するコード、カーネルを初期化するコード、プロセスをロードするコードなどを定義する
+構造体です。このディレクトリで最も重要なファイルは<code>main.rs</code>であり、その最も重要な
+初期化関数は（MCUがリセットされたときに実行される）<code>reset_handler</code>です。ボード
+コードでは、システムコールデバイス識別子をカプセルにマッピングする方法も
+<code>with_driver</code>関数の中で定義しています。</p>
+</li>
+<li>
+<p><strong>capsules</strong>: 特定のペリフェラルのチップ固有実装の上に構築できるMCUに依存しない
+カーネル拡張を格納します。システムコールを提供するカプセルもあります。たとえば、
+この  ディレクトリにある<code>spi</code>モジュールは、チップのSPI実装を使って、そのシステム
+コールを提供する実装を構築しています。</p>
+</li>
+<li>
+<p><strong>chips</strong>: SPI、I2C、GPIO、UARTの実装やその他のマイクロコントローラ固有のコード
+を格納します。chipsとboardsの区別はマイクロコントローラとフルプラットフォームの
+違いです。たとえば、多くのマイクロコントローラは複数のUARTを持ちます。どのUARTが
+Tockと通信するのにはどのUARTが主に使われるのか、また、別のチップを制御するには
+どのUARTが使用されるのかは、ボード上にチップがどのように配置され、どのピンが公開
+されているかにより定義されます。したがって、チップはUARTの実装を提供し、ボードは
+どのUARTが何に使われるかを定義します。</p>
+</li>
+<li>
+<p><strong>doc</strong>: 内部インターフェースの仕様やチュートリアルを含むTockのドキュメントを
+格納します。</p>
+</li>
+<li>
+<p><strong>kernel</strong>: スケジューラ、プロセス、メモリ管理など、マイクロコントローラに依存しない
+カーネルコードを格納します。このディレクトリとarchがすべてのコアカーネルコードを
+格納する場所です。</p>
+</li>
+<li>
+<p><strong>libraries</strong>: 内部で使用したり、外部と共有するライブラリを格納します。いくつかの
+プリミティブがTock用に作成されていますが、他のプロジェクトにも有用でないかと考えて
+います。ここは各クレートを置く場所です。</p>
+</li>
+<li>
+<p><strong>tools</strong>: コードフォーマットチェック、バイナリ変換、ビルドスクリプトなど、
+コンパイルやコードメンテナンスに役立つ関連ツールを格納します。</p>
+</li>
+<li>
+<p><strong>vagrant</strong>: 仮想マシン環境でTockを動かすための情報を格納します。</p>
+</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+                            <a rel="next" href="Design.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+                    <a rel="next" href="Design.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

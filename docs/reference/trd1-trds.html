@@ -1,0 +1,409 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>TRD 1: Tock Reference - Tockドキュメント</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Overview.html"><strong aria-hidden="true">1.</strong> Tockの概要</a></li><li class="chapter-item expanded "><a href="../Design.html"><strong aria-hidden="true">2.</strong> Tockの設計</a></li><li class="chapter-item expanded "><a href="../threat_model/index.html"><strong aria-hidden="true">3.</strong> Threat Model</a></li><li class="chapter-item expanded affix "><li class="part-title">Tockの実装</li><li class="chapter-item expanded "><a href="../Lifetimes.html"><strong aria-hidden="true">4.</strong> ライフタイム</a></li><li class="chapter-item expanded "><a href="../Mutable_References.html"><strong aria-hidden="true">5.</strong> 可変参照</a></li><li class="chapter-item expanded "><a href="../Soundness.html"><strong aria-hidden="true">6.</strong> 安全性</a></li><li class="chapter-item expanded "><a href="../Compilation.html"><strong aria-hidden="true">7.</strong> コンパイル</a></li><li class="chapter-item expanded "><a href="../TockBinaryFormat.html"><strong aria-hidden="true">8.</strong> TBF: Tockバイナリフォーマット</a></li><li class="chapter-item expanded "><a href="../Memory_Layout.html"><strong aria-hidden="true">9.</strong> メモリレイアウト</a></li><li class="chapter-item expanded "><a href="../Memory_Isolation.html"><strong aria-hidden="true">10.</strong> メモリ隔離</a></li><li class="chapter-item expanded "><a href="../Registers.html"><strong aria-hidden="true">11.</strong> レジスタ</a></li><li class="chapter-item expanded "><a href="../Startup.html"><strong aria-hidden="true">12.</strong> 起動</a></li><li class="chapter-item expanded "><a href="../Syscalls.html"><strong aria-hidden="true">13.</strong> システムコール</a></li><li class="chapter-item expanded "><a href="../Userland.html"><strong aria-hidden="true">14.</strong> ユーザランド</a></li><li class="chapter-item expanded "><a href="../Networking_Stack.html"><strong aria-hidden="true">15.</strong> Networking Stack</a></li><li class="chapter-item expanded "><a href="../Configuration.html"><strong aria-hidden="true">16.</strong> 構成</a></li><li class="chapter-item expanded affix "><li class="part-title">インターフェースの詳細</li><li class="chapter-item expanded "><a href="../syscalls/index.html"><strong aria-hidden="true">17.</strong> システムコールインターフェース</a></li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">17.1.</strong> コアカーネル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="../syscalls/memop.html"><strong aria-hidden="true">17.1.1.</strong> memop</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">17.2.</strong> カプセル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="../syscalls/00000_alarm.html"><strong aria-hidden="true">17.2.1.</strong> Alarm</a></li><li class="chapter-item expanded "><a href="../syscalls/00001_console.html"><strong aria-hidden="true">17.2.2.</strong> Console</a></li><li class="chapter-item expanded "><a href="../syscalls/00002_leds.html"><strong aria-hidden="true">17.2.3.</strong> LED</a></li><li class="chapter-item expanded "><a href="../syscalls/00003_buttons.html"><strong aria-hidden="true">17.2.4.</strong> Button</a></li><li class="chapter-item expanded "><a href="../syscalls/00004_gpio.html"><strong aria-hidden="true">17.2.5.</strong> GPIO</a></li><li class="chapter-item expanded "><a href="../syscalls/00005_adc.html"><strong aria-hidden="true">17.2.6.</strong> ADC</a></li><li class="chapter-item expanded "><a href="../syscalls/00007_analog_comparator.html"><strong aria-hidden="true">17.2.7.</strong> AnalogComparator</a></li><li class="chapter-item expanded "><a href="../syscalls/00008_low_level_debug.html"><strong aria-hidden="true">17.2.8.</strong> Low-Level Debug</a></li><li class="chapter-item expanded "><a href="../syscalls/30002_udp.html"><strong aria-hidden="true">17.2.9.</strong> UDP</a></li><li class="chapter-item expanded "><a href="../syscalls/60000_ambient_temperature.html"><strong aria-hidden="true">17.2.10.</strong> Ambient Temp</a></li><li class="chapter-item expanded "><a href="../syscalls/60001_humidity.html"><strong aria-hidden="true">17.2.11.</strong> Humidity</a></li><li class="chapter-item expanded "><a href="../syscalls/60002_luminance.html"><strong aria-hidden="true">17.2.12.</strong> Luminance</a></li><li class="chapter-item expanded "><a href="../syscalls/70005_l3gd20.html"><strong aria-hidden="true">17.2.13.</strong> L3GD20</a></li><li class="chapter-item expanded "><a href="../syscalls/70006_lsm303dlhc.html"><strong aria-hidden="true">17.2.14.</strong> LSM303DLHC</a></li><li class="chapter-item expanded "><a href="../syscalls/80005_hd44780.html"><strong aria-hidden="true">17.2.15.</strong> HD44780</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../reference/index.html"><strong aria-hidden="true">18.</strong> Internal Kernel Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/trd1-trds.html" class="active"><strong aria-hidden="true">18.1.</strong> TRD 1: Tock Reference</a></li><li class="chapter-item expanded "><a href="../reference/trd102-adc.html"><strong aria-hidden="true">18.2.</strong> TRD 102: ADC</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Tockのセットアップと使用法</li><li class="chapter-item expanded "><a href="../Getting_Started.html"><strong aria-hidden="true">19.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="../Porting.html"><strong aria-hidden="true">20.</strong> Tockのポーティング</a></li><li class="chapter-item expanded "><a href="../OutOfTree.html"><strong aria-hidden="true">21.</strong> ツリー外のボード</a></li><li class="chapter-item expanded "><a href="../debugging/index.html"><strong aria-hidden="true">22.</strong> Debugging Help</a></li><li class="chapter-item expanded "><a href="../Style.html"><strong aria-hidden="true">23.</strong> Style</a></li><li class="chapter-item expanded affix "><li class="part-title">Management of Tock</li><li class="chapter-item expanded "><a href="../wg/index.html"><strong aria-hidden="true">24.</strong> Working Groups</a></li><li class="chapter-item expanded "><a href="../CodeReview.html"><strong aria-hidden="true">25.</strong> Code Review Process</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Tockドキュメント</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#tock-reference-document-trd-structure-and-keywords" id="tock-reference-document-trd-structure-and-keywords">Tock Reference Document (TRD) Structure and Keywords</a></h1>
+<p><strong>TRD:</strong> 1<br/>
+<strong>Working Group:</strong> Kernel<br/>
+<strong>Type:</strong> Best Common Practice<br/>
+<strong>Status:</strong> Final<br/>
+<strong>Authors:</strong> Philip Levis, Daniel Griffin<br/></p>
+<h2><a class="header" href="#abstract" id="abstract">Abstract</a></h2>
+<p>This document describes the structure followed by all Tock Reference
+Documents (TRDs), and defines the meaning of several key words in
+those documents.</p>
+<h1><a class="header" href="#1-introduction" id="1-introduction">1 Introduction</a></h1>
+<p>To simplify management, reading, and tracking development,
+all Tock Reference Documents (TRDs) MUST have a particular
+structure. Additionally, to simplify development and improve
+implementation interoperability, all TRDs MUST observe the meaning of
+several key words that specify levels of compliance. This document
+describes and follows both.</p>
+<h1><a class="header" href="#2-keywords" id="2-keywords">2 Keywords</a></h1>
+<p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
+&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
+document are to be interpreted as described in <a href="trd1-trds.html" title="Tock Reference Document (TRD) Structure and Keywords">TRD1</a>.</p>
+<p>Note that the force of these words is modified by the requirement
+level of the document in which they are used. These words hold their
+special meanings only when capitalized, and documents SHOULD avoid using
+these words uncapitalized in order to minimize confusion.</p>
+<h2><a class="header" href="#21-must" id="21-must">2.1 MUST</a></h2>
+<p>MUST: This word, or the terms &quot;REQUIRED&quot; or &quot;SHALL&quot;, mean that the
+definition is an absolute requirement of the document.</p>
+<h2><a class="header" href="#22-must-not" id="22-must-not">2.2 MUST NOT</a></h2>
+<p>MUST NOT: This phrase, or the phrase &quot;SHALL NOT&quot;, mean that the
+definition is an absolute prohibition of the document.</p>
+<h2><a class="header" href="#23-should" id="23-should">2.3 SHOULD</a></h2>
+<p>SHOULD: This word, or the adjective &quot;RECOMMENDED&quot;, mean that there
+may exist valid reasons in particular circumstances to ignore a
+particular item, but the full implications must be understood and
+carefully weighed before choosing a different course.</p>
+<h2><a class="header" href="#24-should-not" id="24-should-not">2.4 SHOULD NOT</a></h2>
+<p>SHOULD NOT: This phrase, or the phrase &quot;NOT RECOMMENDED&quot; mean that
+there may exist valid reasons in particular circumstances when the
+particular behavior is acceptable or even useful, but the full
+implications should be understood and the case carefully weighed
+before implementing any behavior described with this label.</p>
+<h2><a class="header" href="#25-may" id="25-may">2.5 MAY</a></h2>
+<p>MAY: This word, or the adjective &quot;OPTIONAL&quot;, mean that an item is
+truly optional.  One implementer may choose to include the item
+because a particular application requires it or because the
+implementer feels that it enhances the system while another
+implementer may omit the same item.  An implementation which does not
+include a particular option MUST be prepared to interoperate with
+another implementation which does include the option, though perhaps
+with reduced functionality. Similarly, an implementation which does
+include a particular option MUST be prepared to interoperate with
+another implementation which does not include the option (except, of
+course, for the feature the option provides.)</p>
+<h2><a class="header" href="#26-guidance-in-the-use-of-these-imperatives" id="26-guidance-in-the-use-of-these-imperatives">2.6 Guidance in the use of these Imperatives</a></h2>
+<p>Imperatives of the type defined in this memo must be used with care
+and sparingly.  In particular, they MUST only be used where it is
+actually required for interoperation or to limit behavior which has
+potential for causing harm (e.g., limiting retransmissions)  For
+example, they must not be used to try to impose a particular method
+on implementors where the method is not required for
+interoperability.</p>
+<h1><a class="header" href="#3-trd-structure" id="3-trd-structure">3 TRD Structure</a></h1>
+<p>A TRD MUST begin with a title, and then follow with a header and a
+body. The header states document metadata, for management and status.
+The body contains the content of the proposal.</p>
+<p>All TRDs MUST conform to <a href="https://daringfireball.net/projects/markdown/" title="Markdown">Markdown syntax</a> to enable
+translation to HTML and LaTeX, and for useful display in web tools.</p>
+<h2><a class="header" href="#31-trd-header" id="31-trd-header">3.1 TRD Header</a></h2>
+<p>The TRD header has several fields which MUST be included, as well as
+others which MAY be included. The TRD header MUST NOT include fields
+which are not specified in TRD 1 or supplementary Best Common Practice
+TRDs. The first five header fields MUST be included in all TRDs, in
+the order stated below.  The Markdown syntax to use when composing a
+header is modeled by this document's header.</p>
+<p>The first field is &quot;TRD,&quot; and specifies the TRD number of the
+document. A TRD's number is unique. This document is TRD 1. The
+TRD type (discussed below) determines TRD number assignment. Generally,
+when a document is ready to be a TRD, it is assigned the smallest
+available number. BCP TRDs start at 1 and all other TRDs
+(Documentary, Experimental, and Informational) start at 101.</p>
+<p>The second field, &quot;Working Group,&quot; states the name of the working
+group that produced the document. This document was produced by the
+Kernel Working Group.</p>
+<p>The third field is &quot;Type,&quot; and specifies the type of TRD the document
+is. There are four types of TRD: Best Current Practice (BCP),
+Documentary, Informational, and Experimental. This document's type is Best
+Current Practice.</p>
+<p><em>Best Current Practice</em> is the closest thing TRDs have to a standard: it
+represents conclusions from significant experience and work by its
+authors. Developers desiring to add code (or TRDs) to Tock SHOULD
+follow all current BCPs. </p>
+<p><em>Documentary</em> TRDs describe a system or protocol that exists; a
+documentary TRD MUST reference an implementation that a reader can
+easily obtain.  Documentary TRDs simplify interoperability when 
+needed, and document Tock implementations.</p>
+<p><em>Informational</em> TRDs provide information that is of interest to the
+community. Informational TRDs include data gathered on radio behavior,
+hardware characteristics, other aspects of Tock software/hardware,
+organizational and logistic information,
+or experiences which could help the community achieve its goals.</p>
+<p><em>Experimental</em> TRDs describe a completely experimental approach to a
+problem, which are outside the Tock release stream and will not
+necessarily become part of it.  Unlike Documentary TRDs, Experimental
+TRDs may describe systems that do not have a reference implementation.</p>
+<p>The fourth field is &quot;Status,&quot; which specifies the status of the TRD.
+A TRD's status can be either &quot;Draft,&quot; which means it is a work in
+progress, or &quot;Final,&quot; which means it is complete and will not change.
+Once a TRD has the status &quot;Final,&quot; the only change allowed is the
+addition of an &quot;Obsoleted By&quot; field.</p>
+<p>The &quot;Obsoletes&quot; field is a backward pointer to an earlier TRD which
+the current TRD renders obsolete. An Obsoletes field MAY have multiple
+TRDs listed.  For example, if TRD 121 were to replace TRDs 111 and
+116, it would have the field &quot;Obsoletes: 111, 116&quot;.</p>
+<p>The &quot;Obsoleted By&quot; field is added to a Final TRD when another TRD has
+rendered it obsolete. The field contains the number of the obsoleting
+TRD. For example, if TRD 111 were obsoleted by TRD 121, it would have
+the field &quot;Obsoleted By: 121&quot;.</p>
+<p>&quot;Obsoletes&quot; and &quot;Obsoleted By&quot; fields MUST agree. For a TRD to list another
+TRD in its Obsoletes field, then that TRD MUST list it in the Obsoleted By
+field.</p>
+<p>The obsoletion fields are used to keep track of evolutions and modifications
+of a single abstraction. They are not intended to force a single approach or
+mechanism over alternative possibilities.</p>
+<p>The final required field is &quot;Authors,&quot; which states the names of the
+authors of the document. Full contact information should not be listed
+here (see Section 3.2).</p>
+<p>There is an optional field, &quot;Extends.&quot; The &quot;Extends&quot; field refers to
+another TRD. The purpose of this field is to denote when a TRD represents
+an addition to an existing TRD. Meeting the requirements of a TRD with an
+Extends field requires also meeting the requirements of all TRDs listed 
+in the Extends field.</p>
+<p>If a TRD is a Draft, then four additional fields MUST be included:
+Draft-Created, Draft-Modified, Draft-Version, and Draft-Discuss.
+Draft-Created states the date the document was created, Draft-Modified
+states when it was last modified. Draft-Version specifies the version
+of the draft, which MUST increase every time a modification is
+made. Draft-Discuss specifies the email address of a mailing list
+where the draft is being discussed. Final and Obsolete TRDs MUST NOT
+have these fields, which are for Drafts only.</p>
+<h2><a class="header" href="#32-trd-body" id="32-trd-body">3.2 TRD Body</a></h2>
+<p>A TRD body SHOULD begin with an Abstract, which gives a brief overview
+of the content of the TRD. A longer TRD MAY, after the Abstract, have
+a Table of Contents. After the Abstract and Table of Contents there
+SHOULD be an Introduction, stating the problem the TRD seeks to solve
+and providing needed background information.</p>
+<p>If a TRD is Documentary, it MUST have a section entitled
+&quot;Implementation,&quot; which instructs the reader how to obtain the
+implementation documented.</p>
+<p>If a TRD is Best Current Practice, it MUST have a section entitled
+&quot;Reference,&quot; which points the reader to one or more reference uses of
+the practices.</p>
+<p>The last three sections of a TRD are author information, citations,
+and appendices. A TRD MUST have an author information section titled
+entitled &quot;Author's Address&quot; or &quot;Authors' Addresses.&quot; A TRD MAY have
+a citation section entitled &quot;Citations.&quot; A citations section MUST
+immediately follow the author information section. A TRD MAY have
+appendices. Appendices MUST immediately follow the citations section,
+or if there is no citations section, the author information section.
+Appendices are lettered.  Please refer to Appendix A for details.</p>
+<h1><a class="header" href="#4-file-names" id="4-file-names">4 File names</a></h1>
+<p>TRDs MUST be stored in the Tock repository with a file name of</p>
+<p>trd[number]-[desc].md</p>
+<p>Where number is the TRD number and desc is a short, one word description.
+The name of this document is trd1-trds.md.</p>
+<h1><a class="header" href="#5-reference" id="5-reference">5 Reference</a></h1>
+<p>The reference use of this document is TRD 1 (itself).</p>
+<h1><a class="header" href="#6-acknowledgments" id="6-acknowledgments">6 Acknowledgments</a></h1>
+<p>The definitions of the compliance terms are a direct copy of
+definitions taken from IETF RFC 2119. This document is heavily copied
+from TinyOS Enhancement Proposal 1 (TEP 1).</p>
+<h1><a class="header" href="#7-authors-address" id="7-authors-address">7 Author's Address</a></h1>
+<pre><code>Philip Levis
+409 Gates Hall
+Stanford University
+Stanford, CA 94305
+
+phone - +1 650 725 9046
+
+email - pal@cs.stanford.edu
+</code></pre>
+<h1><a class="header" href="#appendix-a-example-appendix" id="appendix-a-example-appendix">Appendix A Example Appendix</a></h1>
+<p>This is an example appendix. Appendices begin with the letter A.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../reference/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../reference/trd102-adc.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../reference/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../reference/trd102-adc.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

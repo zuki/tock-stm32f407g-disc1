@@ -1,0 +1,378 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Threat Model - Tockドキュメント</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Overview.html"><strong aria-hidden="true">1.</strong> Tockの概要</a></li><li class="chapter-item expanded "><a href="../Design.html"><strong aria-hidden="true">2.</strong> Tockの設計</a></li><li class="chapter-item expanded "><a href="../threat_model/index.html" class="active"><strong aria-hidden="true">3.</strong> Threat Model</a></li><li class="chapter-item expanded affix "><li class="part-title">Tockの実装</li><li class="chapter-item expanded "><a href="../Lifetimes.html"><strong aria-hidden="true">4.</strong> ライフタイム</a></li><li class="chapter-item expanded "><a href="../Mutable_References.html"><strong aria-hidden="true">5.</strong> 可変参照</a></li><li class="chapter-item expanded "><a href="../Soundness.html"><strong aria-hidden="true">6.</strong> 安全性</a></li><li class="chapter-item expanded "><a href="../Compilation.html"><strong aria-hidden="true">7.</strong> コンパイル</a></li><li class="chapter-item expanded "><a href="../TockBinaryFormat.html"><strong aria-hidden="true">8.</strong> TBF: Tockバイナリフォーマット</a></li><li class="chapter-item expanded "><a href="../Memory_Layout.html"><strong aria-hidden="true">9.</strong> メモリレイアウト</a></li><li class="chapter-item expanded "><a href="../Memory_Isolation.html"><strong aria-hidden="true">10.</strong> メモリ隔離</a></li><li class="chapter-item expanded "><a href="../Registers.html"><strong aria-hidden="true">11.</strong> レジスタ</a></li><li class="chapter-item expanded "><a href="../Startup.html"><strong aria-hidden="true">12.</strong> 起動</a></li><li class="chapter-item expanded "><a href="../Syscalls.html"><strong aria-hidden="true">13.</strong> システムコール</a></li><li class="chapter-item expanded "><a href="../Userland.html"><strong aria-hidden="true">14.</strong> ユーザランド</a></li><li class="chapter-item expanded "><a href="../Networking_Stack.html"><strong aria-hidden="true">15.</strong> Networking Stack</a></li><li class="chapter-item expanded "><a href="../Configuration.html"><strong aria-hidden="true">16.</strong> 構成</a></li><li class="chapter-item expanded affix "><li class="part-title">インターフェースの詳細</li><li class="chapter-item expanded "><a href="../syscalls/index.html"><strong aria-hidden="true">17.</strong> システムコールインターフェース</a></li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">17.1.</strong> コアカーネル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="../syscalls/memop.html"><strong aria-hidden="true">17.1.1.</strong> memop</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">17.2.</strong> カプセル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="../syscalls/00000_alarm.html"><strong aria-hidden="true">17.2.1.</strong> Alarm</a></li><li class="chapter-item expanded "><a href="../syscalls/00001_console.html"><strong aria-hidden="true">17.2.2.</strong> Console</a></li><li class="chapter-item expanded "><a href="../syscalls/00002_leds.html"><strong aria-hidden="true">17.2.3.</strong> LED</a></li><li class="chapter-item expanded "><a href="../syscalls/00003_buttons.html"><strong aria-hidden="true">17.2.4.</strong> Button</a></li><li class="chapter-item expanded "><a href="../syscalls/00004_gpio.html"><strong aria-hidden="true">17.2.5.</strong> GPIO</a></li><li class="chapter-item expanded "><a href="../syscalls/00005_adc.html"><strong aria-hidden="true">17.2.6.</strong> ADC</a></li><li class="chapter-item expanded "><a href="../syscalls/00007_analog_comparator.html"><strong aria-hidden="true">17.2.7.</strong> AnalogComparator</a></li><li class="chapter-item expanded "><a href="../syscalls/00008_low_level_debug.html"><strong aria-hidden="true">17.2.8.</strong> Low-Level Debug</a></li><li class="chapter-item expanded "><a href="../syscalls/30002_udp.html"><strong aria-hidden="true">17.2.9.</strong> UDP</a></li><li class="chapter-item expanded "><a href="../syscalls/60000_ambient_temperature.html"><strong aria-hidden="true">17.2.10.</strong> Ambient Temp</a></li><li class="chapter-item expanded "><a href="../syscalls/60001_humidity.html"><strong aria-hidden="true">17.2.11.</strong> Humidity</a></li><li class="chapter-item expanded "><a href="../syscalls/60002_luminance.html"><strong aria-hidden="true">17.2.12.</strong> Luminance</a></li><li class="chapter-item expanded "><a href="../syscalls/70005_l3gd20.html"><strong aria-hidden="true">17.2.13.</strong> L3GD20</a></li><li class="chapter-item expanded "><a href="../syscalls/70006_lsm303dlhc.html"><strong aria-hidden="true">17.2.14.</strong> LSM303DLHC</a></li><li class="chapter-item expanded "><a href="../syscalls/80005_hd44780.html"><strong aria-hidden="true">17.2.15.</strong> HD44780</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../reference/index.html"><strong aria-hidden="true">18.</strong> Internal Kernel Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../reference/trd1-trds.html"><strong aria-hidden="true">18.1.</strong> TRD 1: Tock Reference</a></li><li class="chapter-item expanded "><a href="../reference/trd102-adc.html"><strong aria-hidden="true">18.2.</strong> TRD 102: ADC</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Tockのセットアップと使用法</li><li class="chapter-item expanded "><a href="../Getting_Started.html"><strong aria-hidden="true">19.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="../Porting.html"><strong aria-hidden="true">20.</strong> Tockのポーティング</a></li><li class="chapter-item expanded "><a href="../OutOfTree.html"><strong aria-hidden="true">21.</strong> ツリー外のボード</a></li><li class="chapter-item expanded "><a href="../debugging/index.html"><strong aria-hidden="true">22.</strong> Debugging Help</a></li><li class="chapter-item expanded "><a href="../Style.html"><strong aria-hidden="true">23.</strong> Style</a></li><li class="chapter-item expanded affix "><li class="part-title">Management of Tock</li><li class="chapter-item expanded "><a href="../wg/index.html"><strong aria-hidden="true">24.</strong> Working Groups</a></li><li class="chapter-item expanded "><a href="../CodeReview.html"><strong aria-hidden="true">25.</strong> Code Review Process</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Tockドキュメント</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#tock-threat-model" id="tock-threat-model">Tock Threat Model</a></h1>
+<p><strong>Note: This threat model is not descriptive of Tock's current implementation.
+It describes how we intend Tock to work as of some future release, perhaps
+2.0.</strong></p>
+<h2><a class="header" href="#overview" id="overview">Overview</a></h2>
+<p>Tock provides hardware-based isolation between processes as well as
+language-based isolation between kernel capsules.</p>
+<p>Tock supports a variety of hardware, including boards defined in the Tock
+repository and boards defined &quot;out of tree&quot; in a separate repository.
+Additionally, Tock's installation model may vary between different use cases
+even when those use cases are based on the same hardware. As a result of Tock's
+flexibility, the mechanisms it uses to provide isolation — and the strength of
+that isolation — vary from deployment to deployment.</p>
+<p>This threat model describes the isolation provided by Tock as well as the trust
+model that Tock uses to implement that isolation. Users of Tock, which include
+board integrators and application developers, should use this threat model to
+understand what isolation Tock provides to them (and what isolation it may not
+provide). Tock developers should use this threat model as a guide for how to
+provide Tock's isolation guarantees.</p>
+<h2><a class="header" href="#definitions" id="definitions">Definitions</a></h2>
+<p>These definitions are shared between the documents in this directory.</p>
+<p>A <strong>process</strong> is a runtime instantiation of an application binary. When an
+application binary &quot;restarts&quot;, its process is terminated and a new process is
+started using the same binary. Note that the kernel is not considered a process,
+although it is a thread of execution.</p>
+<p><strong>Process data</strong> includes a process' binary in non-volatile storage, its memory
+footprint in RAM, and any data that conceptually belongs to the process that is
+held by the kernel or other processes. For example, if a process is reading from
+a UART then the data in the UART buffer is considered the process' data, even
+when it is stored in a location in RAM only readable by the kernel.</p>
+<p><strong>Kernel data</strong> includes the kernel's image in non-volatile storage as well as
+data in RAM that does not conceptually belong to processes. For example, the
+scheduler's data structures are kernel data.</p>
+<p><strong>Capsule data</strong> is data that is associated with a particular kernel capsule.
+This data can be either kernel data or process data, depending on its
+conceptual owner. For example, an ADC driver's configuration is kernel data,
+while samples an ADC driver takes on behalf of a process are process data.</p>
+<p><strong>Tock's users</strong> refers to entities that make use of Tock OS. In the context of
+threat modelling, this typically refers to board integrators (entities that
+combine Tock components into an OS to run on a specific piece of hardware) and
+application developers (who consume Tock's APIs and rely on the OS' guarantees).</p>
+<h2><a class="header" href="#isolation-provided-to-processes" id="isolation-provided-to-processes">Isolation Provided to Processes</a></h2>
+<p><strong>Confidentiality:</strong> A process' data may not be accessed by other processes or
+by capsules, unless explicitly permitted by the process. Note that Tock does not
+generally provide defense against side channel attacks; see the <a href="#side-channel-defense">Side Channel
+Defense</a> heading below for more details. Additionally,
+<a href="Virtualization.html">Virtualization</a> describes some limitations on isolation for
+shared resources.</p>
+<p><strong>Integrity:</strong> Process data may not be modified by other processes or by
+capsules, except when allowed by the process.</p>
+<p><strong>Availability:</strong> Processes may not deny service to each other at runtime. As an
+exception to this rule, some finite resources may be allocated on a
+first-come-first-served basis. This exception is described in detail in
+<a href="Virtualization.html">Virtualization</a>.</p>
+<h2><a class="header" href="#isolation-provided-to-kernel-code" id="isolation-provided-to-kernel-code">Isolation Provided to Kernel Code</a></h2>
+<p><strong>Confidentiality:</strong> Kernel data may not be accessed by processes, except where
+explicitly permitted by the owning component. Kernel data may not be accessed by
+capsules, except where explicitly permitted by the owning component. The
+limitations about <a href="#side-channel-defense">side channel defense</a> and
+<a href="Virtualization.html">Virtualization</a> that apply to process data also apply to
+kernel data.</p>
+<p><strong>Integrity:</strong> Processes and capsules may not modify kernel data except through
+APIs intentionally exposed by the owning code.</p>
+<p><strong>Availability:</strong> Processes cannot starve the kernel of resources or otherwise
+perform denial-of-service attacks against the kernel. This does not extend to
+capsule code; capsule code may deny service to trusted kernel code. As described
+in <a href="Virtualization.html">Virtualization</a>, kernel APIs should be designed to
+prevent starvation.</p>
+<h2><a class="header" href="#isolation-that-tock-does-not-provide" id="isolation-that-tock-does-not-provide">Isolation that Tock does NOT Provide</a></h2>
+<p>There are practical limits to the isolation that Tock can provide; this section
+describes some of those limits.</p>
+<h3><a class="header" href="#side-channel-defense" id="side-channel-defense">Side Channel Defense</a></h3>
+<p>In general, Tock's users should assume that Tock does NOT provide side channel
+mitigations except where Tock's documentation indicates side channel mitigations
+exist.</p>
+<p>Tock's answer to &quot;should code X mitigate side channel Y&quot; is generally &quot;no&quot;. Many
+side channels that Tock can mitigate in theory are too expensive for Tock to
+mitigate in practice. As a result, Tock does not mitigate side channels by
+default. However, specific Tock components may provide and document their own
+side channel mitigation. For instance, Tock may provide a cryptography API that
+implements constant-time operations, and may document the side channel defense
+in the cryptography API's documentation.</p>
+<p>In deciding whether to mitigate a side channel, Tock developers should consider
+both the cost of mitigating the side channel as well as the value provided by
+mitigating that side channel. For example:</p>
+<ol>
+<li>
+<p>Tock does not hide a process' CPU usage from other processes. Hiding CPU
+utilization generally requires making significant performance tradeoffs, and
+CPU utilization is not a particularly sensitive signal.</p>
+</li>
+<li>
+<p>Although Tock protects a process' data from unauthorized access, Tock does
+not hide the size of a process' data regions. Without virtual memory
+hardware, it is very difficult to hide a process' size, and that size is not
+particularly sensitive.</p>
+</li>
+<li>
+<p>It is often practical to build constant-time cryptographic API
+implementations, and protecting the secrecy of plaintext is valuable. As
+such, it may make sense for a Tock board to expose a cryptographic API with
+some side channel defenses.</p>
+</li>
+</ol>
+<h3><a class="header" href="#guaranteed-launching-of-binaries" id="guaranteed-launching-of-binaries">Guaranteed Launching of Binaries</a></h3>
+<p>Tock does not guarantee that binaries it finds are launched as processes. For
+example, if there is not enough RAM available to launch every binary then the
+kernel will skip some binaries.</p>
+<p>This parallels the &quot;first-come, first-served&quot; resource reservation process
+described in <a href="Virtualization.html#availability">Virtualization</a>.</p>
+<h2><a class="header" href="#components-trusted-to-provide-isolation" id="components-trusted-to-provide-isolation">Components Trusted to Provide Isolation</a></h2>
+<p>The Tock kernel depends on several components (including hardware and software)
+in order to implement the above isolation guarantees. Some of these components,
+such as the application loader, may vary depending on Tock's use case. The
+following documents describe the trust model that exists between the Tock kernel
+and its security-relevant dependencies:</p>
+<ul>
+<li>
+<p><a href="Capsule_Isolation.html">Capsule Isolation</a> describes the coding practices used
+to isolate capsules from the remainder of the kernel.</p>
+</li>
+<li>
+<p><a href="Application_Loader.html">Application Loader</a> describes the trust placed in the
+application deployment mechanism.</p>
+</li>
+<li>
+<p><a href="TBF_Headers.html">TBF Headers</a> describes the trust model associated with the
+<a href="../TockBinaryFormat.html">Tock Binary Format</a> headers.</p>
+</li>
+<li>
+<p><a href="Code_Review.html">Code Review</a> describes code review practices used to ensure
+the trustworthiness of Tock's codebase.</p>
+</li>
+</ul>
+<h2><a class="header" href="#what-is-an-application" id="what-is-an-application">What is an &quot;Application&quot;?</a></h2>
+<p>Tock does not currently have a precise definition of &quot;application&quot;, although
+there is consensus on the following:</p>
+<ul>
+<li>
+<p>Unlike a process, an application persists across reboots and updates. For
+example, an application binary can be updated without becoming a new
+application but the update will create a new process.</p>
+</li>
+<li>
+<p>An application consists of at least one application binary (in the Tock Binary
+Format), although it is unclear whether multiple application binaries can
+collectively be considered a single application (e.g. if they implement a
+single piece of functionality).</p>
+</li>
+</ul>
+<p>This section will be updated when we have a more precise definition of
+&quot;application&quot;.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../Design.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../Lifetimes.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../Design.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../Lifetimes.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

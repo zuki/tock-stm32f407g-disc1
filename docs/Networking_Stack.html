@@ -1,0 +1,962 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Networking Stack - Tockドキュメント</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="Overview.html"><strong aria-hidden="true">1.</strong> Tockの概要</a></li><li class="chapter-item expanded "><a href="Design.html"><strong aria-hidden="true">2.</strong> Tockの設計</a></li><li class="chapter-item expanded "><a href="threat_model/index.html"><strong aria-hidden="true">3.</strong> Threat Model</a></li><li class="chapter-item expanded affix "><li class="part-title">Tockの実装</li><li class="chapter-item expanded "><a href="Lifetimes.html"><strong aria-hidden="true">4.</strong> ライフタイム</a></li><li class="chapter-item expanded "><a href="Mutable_References.html"><strong aria-hidden="true">5.</strong> 可変参照</a></li><li class="chapter-item expanded "><a href="Soundness.html"><strong aria-hidden="true">6.</strong> 安全性</a></li><li class="chapter-item expanded "><a href="Compilation.html"><strong aria-hidden="true">7.</strong> コンパイル</a></li><li class="chapter-item expanded "><a href="TockBinaryFormat.html"><strong aria-hidden="true">8.</strong> TBF: Tockバイナリフォーマット</a></li><li class="chapter-item expanded "><a href="Memory_Layout.html"><strong aria-hidden="true">9.</strong> メモリレイアウト</a></li><li class="chapter-item expanded "><a href="Memory_Isolation.html"><strong aria-hidden="true">10.</strong> メモリ隔離</a></li><li class="chapter-item expanded "><a href="Registers.html"><strong aria-hidden="true">11.</strong> レジスタ</a></li><li class="chapter-item expanded "><a href="Startup.html"><strong aria-hidden="true">12.</strong> 起動</a></li><li class="chapter-item expanded "><a href="Syscalls.html"><strong aria-hidden="true">13.</strong> システムコール</a></li><li class="chapter-item expanded "><a href="Userland.html"><strong aria-hidden="true">14.</strong> ユーザランド</a></li><li class="chapter-item expanded "><a href="Networking_Stack.html" class="active"><strong aria-hidden="true">15.</strong> Networking Stack</a></li><li class="chapter-item expanded "><a href="Configuration.html"><strong aria-hidden="true">16.</strong> 構成</a></li><li class="chapter-item expanded affix "><li class="part-title">インターフェースの詳細</li><li class="chapter-item expanded "><a href="syscalls/index.html"><strong aria-hidden="true">17.</strong> システムコールインターフェース</a></li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">17.1.</strong> コアカーネル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/memop.html"><strong aria-hidden="true">17.1.1.</strong> memop</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">17.2.</strong> カプセル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/00000_alarm.html"><strong aria-hidden="true">17.2.1.</strong> Alarm</a></li><li class="chapter-item expanded "><a href="syscalls/00001_console.html"><strong aria-hidden="true">17.2.2.</strong> Console</a></li><li class="chapter-item expanded "><a href="syscalls/00002_leds.html"><strong aria-hidden="true">17.2.3.</strong> LED</a></li><li class="chapter-item expanded "><a href="syscalls/00003_buttons.html"><strong aria-hidden="true">17.2.4.</strong> Button</a></li><li class="chapter-item expanded "><a href="syscalls/00004_gpio.html"><strong aria-hidden="true">17.2.5.</strong> GPIO</a></li><li class="chapter-item expanded "><a href="syscalls/00005_adc.html"><strong aria-hidden="true">17.2.6.</strong> ADC</a></li><li class="chapter-item expanded "><a href="syscalls/00007_analog_comparator.html"><strong aria-hidden="true">17.2.7.</strong> AnalogComparator</a></li><li class="chapter-item expanded "><a href="syscalls/00008_low_level_debug.html"><strong aria-hidden="true">17.2.8.</strong> Low-Level Debug</a></li><li class="chapter-item expanded "><a href="syscalls/30002_udp.html"><strong aria-hidden="true">17.2.9.</strong> UDP</a></li><li class="chapter-item expanded "><a href="syscalls/60000_ambient_temperature.html"><strong aria-hidden="true">17.2.10.</strong> Ambient Temp</a></li><li class="chapter-item expanded "><a href="syscalls/60001_humidity.html"><strong aria-hidden="true">17.2.11.</strong> Humidity</a></li><li class="chapter-item expanded "><a href="syscalls/60002_luminance.html"><strong aria-hidden="true">17.2.12.</strong> Luminance</a></li><li class="chapter-item expanded "><a href="syscalls/70005_l3gd20.html"><strong aria-hidden="true">17.2.13.</strong> L3GD20</a></li><li class="chapter-item expanded "><a href="syscalls/70006_lsm303dlhc.html"><strong aria-hidden="true">17.2.14.</strong> LSM303DLHC</a></li><li class="chapter-item expanded "><a href="syscalls/80005_hd44780.html"><strong aria-hidden="true">17.2.15.</strong> HD44780</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="reference/index.html"><strong aria-hidden="true">18.</strong> Internal Kernel Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="reference/trd1-trds.html"><strong aria-hidden="true">18.1.</strong> TRD 1: Tock Reference</a></li><li class="chapter-item expanded "><a href="reference/trd102-adc.html"><strong aria-hidden="true">18.2.</strong> TRD 102: ADC</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Tockのセットアップと使用法</li><li class="chapter-item expanded "><a href="Getting_Started.html"><strong aria-hidden="true">19.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="Porting.html"><strong aria-hidden="true">20.</strong> Tockのポーティング</a></li><li class="chapter-item expanded "><a href="OutOfTree.html"><strong aria-hidden="true">21.</strong> ツリー外のボード</a></li><li class="chapter-item expanded "><a href="debugging/index.html"><strong aria-hidden="true">22.</strong> Debugging Help</a></li><li class="chapter-item expanded "><a href="Style.html"><strong aria-hidden="true">23.</strong> Style</a></li><li class="chapter-item expanded affix "><li class="part-title">Management of Tock</li><li class="chapter-item expanded "><a href="wg/index.html"><strong aria-hidden="true">24.</strong> Working Groups</a></li><li class="chapter-item expanded "><a href="CodeReview.html"><strong aria-hidden="true">25.</strong> Code Review Process</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Tockドキュメント</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#tock-networking-stack-design-document" id="tock-networking-stack-design-document">Tock Networking Stack Design Document</a></h1>
+<p><em>NOTE: This document is a work in progress.</em></p>
+<p>This document describes the design of the Networking stack on Tock.</p>
+<p>The design described in this document is based off of ideas contributed by
+Phil Levis, Amit Levy, Paul Crews, Hubert Teo, Mateo Garcia, Daniel Giffin, and
+Hudson Ayers.</p>
+<h3><a class="header" href="#table-of-contents" id="table-of-contents">Table of Contents</a></h3>
+<p>This document is split into several sections. These are as follows:</p>
+<ol>
+<li>
+<p>Principles - Describes the main principles which the design of
+this stack intended to meet,
+along with some justification of why these principles matter. Ultimately,
+the design should follow from these principles.</p>
+</li>
+<li>
+<p>Stack Diagram - Graphically depicts the layout of the stack</p>
+</li>
+<li>
+<p>Explanation of queuing - Describes where packets are queued prior to
+transmission.</p>
+</li>
+<li>
+<p>List of Traits - Describes the traits which will exist at each layer of the
+stack. For traits that may seem surprisingly complex, provide examples of
+specific messages that require this more complex trait as opposed to the
+more obvious, simpler trait that might be expected.</p>
+</li>
+<li>
+<p>Explanation of Queuing - Describe queueing principles for this stack</p>
+</li>
+<li>
+<p>Description of rx path</p>
+</li>
+<li>
+<p>Description of the userland interface to the networking stack</p>
+</li>
+<li>
+<p>Implementation Details - Describes how certain implementations of these
+traits will work, providing some examples with pseudocode or commented
+explanations of functionality</p>
+</li>
+<li>
+<p>Example Message Traversals - Shows how different example messages (Thread or
+otherwise) will traverse the stack</p>
+</li>
+</ol>
+<h2><a class="header" href="#principles" id="principles">Principles</a></h2>
+<ol>
+<li>
+<p>Keep the simple case simple</p>
+<ul>
+<li>Sending an IP packet via an established network should not
+require a more complicated interface than send(destination, packet)</li>
+<li>If functionality were added to allow for the transmission of IP packets over
+the BLE interface, this IP send function should not have to deal with any
+options or MessageInfo structs that include 802.15.4 layer information.</li>
+<li>This principle reflects a desire to limit the complexity of Thread/the
+tock networking stack to the capsules that implement the stack. This
+prevents the burden of this complexity from being passed up to whatever
+applications use Thread</li>
+</ul>
+</li>
+<li>
+<p>Layering is separate from encapsulation</p>
+<ul>
+<li>Libraries that handle encapsulation should not be contained within any
+specific layering construct. For example, If the Thread control unit wants
+to encapsulate a UDP payload inside of a UDP packet inside of an IP packet,
+it should be able to do so using encapsulation libraries and get the
+resulting IP packet without having to pass through all of the protocol layers</li>
+<li>Accordingly, implementations of layers can take advantage of these
+encapsulation libraries, but are not required to.</li>
+</ul>
+</li>
+<li>
+<p>Dataplane traits are Thread-independent</p>
+<ul>
+<li>For example, the IP trait should not make any assumption that send()
+will be called for a message that will be passed down to the 15.4 layer, in
+case this IP trait is used on top of an implementation that passes IP
+packets down to be sent over a BLE link layer. Accordingly the IP trait
+can not expose any arguments regarding 802.15.4 security parameters.</li>
+<li>Even for instances where the only implementation of a trait in the near
+future will be a Thread-based implementation, the traits should not
+require anything that limit such a trait to Thread-based implementations</li>
+</ul>
+</li>
+<li>
+<p>Transmission and reception APIs are decoupled</p>
+<ul>
+<li>This allows for instances where receive and send_done callbacks should
+be delivered to different clients (ex: Server listening on all addresses
+but also sending messages from specific addresses)</li>
+<li>Prevents send path from having to navigate the added complexity required
+for Thread to determine whether to forward received messages up the stack</li>
+</ul>
+</li>
+</ol>
+<h2><a class="header" href="#stack-diagram" id="stack-diagram">Stack Diagram</a></h2>
+<pre><code>IPv6 over ethernet:      Non-Thread 15.4:   Thread Stack:                                       Encapsulation Libraries
++-------------------+-------------------+----------------------------+
+|                         Application                                |-------------------\
+----------------------------------------+-------------+---+----------+                    \
+|TCP Send| UDP Send |TCP Send| UDP Send |  | TCP Send |   | UDP Send |--\                  v
++--------+----------+--------+----------+  +----------+   +----------+   \               +------------+  +------------+
+|     IP Send       |     IP Send       |  |         IP Send         |    \      -----&gt;  | UDP Packet |  | TCP Packet |
+|                   |                   |  +-------------------------+     \    /        +------------+  +------------+
+|                   |                   |                            |      \  /         +-----------+
+|                   |                   |                            |       -+-------&gt;  | IP Packet |
+|                   |                   |       THREAD               |       /           +-----------+
+| IP Send calls eth | IP Send calls 15.4|                   &lt;--------|------&gt;            +-------------------------+
+| 6lowpan libs with | 6lowpan libs with |                            |       \ -------&gt;  | 6lowpan compress_Packet |
+| default values    | default values    |                            |        \          +-------------------------+
+|                   |                   |                            |         \         +-------------------------+
+|                   |                   +                +-----------|          ------&gt;  | 6lowpan fragment_Packet |
+|                   |                   |                | 15.4 Send |                   +-------------------------+
+|-------------------|-------------------+----------------------------+
+|     ethernet      |          IEEE 802.15.4 Link Layer              |
++-------------------+------------------------------------------------+
+</code></pre>
+<p>Notes on the stack:</p>
+<ul>
+<li>IP messages sent via Thread networks are sent through Thread using an IP Send
+method that exposes only the parameters specified in the IP_Send trait.
+Other parameters of the message (6lowpan decisions, link layer parameters,
+many IP header options) are decided by Thread.</li>
+<li>The stack provides an interface for the application layer to send
+raw IPv6 packets over Thread.</li>
+<li>When the Thread control plane generates messages (MLE messages etc.), they are
+formatted using calls to the encapsulation libraries and then delivered to the
+802.15.4 layer using the 15.4 send function</li>
+<li>This stack design allows Thread to control header elements from transport down
+to link layer, and to set link layer security parameters and more as required
+for certain packers</li>
+<li>The application can either directly send IP messages using the IP Send
+implementation exposed by the Thread stack or it can use the UDP Send
+and TCP send implementation exposed by the Thread stack. If the application
+uses the TCP or UDP send implementations it must use the transport packet library
+to insert its payload inside a packet and set certain header fields.
+The transport send method uses the IP Packet library to set certain
+IP fields before handing the packet off to Thread. Thread then sets other
+parameters at other layers as needed before sending the packet off via the
+15.4 send function implemented for Thread.</li>
+<li>Note that currently this design leaves it up to the application layer to
+decide what interface any given packet will be transmitted from. This is
+because currently we are working towards a minimum functional stack.
+However, once this is working we intend to add a layer below the application
+layer that would handle interface multiplexing by destination address via a
+forwarding table. This should be straightforward to add in to our current
+design.</li>
+<li>This stack does not demonstrate a full set of functionality we are planning to
+implement now. Rather it demonstrates how this setup allows for multiple
+implementations of each layer based off of traits and libraries such that a
+flexible network stack can be configured, rather than creating a network
+stack designed such that applications can only use Thread.</li>
+</ul>
+<h2><a class="header" href="#explanation-of-queuing" id="explanation-of-queuing">Explanation of Queuing</a></h2>
+<p>Queuing happens at the application layer in this stack.
+The userland interface to the
+networking stack (described in greater detail in Networking_Userland.md)
+already handles queueing multiple packets sent from userland apps.
+In the kernel, any application which wishes to send multiple UDP packets must
+handle queueing itself, waiting for a send_done to return from the radio
+before calling send on the next packet in a series of packets.</p>
+<h2><a class="header" href="#list-of-traits" id="list-of-traits">List of Traits</a></h2>
+<p>This section describes a number of traits which must be implemented by any
+network stack. It is expected that multiple implementations of some of these
+traits may exist to allow for Tock to support more than just Thread networking.</p>
+<p>Before discussing these traits - a note on buffers:</p>
+<blockquote>
+<p>Prior implementations of the tock networking stack passed around references
+to 'static mut [u8] to pass packets along the stack. This is not ideal from a
+standpoint of wanting
+to be able to prevent as many errors as possible at compile time. The next iteration
+of code will pass 'typed' buffers up and down the stack. There are a number
+of packet library traits defined below (e.g. IPPacket, UDPPacket, etc.).
+Transport Layer traits will be implemented by a struct that will contain at least one field -
+a [u8] buffer with lifetime 'a. Lower level traits will simply contain
+payload fields that are Transport Level packet traits (thanks to a
+TransportPacket enum). This design allows for all buffers passed to
+be passed as type 'UDPPacket', 'IPPacket', etc. An added advantage of this
+design is that each buffer can easily be operated on using the library
+functions associated with this buffer type.</p>
+</blockquote>
+<p>The traits below are organized by the network layer they would typically be
+associated with.</p>
+<h3><a class="header" href="#transport-layer" id="transport-layer">Transport Layer</a></h3>
+<p>Thus far, the only transport layer protocol implemented in Tock is UDP.</p>
+<p>Documentation describing the structs and traits that define the UDP layer can
+be found in capsules/src/net/udp/(udp.rs, udp_send.rs, udp_recv.rs)</p>
+<p>Additionally, a driver exists that provides a userland interface via which
+udp packets can be sent and received. This is described in greater detail in
+Networking_Userland.md</p>
+<h3><a class="header" href="#network-stack-receive-path" id="network-stack-receive-path">Network Stack Receive Path</a></h3>
+<ul>
+<li>The radio in the kernel has a single <code>RxClient</code>, which is set as the mac layer (awake_mac, typically)</li>
+<li>The mac layer (i.e. <code>AwakeMac</code>) has a single <code>RxClient</code>, which is the mac_device(<code>ieee802154::Framer::framer</code>)</li>
+<li>The Mac device has a single receive client - <code>MuxMac</code> (virtual MAC device).</li>
+<li>The <code>MuxMac</code> can have multiple &quot;users&quot; which are of type <code>MacUser</code></li>
+<li>Any received packet is passed to ALL MacUsers, which are expected to filter packets themselves accordingly.</li>
+<li>Right now, we initialize two MacUsers in the kernel (in main.rs/components). These are the 'radio_mac', which is the MacUser for the RadioDriver that enables the userland interface to directly send 802154 frames, and udp_mac, the mac layer that is ultimately associated with the udp userland interface.</li>
+<li>The udp_mac MacUser has a single receive client, which is the <code>sixlowpan_state</code> struct</li>
+<li><code>sixlowpan_state</code> has a single rx_client, which in our case is a single struct that implements the <code>ip_receive </code> trait.</li>
+<li>the <code>ip_receive</code> implementing struct (<code>IP6RecvStruct</code>) has a single client, which is udp_recv, a <code>UDPReceive</code> struct.</li>
+<li>The UDPReceive struct is a field of the UDPDriver, which ultimately passes the packets up to userland.</li>
+</ul>
+<p>So what are the implications of all this?</p>
+<ol>
+<li>
+<p>Currently, any userland app could receive udp packets intended for
+anyone else if the app implmenets 6lowpan itself on the received raw frames.</p>
+</li>
+<li>
+<p>Currently, packets are only muxed at the Mac layer.</p>
+</li>
+<li>
+<p>Right now the IPReceive struct receives all IP packets sent to the MAC address of this device, and soon will drop all packets sent to non-local addresses. Right now, the device effectively only has one address anyway, as we only support 6lowpan over 15.4, and as we haven't implemented a loopback interface on the IP_send path. If, in the future, we implement IP forwarding on Tock, we will need to add an IPSend object to the IPReceiver which would then retransmit any packets received that were not destined for local addresses.</p>
+</li>
+</ol>
+<h2><a class="header" href="#explanation-of-configuration" id="explanation-of-configuration">Explanation of Configuration</a></h2>
+<p>This section describes how the IP stack can be configured, including setting
+addresses and other parameters of the MAC layer.</p>
+<ul>
+<li>
+<p>Source IP address: An array of local interfaces on the device is contained in main.rs.
+Currently, this array contains two hardcoded addresses, and one address generated from the
+unique serial number on the sam4l.</p>
+</li>
+<li>
+<p>Destination IP address: The destination IP address is configured by passing the address
+to the send_to() call when sending IPv6 packets.</p>
+</li>
+<li>
+<p>src MAC address: This address is configured in main.rs. Currently, the src mac address
+for each device is configured by default to be a 16-bit short address representing the last 16 bits
+of the unique 120 bit serial number on the sam4l. However, userland apps can change the src address
+by calling ieee802154_set_address()</p>
+</li>
+<li>
+<p>dst MAC address: This is currently a constant set in main.rs. (DST_MAC_ADDR). In the future
+this will change, once Tock implements IPv6 Neighbor Discovery.</p>
+</li>
+<li>
+<p>src pan: This is set via a constant configured in main.rs (PAN_ID). The same constant is used
+for the dst pan.</p>
+</li>
+<li>
+<p>dst pan: Same as src_pan. If we need to support use of the broadcast PAN as a dst_pan, this
+may change.</p>
+</li>
+<li>
+<p>radio channel: Configured as a constant in main.rs (RADIO_CHANNEL).</p>
+</li>
+</ul>
+<h2><a class="header" href="#tock-userland-networking-design" id="tock-userland-networking-design">Tock Userland Networking Design</a></h2>
+<p>This section describes the current userland interface for the networking stack
+on Tock. This section should serve as a description of the abstraction
+provided by libTock - what the exact system call interface looks like or how
+libTock or the kernel implements this functionality is out-of-scope of this
+document.</p>
+<h3><a class="header" href="#overview" id="overview">Overview</a></h3>
+<p>The Tock networking stack and libTock should attempt to expose a networking
+interface that is similar to the POSIX networking interface. The primary
+motivation for this design choice is that application programmers are used
+to the POSIX networking interface design, and significant amounts of code
+have already been written for POSIX-style network interfaces. By designing
+the libTock networking interface to be as similar to POSIX as possible, we
+hope to improve developer experience while enabling the easy transition of
+networking code to Tock.</p>
+<h3><a class="header" href="#design" id="design">Design</a></h3>
+<p>udp.c and udp.h in libtock-c/libtock define the userland interface to the
+Tock networking stack. These files interact with capsules/src/net/udp/driver.rs
+in the main tock repository. driver.rs implements an interface for sending
+and receiving UDP messages. It also exposes a list of interace addresses to
+the application layer. The primary functionality embedded in the UDP driver
+is within the allow(), subscribe(), and command() calls which can be made to
+the driver.</p>
+<p>Details of this driver can be found in <code>doc/syscalls</code> folder</p>
+<p>udp.c and udp.h in libtock-c make it easy to interact with this driver interface.
+Important functions available to userland apps written in c include:</p>
+<p><code>udp_socket()</code> - sets the port on which the app will receive udp packets,
+and sets the <code>src_port</code> of outgoing packets sent via that socket. Once socket
+binding is implemented in the kernel, this function will handle reserving ports
+to listen on and send from.</p>
+<p><code>udp_close()</code> - currently just returns success, but once socket binding has been
+implemented in the kernel, this function will handle freeing bound ports.</p>
+<p><code>udp_send_to()</code> - Sends a udp packet to a specified addr/port pair, returns the result
+of the tranmission once the radio has transmitted it (or once a failure has occured).</p>
+<p><code>udp_recv_from_sync()</code> - Pass an interface to listen on and an incoming source address
+to listen for. Sets up a callback to wait for a received packet, and yeilds until that
+callback is triggered. This function never returns if a packet is not received.</p>
+<p><code>udp_recv_from()</code> - Pass an interface to listen on and an incoming source address to
+listen for. However, this takes in a buffer to which the received packet should be placed,
+and returns the callback that will be triggered when a packet is received.</p>
+<p><code>udp_list_ifaces()</code> - Populates the passed pointer of ipv6 addresses with the available
+ipv6 addresses of the interfaces on the device. Right now this merely returns a constant
+hardcoded into the UDP driver, but should change to return the source IP addresses held
+in the network configuration file once that is created. Returns up to <code>len</code> addresses.</p>
+<p>Other design notes:</p>
+<p>The current design of the driver has a few limitations, these include:</p>
+<ul>
+<li>
+<p>Currently, any app can listen on any address/port pair</p>
+</li>
+<li>
+<p>The current tx implementation allows for starvation, e.g. an app with an earlier app ID can
+starve a later ID by sending constantly.</p>
+</li>
+</ul>
+<h4><a class="header" href="#posix-socket-api-functions" id="posix-socket-api-functions">POSIX Socket API Functions</a></h4>
+<p>Below is a fairly comprehensive overview of the POSIX networking socket
+interface. Note that much of this functionality pertains to TCP or connection-
+based protocols, which we currently do not handle.</p>
+<ul>
+<li>
+<p><code>socket(domain, type, protocol) -&gt; int fd</code></p>
+<ul>
+<li><code>domain</code>: AF_INET, AF_INET6, AF_UNIX</li>
+<li><code>type</code>: SOCK_STREAM (TCP), SOCK_DGRAM (UDP), SOCK_SEQPACKET (?), SOCK_RAW</li>
+<li><code>protocol</code>: IPPROTO_TCP, IPPROTO_SCTP, IPPROTO_UDP, IPPROTO_DCCP</li>
+</ul>
+</li>
+<li>
+<p><code>bind(socketfd, my_addr, addrlen) -&gt; int success</code></p>
+<ul>
+<li><code>socketfd</code>: Socket file descriptor to bind to</li>
+<li><code>my_addr</code>: Address to bind on</li>
+<li><code>addrlen</code>: Length of address</li>
+</ul>
+</li>
+<li>
+<p><code>listen(socketfd, backlog) -&gt; int success</code></p>
+<ul>
+<li><code>socketfd</code>: Socket file descriptor</li>
+<li><code>backlog</code>: Number of pending connections to be queued</li>
+</ul>
+<p>Only necessary for stream-oriented data modes</p>
+</li>
+<li>
+<p><code>connect(socketfd, addr, addrlen) -&gt; int success</code></p>
+<ul>
+<li><code>socketfd</code>: Socket file descriptor to connect with</li>
+<li><code>addr</code>: Address to connect to (server protocol address)</li>
+<li><code>addrlen</code>: Length of address</li>
+</ul>
+<p>When used with connectionless protocols, defines the remote address for
+sending and receiving data, allowing the use of functions such as <code>send()</code>
+and <code>recv()</code> and preventing the reception of datagrams from other sources.</p>
+</li>
+<li>
+<p><code>accept(socketfd, cliaddr, addrlen) -&gt; int success</code></p>
+<ul>
+<li><code>socketfd</code>: Socket file descriptor of the listening socket that has the
+connection queued</li>
+<li><code>cliaddr</code>: A pointer to an address to receive the client's address information</li>
+<li><code>addrlen</code>: Specifies the size of the client address structure</li>
+</ul>
+</li>
+<li>
+<p><code>send(socketfd, buffer, length, flags) -&gt; int success</code></p>
+<ul>
+<li><code>socketfd</code>: Socket file descriptor to send on</li>
+<li><code>buffer</code>: Buffer to send</li>
+<li><code>length</code>: Length of buffer to send</li>
+<li><code>flags</code>: Various flags for the transmission</li>
+</ul>
+<p>Note that the <code>send()</code> function will only send a message when the <code>socketfd</code>
+is connected (including for connectionless sockets)</p>
+</li>
+<li>
+<p><code>sendto(socketfd, buffer, length, flags, dst_addr, addrlen) -&gt; int success</code></p>
+<ul>
+<li><code>socketfd</code>: Socket file descriptor to send on</li>
+<li><code>buffer</code>: Buffer to send</li>
+<li><code>length</code>: Length of buffer to send</li>
+<li><code>flags</code>: Various flags for the transmission</li>
+<li><code>dst_addr</code>: Address to send to (ignored for connection type sockets)</li>
+<li><code>addrlen</code>: Length of <code>dst_addr</code></li>
+</ul>
+<p>Note that if the socket is a connection type, dst_addr will be ignored.</p>
+</li>
+<li>
+<p><code>recv(socketfd, buffer, length, flags)</code></p>
+<ul>
+<li><code>socketfd</code>: Socket file descriptor to receive on</li>
+<li><code>buffer</code>: Buffer where the message will be stored</li>
+<li><code>length</code>: Length of buffer</li>
+<li><code>flags</code>: Type of message reception</li>
+</ul>
+<p>Typically used with connected sockets as it does not permit the application
+to retrieve the source address of received data.</p>
+</li>
+<li>
+<p><code>recvfrom(socketfd, buffer, length, flags, address, addrlen)</code></p>
+<ul>
+<li><code>socketfd</code>: Socket file descriptor to receive on</li>
+<li><code>buffer</code>: Buffer to store the message</li>
+<li><code>length</code>: Length of the buffer</li>
+<li><code>flags</code>: Various flags for reception</li>
+<li><code>address</code>: Pointer to a structure to store the sending address</li>
+<li><code>addrlen</code>: Length of address structure</li>
+</ul>
+<p>Normally used with connectionless sockets as it permits the application to
+retrieve the source address of received data</p>
+</li>
+<li>
+<p><code>close(socketfd)</code></p>
+<ul>
+<li><code>socketfd</code>: Socket file descriptor to delete</li>
+</ul>
+</li>
+<li>
+<p><code>gethostbyname()/gethostbyaddr()</code>
+Legacy interfaces for resolving host names and addresses</p>
+</li>
+<li>
+<p><code>select(nfds, readfds, writefds, errorfds, timeout)</code></p>
+<ul>
+<li><code>nfds</code>: The range of file descriptors to be tested (0..nfds)</li>
+<li><code>readfds</code>: On input, specifies file descriptors to be checked to see if they
+are ready to be read. On output, indicates which file descriptors are ready
+to be read</li>
+<li><code>writefds</code>: Same as readfds, but for writing</li>
+<li><code>errorfds</code>: Same as readfds, writefds, but for errors</li>
+<li><code>timeout</code>: A structure that indicates the max amount of time to block if
+no file descriptors are ready. If None, blocks indefinitely</li>
+</ul>
+</li>
+<li>
+<p><code>poll(fds, nfds, timeout)</code></p>
+<ul>
+<li><code>fds</code>: Array of structures for file descriptors to be checked. The array
+members are structures which contain the file descriptor, and events
+to check for plus areas to write which events occurred</li>
+<li><code>nfds</code>: Number of elements in the fds array</li>
+<li><code>timeout</code>: If 0 return immediately, or if -1 block indefinitely. Otherwise,
+wait at least <code>timeout</code> milliseconds for an event to occur</li>
+</ul>
+</li>
+<li>
+<p><code>getsockopt()/setsockopt()</code></p>
+</li>
+</ul>
+<h4><a class="header" href="#tock-userland-api" id="tock-userland-api">Tock Userland API</a></h4>
+<p>Below is a list of desired functionality for the libTock userland API.</p>
+<ul>
+<li>
+<p><code>struct sock_addr_t</code>
+<code>ipv6_addr_t</code>: IPv6 address (single or ANY)
+<code>port_t</code>: Transport level port (single or ANY)</p>
+</li>
+<li>
+<p><code>struct sock_handle_t</code>
+Opaque to the user; allocated in userland by malloc (or on the stack)</p>
+</li>
+<li>
+<p><code>list_ifaces() -&gt; iface[]</code>
+<code>ifaces</code>: A list of <code>ipv6_addr_t, name</code> pairs corresponding to all
+interfaces available</p>
+</li>
+<li>
+<p><code>udp_socket(sock_handle_t, sock_addr_t) -&gt; int socketfd</code>
+<code>socketfd</code>: Socket object to be initialized as a UDP socket with the given
+address information
+<code>sock_addr_t</code>: Contains an IPv6 address and a port</p>
+</li>
+<li>
+<p><code>udp_close(sock_handle_t)</code>
+<code>sock_handle_t</code>: Socket to close</p>
+</li>
+<li>
+<p><code>send_to(sock_handle_t, buffer, length, sock_addr_t)</code></p>
+<ul>
+<li><code>sock_handle_t</code>: Socket to send using</li>
+<li><code>buffer</code>: Buffer to send</li>
+<li><code>length</code>: Length of buffer to send</li>
+<li><code>sock_addr_t</code>: Address struct (IPv6 address, port) to send the packet from</li>
+</ul>
+</li>
+<li>
+<p><code>recv_from(sock_handle_t, buffer, length, sock_addr_t)</code></p>
+<ul>
+<li><code>sock_handle_t</code>: Receiving socket</li>
+<li><code>buffer</code>: Buffer to receive into</li>
+<li><code>length</code>: Length of buffer</li>
+<li><code>sock_addr_t</code>: Struct where the kernel writes the received packet's sender
+information</li>
+</ul>
+</li>
+</ul>
+<h4><a class="header" href="#differences-between-the-apis" id="differences-between-the-apis">Differences Between the APIs</a></h4>
+<p>There are two major differences between the proposed Tock APIs and the standard
+POSIX APIs. First, the POSIX APIs must support connection-based protocols such
+as TCP, whereas the Tock API is only concerned with connectionless, datagram
+based protocols. Second, the POSIX interface has a concept of the <code>sock_addr_t</code>
+structure, which is used to encapsulate information such as port numbers to
+bind on and interface addresses. This makes <code>bind_to_port</code> redundant in POSIX,
+as we can simply set the port number in the <code>sock_addr_t</code> struct when binding.
+I think one of the major questions is whether to adopt this convention, or to
+use the above definitions for at least the first iteration.</p>
+<h3><a class="header" href="#example-ip_sense" id="example-ip_sense">Example: <code>ip_sense</code></a></h3>
+<p>An example use of the userland networking stack can be found in libtock-c/examples/ip_sense</p>
+<h2><a class="header" href="#implementation-details-for-potential-future-thread-implementation" id="implementation-details-for-potential-future-thread-implementation">Implementation Details for potential future Thread implementation</a></h2>
+<p>This section was written when the networking stack was incomplete, and aspects
+may be outdated. This goes for all sections following this point in the document.</p>
+<p>The Thread specification determines an entire control plane that spans many
+different layers in the OSI networking model. To adequately understand the
+interactions and dependencies between these layers' behaviors, it might help to
+trace several types of messages and see how each layer processes the different
+types of messages. Let's trace carefully the way OpenThread handles messages.</p>
+<p>We begin with the most fundamental message: a data-plane message that does not
+interact with the Thread control plane save for passing through a
+Thread-defined network interface. Note that some of the procedures in the below
+traces will not make sense when taken independently: the responsibility-passing
+will only make sense when all the message types are taken as a whole.
+Additionally, no claim is made as to whether or not this sequence of callbacks
+is the optimal way to express these interactions: it is just OpenThread's way
+of doing it.</p>
+<h3><a class="header" href="#data-plane-ipv6-datagram" id="data-plane-ipv6-datagram">Data plane: IPv6 datagram</a></h3>
+<ol>
+<li>Upper layer (application) wants to send a payload</li>
+</ol>
+<ul>
+<li>Provides payload</li>
+<li>Specifies the IP6 interface to send it on (via some identifier)</li>
+<li>Specifies protocol (IP6 next header field)</li>
+<li>Specifies destination IP6 address</li>
+<li>Possibly doesn't specify source IP6 address</li>
+</ul>
+<ol start="2">
+<li>IP6 interface dispatcher (with knowledge of all the interfaces) fills in the
+IP6 header and produces an IP6 message</li>
+</ol>
+<ul>
+<li>Payload, protocol, and destination address used directly from the upper layer</li>
+<li>Source address is more complicated
+<ul>
+<li>If the address is specified and is not multicast, it is used directly</li>
+<li>If the address is unspecified or multicast, source address is determined
+from the specific IP6 selected AND the destination address via a matching scheme on
+the addresses associated with the interface.</li>
+</ul>
+</li>
+<li>Now that the addresses are determined, the IP6 layer computes the pseudoheader
+checksum.
+<ul>
+<li>If the application layer's payload has a checksum that includes the pseudoheader
+(UDP, ICMP6), this partial checksum is now used to update the checksum field in the payload.</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>The actual IP6 interface (Thread-controlled) tries to send that message</li>
+</ol>
+<ul>
+<li>First step is to determine whether the message can be sent immediately or not (sleepy child or not).
+This passes the message to the scheduler. This is important for sleepy children where there is a
+control scheme that determines when messages are sent.</li>
+<li>Next, determine the MAC src/dest addresses.
+<ul>
+<li>If this is a direct transmission, there is a source matching scheme to determine if the destination address
+used should be short or long. The same length is used for the source MAC address, obtained from the MAC interface.</li>
+</ul>
+</li>
+<li>Notify the MAC layer to notify you that your message can be sent.</li>
+</ul>
+<ol start="4">
+<li>The MAC layer schedules its transmissions and determines that it can send the above message</li>
+</ol>
+<ul>
+<li>MAC sets the transmission power</li>
+<li>MAC sets the channel differently depending on the message type</li>
+</ul>
+<ol start="5">
+<li>The IP6 interface fills up the frame. This is the chance for the IP6 interface to do things like
+fragmentation, retransmission, and so on. The MAC layer just wants a frame.</li>
+</ol>
+<ul>
+<li>XXX: The IP6 interface fills up the MAC header. This should really be the responsibility of the MAC layer.
+Anyway, here is what is done:
+<ul>
+<li>Channel, source PAN ID, destination PAN ID, and security modes are determined by message type.
+Note that the channel set by the MAC layer is sometimes overwritten.</li>
+<li>A mesh extension header is added for some messages. (eg. indirect transmissions)</li>
+</ul>
+</li>
+<li>The IP6 message is then 6LoWPAN-compressed/fragmented into the payload section of the frame.</li>
+</ul>
+<ol start="6">
+<li>The MAC layer receives the raw frame and tries to send it</li>
+</ol>
+<ul>
+<li>MAC sets the sequence number of the frame (from the previous sequence number for the correct link neighbor),
+if it is not a retransmission</li>
+<li>The frame is secured if needed. This is another can of worms:
+<ul>
+<li>Frame counter is dependent on the link neighbor and whether or not the frame is a retransmission</li>
+<li>Key is dependent on which key id mode is selected, and also the link neighbor's key sequence</li>
+<li>Key sequence != frame counter</li>
+<li>One particular mode requires using a key, source and frame counter that is a Thread-defined constant.</li>
+</ul>
+</li>
+<li>The frame is transmitted, an ACK is waited for, and the process completes.</li>
+</ul>
+<p>As you can see, the data dependencies are nowhere as clean as the OSI model
+dictates. The complexity mostly arises because</p>
+<ul>
+<li>Layer 4 checksum can include IPv6 pseudoheader</li>
+<li>IP6 source address (mesh local? link local? multicast?) is determined by
+interface and destination address</li>
+<li>MAC src/dest addresses are dependent on the next device on the route to the
+IP6 destination address</li>
+<li>Channel, src/dest PAN ID, security is dependent on message type</li>
+<li>Mesh extension header presence is dependent on message type</li>
+<li>Sequence number is dependent on message type and destination</li>
+</ul>
+<p>Note that all of the MAC layer dependencies in step 5 can be pre-decided so
+that the MAC layer is the only one responsible for writing the MAC header.</p>
+<p>This gives a pretty good overview of what minimally needs to be done to even be
+able to send normal IPv6 datagrams, but does not cover all of Thread's
+complexities. Next, we look at some control-plane messages.</p>
+<h3><a class="header" href="#control-plane-mle-messages" id="control-plane-mle-messages">Control plane: MLE messages</a></h3>
+<ol>
+<li>The MLE layer encapsulates its messages in UDP on a constant port</li>
+</ol>
+<ul>
+<li>Security is determined by MLE message type. If MLE-layer security is
+required, the frame is secured using the same CCM* encryption scheme used
+in the MAC layer, but with a different key discipline.</li>
+<li>MLE key sequence is global across a single Thread device</li>
+<li>MLE sets IP6 source address to the interface's link local address</li>
+</ul>
+<ol start="2">
+<li>This UDP-encapsulated MLE message is sent to the IP6 dispatch again</li>
+<li>The actual IP6 interface (Thread-controlled) tries to send that message</li>
+<li>The MAC layer schedules the transmission</li>
+<li>The IP6 interface fills up the frame.</li>
+</ol>
+<ul>
+<li>MLE messages disable link-layer security when MLE-layer security is
+present. However, if link-layer security is disabled and the MLE message
+doesn't fit in a single frame, link-layer security is enabled so that
+fragmentation can proceed.</li>
+</ul>
+<ol start="6">
+<li>The MAC layer receives the raw frame and tries to send it</li>
+</ol>
+<p>The only cross-layer dependency introduced by the MLE layer is the dependency
+between MLE-layer security and link-layer security. Whether or not the MLE
+layer sits atop an actual UDP socket is an implementation detail.</p>
+<h3><a class="header" href="#control-plane-mesh-forwarding" id="control-plane-mesh-forwarding">Control plane: Mesh forwarding</a></h3>
+<p>If Thread REED devices are to be eventually supported in Tock, then we must
+also consider this case. If a frame is sent to a router which is not its final
+destination, then the router must forward that message to the next hop.</p>
+<ol>
+<li>The MAC layer receives a frame, decrypts it and passes it to the IP6 interface</li>
+<li>The IP6 reception reads the frame and realizes that it is an indirect
+transmission that has to be forwarded again</li>
+</ol>
+<ul>
+<li>The frame must contain a mesh header, and the HopsLeft field in it should
+be decremented</li>
+<li>The rest of the payload remains the same</li>
+<li>Hence, the IP6 interface needs to send a raw 6LoWPAN-compressed frame</li>
+</ul>
+<ol start="3">
+<li>The IP6 transmission interface receives a raw 6LoWPAN-compressed frame to be
+transmitted again</li>
+</ol>
+<ul>
+<li>This frame must still be scheduled: it might be destined for a sleepy
+device that is not yet awake</li>
+</ul>
+<ol start="4">
+<li>The MAC layer schedules the transmission</li>
+<li>The IP6 transmission interface copies the frame to be retransmitted
+verbatim, but with the modified mesh header and a new MAC header</li>
+<li>The MAC layer receives the raw frame and tries to send it</li>
+</ol>
+<p>This example shows that the IP6 transmission interface may need to handle more
+message types than just IP6 datagrams: there is a case where it is convenient
+to be able to handle a datagram that is already 6LoWPAN compressed.</p>
+<h3><a class="header" href="#control-plane-mac-data-polling" id="control-plane-mac-data-polling">Control plane: MAC data polling</a></h3>
+<p>From time to time, a sleepy edge device will wake up and begin polling its
+parent to check if any frames are available for it. This is done via a MAC
+command frame, which must still be sent through the transmission pipeline with
+link security enabled (Key ID mode 1).  OpenThread does this by routing it
+through the IP6 transmission interface, which arguably isn't the right choice.</p>
+<ol>
+<li>Data poll manager send a data poll message directly to the IP6 transmission
+interface, skipping the IP6 dispatch</li>
+<li>The IP6 transmission interface notices the different type of message, which
+always warrants a direct transmission.</li>
+<li>The MAC layer schedules the transmission</li>
+<li>The IP6 transmission interface fills in the frame</li>
+</ol>
+<ul>
+<li>The MAC dest is set to the parent of this node and the MAC src is set to be
+the same length as the address of the parent</li>
+<li>The payload is filled up to contain the Data Request MAC command</li>
+<li>The MAC security level and key ID mode is also fixed for MAC commands under
+the Thread specification</li>
+</ul>
+<ol start="5">
+<li>The MAC layer secures the frame and sends it out</li>
+</ol>
+<p>We could imagine giving the data poll manager direct access as a client of the
+MAC layer to avoid having to shuffle data through the IP6 transmission
+interface. This is only justified because MAC command frames are never
+6LoWPAN-compressed or fragmented, nor do they depend on the IP6 interface in
+any way.</p>
+<h3><a class="header" href="#control-plane-child-supervision" id="control-plane-child-supervision">Control plane: Child supervision</a></h3>
+<p>This type of message behaves similarly to the MAC data polls. The message is
+essentially and empty MAC frame, but OpenThread chooses to also route it
+through the IP6 transmission interface. It would be far better to allow a child
+supervision implementation to be a direct client of the MAC interface.</p>
+<h3><a class="header" href="#control-plane-joiner-entrust-and-mle-announce" id="control-plane-joiner-entrust-and-mle-announce">Control plane: Joiner entrust and MLE announce</a></h3>
+<p>These two message types are also explicitly marked, because they require a
+specific Key ID Mode to be selected when producing the frame for the MAC
+interface.</p>
+<h3><a class="header" href="#caveat-about-mac-layer-security" id="caveat-about-mac-layer-security">Caveat about MAC layer security</a></h3>
+<p>So far, it seems like we can expect the MAC layer to have no cross-layer
+dependencies: it receives frames with a completely specified description of how
+they are to be secured and transmitted, and just does so. However, this is not
+entirely the case.</p>
+<p>When the frame is being secured, the key ID mode has been set by the upper
+layers as described above, and this key ID mode is used to select between a few
+different key disciplines. For example, mode 0 is only used by Joiner entrust
+messages and uses the Thread KEK sequence. Mode 1 uses the MAC key sequence and
+Mode 2 is a constant key used only in MLE announce messages. Hence, this key ID
+mode selection is actually enabling an upper layer to determine the specific
+key being used in the link layer.</p>
+<p>Note that we cannot just reduce this dependency by allowing the upper layer to
+specify the key used in MAC encryption. During frame reception, the MAC layer
+itself has to know which key to use in order to decrypt the frames correctly.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="Userland.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="Configuration.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="Userland.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="Configuration.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
