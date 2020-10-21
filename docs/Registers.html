@@ -1,0 +1,692 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>レジスタ - Tockドキュメント</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="Overview.html"><strong aria-hidden="true">1.</strong> Tockの概要</a></li><li class="chapter-item expanded "><a href="Design.html"><strong aria-hidden="true">2.</strong> Tockの設計</a></li><li class="chapter-item expanded "><a href="threat_model/index.html"><strong aria-hidden="true">3.</strong> Threat Model</a></li><li class="chapter-item expanded affix "><li class="part-title">Tockの実装</li><li class="chapter-item expanded "><a href="Lifetimes.html"><strong aria-hidden="true">4.</strong> ライフタイム</a></li><li class="chapter-item expanded "><a href="Mutable_References.html"><strong aria-hidden="true">5.</strong> 可変参照</a></li><li class="chapter-item expanded "><a href="Soundness.html"><strong aria-hidden="true">6.</strong> 安全性</a></li><li class="chapter-item expanded "><a href="Compilation.html"><strong aria-hidden="true">7.</strong> コンパイル</a></li><li class="chapter-item expanded "><a href="TockBinaryFormat.html"><strong aria-hidden="true">8.</strong> TBF: Tockバイナリフォーマット</a></li><li class="chapter-item expanded "><a href="Memory_Layout.html"><strong aria-hidden="true">9.</strong> メモリレイアウト</a></li><li class="chapter-item expanded "><a href="Memory_Isolation.html"><strong aria-hidden="true">10.</strong> メモリ隔離</a></li><li class="chapter-item expanded "><a href="Registers.html" class="active"><strong aria-hidden="true">11.</strong> レジスタ</a></li><li class="chapter-item expanded "><a href="Startup.html"><strong aria-hidden="true">12.</strong> 起動</a></li><li class="chapter-item expanded "><a href="Syscalls.html"><strong aria-hidden="true">13.</strong> システムコール</a></li><li class="chapter-item expanded "><a href="Userland.html"><strong aria-hidden="true">14.</strong> ユーザランド</a></li><li class="chapter-item expanded "><a href="Networking_Stack.html"><strong aria-hidden="true">15.</strong> Networking Stack</a></li><li class="chapter-item expanded "><a href="Configuration.html"><strong aria-hidden="true">16.</strong> 構成</a></li><li class="chapter-item expanded affix "><li class="part-title">インターフェースの詳細</li><li class="chapter-item expanded "><a href="syscalls/index.html"><strong aria-hidden="true">17.</strong> システムコールインターフェース</a></li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">17.1.</strong> コアカーネル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/memop.html"><strong aria-hidden="true">17.1.1.</strong> memop</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">17.2.</strong> カプセル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/00000_alarm.html"><strong aria-hidden="true">17.2.1.</strong> Alarm</a></li><li class="chapter-item expanded "><a href="syscalls/00001_console.html"><strong aria-hidden="true">17.2.2.</strong> Console</a></li><li class="chapter-item expanded "><a href="syscalls/00002_leds.html"><strong aria-hidden="true">17.2.3.</strong> LED</a></li><li class="chapter-item expanded "><a href="syscalls/00003_buttons.html"><strong aria-hidden="true">17.2.4.</strong> Button</a></li><li class="chapter-item expanded "><a href="syscalls/00004_gpio.html"><strong aria-hidden="true">17.2.5.</strong> GPIO</a></li><li class="chapter-item expanded "><a href="syscalls/00005_adc.html"><strong aria-hidden="true">17.2.6.</strong> ADC</a></li><li class="chapter-item expanded "><a href="syscalls/00007_analog_comparator.html"><strong aria-hidden="true">17.2.7.</strong> AnalogComparator</a></li><li class="chapter-item expanded "><a href="syscalls/00008_low_level_debug.html"><strong aria-hidden="true">17.2.8.</strong> Low-Level Debug</a></li><li class="chapter-item expanded "><a href="syscalls/30002_udp.html"><strong aria-hidden="true">17.2.9.</strong> UDP</a></li><li class="chapter-item expanded "><a href="syscalls/60000_ambient_temperature.html"><strong aria-hidden="true">17.2.10.</strong> Ambient Temp</a></li><li class="chapter-item expanded "><a href="syscalls/60001_humidity.html"><strong aria-hidden="true">17.2.11.</strong> Humidity</a></li><li class="chapter-item expanded "><a href="syscalls/60002_luminance.html"><strong aria-hidden="true">17.2.12.</strong> Luminance</a></li><li class="chapter-item expanded "><a href="syscalls/70005_l3gd20.html"><strong aria-hidden="true">17.2.13.</strong> L3GD20</a></li><li class="chapter-item expanded "><a href="syscalls/70006_lsm303dlhc.html"><strong aria-hidden="true">17.2.14.</strong> LSM303DLHC</a></li><li class="chapter-item expanded "><a href="syscalls/80005_hd44780.html"><strong aria-hidden="true">17.2.15.</strong> HD44780</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="reference/index.html"><strong aria-hidden="true">18.</strong> Internal Kernel Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="reference/trd1-trds.html"><strong aria-hidden="true">18.1.</strong> TRD 1: Tock Reference</a></li><li class="chapter-item expanded "><a href="reference/trd102-adc.html"><strong aria-hidden="true">18.2.</strong> TRD 102: ADC</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Tockのセットアップと使用法</li><li class="chapter-item expanded "><a href="Getting_Started.html"><strong aria-hidden="true">19.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="Porting.html"><strong aria-hidden="true">20.</strong> Tockのポーティング</a></li><li class="chapter-item expanded "><a href="OutOfTree.html"><strong aria-hidden="true">21.</strong> ツリー外のボード</a></li><li class="chapter-item expanded "><a href="debugging/index.html"><strong aria-hidden="true">22.</strong> Debugging Help</a></li><li class="chapter-item expanded "><a href="Style.html"><strong aria-hidden="true">23.</strong> Style</a></li><li class="chapter-item expanded affix "><li class="part-title">Management of Tock</li><li class="chapter-item expanded "><a href="wg/index.html"><strong aria-hidden="true">24.</strong> Working Groups</a></li><li class="chapter-item expanded "><a href="CodeReview.html"><strong aria-hidden="true">25.</strong> Code Review Process</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Tockドキュメント</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#tockのレジスタインターフェース" id="tockのレジスタインターフェース">Tockのレジスタインターフェース</a></h1>
+<p>このクレートはメモリマップドレジスタとビットフィールドの定義と操作のための
+インターフェースです。</p>
+<h2><a class="header" href="#レジスタの定義" id="レジスタの定義">レジスタの定義</a></h2>
+<p>このクレートは、メモリマップドレジスタを操作する3つの型、<code>ReadWrite</code>、
+<code>ReadOnly</code>、<code>WriteOnly</code>を提供します。各型は各々、読み書き、読み取り専用、
+書き込み専用の機能を提供します。</p>
+<p>レジスタの定義は<code>register_structs</code>マクロで行います。このマクロは各レジスタについて、
+オフセット、フィールド名、型を求めます。レジスタはオフセットの昇順に連続して定義しなければ
+なりません。レジスタ定義の際にはギャップをオフセットとギャップ識別子（慣例により
+<code>_reservedN</code>という名前のフィールドを使用する）で明示的に注記する必要がありますが、
+型は指定しません。マクロは自動的にギャップサイズを計算し、適切なパッディングを構造体に
+挿入します。構造体の終わりにはそのサイズとレジスタリストの直前のオフセットを効率的に
+指すように<code>@END</code>キーワードでマーク付けします。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tock_registers::registers::{ReadOnly, ReadWrite, WriteOnly};
+
+register_structs! {
+    Registers {
+        // Controlレジスタ: read-write
+        // 'Control'パラメータは、このレジスタが特定のグループのフィールド
+        // （ビットフィールドセクションで定義されている）のみを使用するように
+        // 制約する。
+        (0x000 =&gt; cr: ReadWrite&lt;u8, Control::Register&gt;),
+
+        // Statusレジスタ: read-only
+        (0x001 =&gt; s: ReadOnly&lt;u8, Status::Register&gt;),
+
+        // レジスタはバイト、ハーフワード、ワードのいずれか。Registers can be bytes, halfwords, or words:
+        // 2番めの型パラメタは省略可能なことに注意せよ。この場合、これらのレジスタには
+        // 定義されたビットフィールドが存在しないことを意味する。
+        (0x002 =&gt; byte0: ReadWrite&lt;u8&gt;),
+        (0x003 =&gt; byte1: ReadWrite&lt;u8&gt;),
+        (0x004 =&gt; short: ReadWrite&lt;u16&gt;),
+
+        // レジスタ間の空空間は以下のように定義したパッディングフィールドでマーク
+        // する必要がある。このパッディングの長さはマクロにより自動的に計算される。
+        (0x006 =&gt; _reserved),
+        (0x008 =&gt; word: ReadWrite&lt;u32&gt;),
+
+        // レジスタの型は何でも良いが、都合の良いことに、一連の同じレジスタが
+        // 存在する場合は配列を使うことができる。
+        (0x00C =&gt; array: [ReadWrite&lt;u32&gt;; 4]),
+        (0x01C =&gt; ... ),
+
+        // その他その他
+
+        // 構造体の最後は次のようにマーク付する。
+        (0x100 =&gt; @END),
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>これは次のような形のCスタイルの構造体を生成します。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[repr(C)]
+struct Registers {
+    // Control register: read-write
+    // The 'Control' parameter constrains this register to only use fields from
+    // a certain group (defined below in the bitfields section).
+    cr: ReadWrite&lt;u8, Control::Register&gt;,
+
+    // Status register: read-only
+    s: ReadOnly&lt;u8, Status::Register&gt;
+
+    // Registers can be bytes, halfwords, or words:
+    // Note that the second type parameter can be omitted, meaning that there
+    // are no bitfields defined for these registers.
+    byte0: ReadWrite&lt;u8&gt;,
+    byte1: ReadWrite&lt;u8&gt;,
+    short: ReadWrite&lt;u16&gt;,
+
+    // The padding length was automatically computed as 0x008 - 0x006.
+    _reserved: [u8; 2],
+    word: ReadWrite&lt;u32&gt;,
+
+    // Arrays are expanded as-is, like any other type.
+    array: [ReadWrite&lt;u32&gt;; 4],
+
+    // Etc.
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>デフォルトで構造体の<code>std</code>ユニットテストも生成されます（すなわち、<code>#[test]</code>属性のついた
+テストです）。このユニットテストはオフセットとパディングが構造体の実際のフィールドと
+一致していることとアライメントが正しいことを確認します。</p>
+<p>これらのテストは<code>custom-test-frameworks</code>環境ではコンパイルを中断してしまうので、
+テスト生成を省略することができます。そのためには、以下のカーゴ機能を追加します。</p>
+<pre><code class="language-toml">[dependencies.tock-registers]
+version = &quot;0.4.x&quot;
+features = [&quot;no_std_unit_tests&quot;]
+</code></pre>
+<p>警告: 今のところ、<code>make ci-travis</code>では<strong>オフセットとアライメントをチェックするユニットテストは実行されません</strong>。
+これは、レジスタ間に意図しないギャップが残った場合も検出<strong>されない</strong>ことを意味し、
+<code>register_structs</code>マクロは警告なしで不正なオフセットを持つ構造体を生成することに
+なります。https://github.com/tock/tock/pull/1393 の議論に従ってください。</p>
+<p>たとえば、次のようにマクロを呼び出した場合、</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>register_structs! {
+    Registers {
+        (0x000 =&gt; foo: ReadOnly&lt;u8&gt;),
+        (0x008 =&gt; bar: ReadOnly&lt;u8&gt;),
+        (0x009 =&gt; @END),
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>これは次の構造体を生成します。アドレス<code>0x004</code>（レジスタ<code>foo</code>の終わり）と<code>0x008</code>
+（意図したレジスタ<code>bar</code>の始まり）の間に意図しない4バイトのギャップがあります。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[repr(C)]
+struct Registers {
+    foo: ReadOnly&lt;u32&gt;,
+    bar: ReadOnly&lt;u32&gt;,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>デフォルトで生成された構造体とフィールドの可視性はプライベートです。構造体名または
+フィールド識別子の直前に<code>pub</code>キーワードを付けることでそれらをpublicにすることができます。</p>
+<p>たとえば、次のようにマクロを呼び出した場合、</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>register_structs! {
+    pub Registers {
+        (0x000 =&gt; foo: ReadOnly&lt;u32&gt;),
+        (0x004 =&gt; pub bar: ReadOnly&lt;u32&gt;),
+        (0x008 =&gt; @END),
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>次の構造体を生成します。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[repr(C)]
+pub struct Registers {
+    foo: ReadOnly&lt;u32&gt;,
+    pub bar: ReadOnly&lt;u32&gt;,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2><a class="header" href="#ビットフィールドの定義" id="ビットフィールドの定義">ビットフィールドの定義</a></h2>
+<p>ビットフィールドは<code>register_bitfields!</code>マクロで定義します。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>register_bitfields! [
+    // 第1パラメタはレジスタの幅です。u8, u16, u32, u64が指定できます。
+    u32,
+
+    // 後続の各パラメータは、レジスタの略語、その記述名、関連するビットフィールドで
+    // ある。記述名はこのビットフィールドの「グループ」を定義する。
+    // ReadWrite&lt;_, Control::Register&gt;として定義されたレジスタだけが
+    // これらのビットフィールドを使用することができる。
+    Control [
+        // ビットフィールドは次のように定義する。
+        // 名前 OFFSET(シフト数) NUMBITS(ビット数) [ /* オプションの値 */ ]
+
+        // これはビット4と5から成る2ビットフィールである。
+        RANGE OFFSET(4) NUMBITS(2) [
+            // 以下の各々はビットフィールドに書き込む、またはマッチさせる
+            // ことができる値の名前を定義する。このセットは排他的なものでは
+            // ないことに注意されたい。フィールドには任意の定数を書き込むことが
+            // 可能である。
+            VeryHigh = 0,
+            High = 1,
+            Low = 2
+        ],
+
+        // よくあるのは1ビットのビットフィールドで、通常は単に何かを「有効」または
+        //「無効」にすることを意味します。
+        EN  OFFSET(3) NUMBITS(1) [],
+        INT OFFSET(2) NUMBITS(1) []
+    ],
+
+    // もう一つの例:
+    // Statusレジスタ
+    Status [
+        TXCOMPLETE  OFFSET(0) NUMBITS(1) [],
+        TXINTERRUPT OFFSET(1) NUMBITS(1) [],
+        RXCOMPLETE  OFFSET(2) NUMBITS(1) [],
+        RXINTERRUPT OFFSET(3) NUMBITS(1) [],
+        MODE        OFFSET(4) NUMBITS(3) [
+            FullDuplex = 0,
+            HalfDuplex = 1,
+            Loopback = 2,
+            Disabled = 3
+        ],
+        ERRORCOUNT OFFSET(6) NUMBITS(3) []
+    ],
+
+    // 単純なケースでは、オフセットは単なる数字でよく、ビット数は1にセットされる。
+    InterruptFlags [
+        UNDES   10,
+        TXEMPTY  9,
+        NSSR     8,
+        OVRES    3,
+        MODF     2,
+        TDRE     1,
+        RDRF     0
+    ]
+]
+<span class="boring">}
+</span></code></pre></pre>
+<h2><a class="header" href="#レジスタインターフェースのまとめ" id="レジスタインターフェースのまとめ">レジスタインターフェースのまとめ</a></h2>
+<p>レジスタインターフェースにより4つの型が提供されています。<code>ReadOnly</code>、<code>WriteOnly</code>、
+<code>ReadWrite</code>、<code>Aliased</code>です。これらは以下の関数を提供します。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>ReadOnly&lt;T: IntLike, R: RegisterLongName = ()&gt;
+.get() -&gt; T                                    // 生のレジスタ値を取得する
+.read(field: Field&lt;T, R&gt;) -&gt; T                 // 指定したフィールドの値を読み取る
+.read_as_enum&lt;E&gt;(field: Field&lt;T, R&gt;) -&gt; Option&lt;E&gt; // 指定したフィールドの値をenumメンバとして読み取る
+.is_set(field: Field&lt;T, R&gt;) -&gt; bool            // フィールドの1つ以上のビットがセットされているかチェックする
+.matches_any(value: FieldValue&lt;T, R&gt;) -&gt; bool  // 指定した任意の部分がフィールドにマッチするかチェックする
+.matches_all(value: FieldValue&lt;T, R&gt;) -&gt; bool  // 指定したすべての部分がフィールドにマッチするかチェックする
+.extract() -&gt; LocalRegisterCopy&lt;T, R&gt;          // レジスタのローカルコピーを作成する
+
+WriteOnly&lt;T: IntLike, R: RegisterLongName = ()&gt;
+.set(value: T)                                 // 生のレジスタ値をセットする
+.write(value: FieldValue&lt;T, R&gt;)                // 一つ以上のフィールドの値を書き込み、
+                                               //  その他のフィールドはゼロで上書きする
+ReadWrite&lt;T: IntLike, R: RegisterLongName = ()&gt;
+.get() -&gt; T                                    // 生のレジスタ値を取得する
+.set(value: T)                                 // 生のレジスタ値をセットする
+.read(field: Field&lt;T, R&gt;) -&gt; T                 // 指定したフィールドの値を読み取る
+.read_as_enum&lt;E&gt;(field: Field&lt;T, R&gt;) -&gt; Option&lt;E&gt; // 指定したフィールドの値をenumメンバとして読み取る
+.write(value: FieldValue&lt;T, R&gt;)                // 一つ以上のフィールドの値を書き込み、
+                                               //  その他のフィールドはゼロで上書きする
+.modify(value: FieldValue&lt;T, R&gt;)               // 一つ以上のフィールドの値を書き込み、
+                                               //  その他のフィールドは変更せずそのまま残す
+.modify_no_read(                               // 一つ以上のフィールドの値を書き込み、
+      original: LocalRegisterCopy&lt;T, R&gt;,       //  その他のフィールドは変更せずそのまま残すが、
+      value: FieldValue&lt;T, R&gt;)                 //  レジスタを読み取るのではなくオリジナル値を返す
+.is_set(field: Field&lt;T, R&gt;) -&gt; bool            // フィールドの1つ以上のビットがセットされているかチェックする
+.matches_any(value: FieldValue&lt;T, R&gt;) -&gt; bool  // 指定した任意の部分がフィールドにマッチするかチェックする
+.matches_all(value: FieldValue&lt;T, R&gt;) -&gt; bool  // 指定したすべての部分がフィールドにマッチするかチェックする
+.extract() -&gt; LocalRegisterCopy&lt;T, R&gt;          // レジスタのローカルコピーを作成する
+
+Aliased&lt;T: IntLike, R: RegisterLongName = (), W: RegisterLongName = ()&gt;
+.get() -&gt; T                                    // 生のレジスタ値を取得する
+.set(value: T)                                 // 生のレジスタ値をセットする
+.read(field: Field&lt;T, R&gt;) -&gt; T                 // 指定したフィールドの値を読み取る
+.read_as_enum&lt;E&gt;(field: Field&lt;T, R&gt;) -&gt; Option&lt;E&gt; // 指定したフィールドの値をenumメンバとして読み取る
+.write(value: FieldValue&lt;T, W&gt;)                // 一つ以上のフィールドの値を書き込み、
+                                               //  その他のフィールドはゼロで上書きする
+.is_set(field: Field&lt;T, R&gt;) -&gt; bool            // フィールドの1つ以上のビットがセットされているかチェックする
+.matches_any(value: FieldValue&lt;T, R&gt;) -&gt; bool  // 指定した任意の部分がフィールドにマッチするかチェックする
+.matches_all(value: FieldValue&lt;T, R&gt;) -&gt; bool  // 指定したすべての部分がフィールドにマッチするかチェックする
+.extract() -&gt; LocalRegisterCopy&lt;T, R&gt;          // レジスタのローカルコピーを作成する
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>Aliased</code>型は、異なる意味を持つ読み取り専用レジスタと書き込み専用レジスタが同じメモリ位置にエイリアスされている場合を表します。</p>
+<p>最初の型パラメータ（<code>IntLike</code>型）はu8、u16、u32、u64のいずれかです。</p>
+<h2><a class="header" href="#レジスタとビットフィールの使用例" id="レジスタとビットフィールの使用例">レジスタとビットフィールの使用例</a></h2>
+<p>先の2つのセクションで述べたように<code>Registers</code>構造体とそれに対応するビットフィールドを定義した仮定します。また、<code>registers</code>という名前の<code>Registers</code>構造体への不変参照があるとします。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// -----------------------------------------------------------------------------
+// RAW ACCESS
+// -----------------------------------------------------------------------------
+
+// レジスタの生値を直接、取得またはセットする。なんでもない。
+registers.cr.set(registers.cr.get() + 1);
+
+
+// -----------------------------------------------------------------------------
+// READ
+// -----------------------------------------------------------------------------
+
+// `range`はRANGEフィールドの値（たとえば、0, 1, 2, 3のいずれか）を持つことになる。
+// 型アノテーションは不要であるが、ここでは明確にするため指定した。
+let range: u8 = registers.cr.read(Control::RANGE);
+
+// あるいは、enumとして`range`に読み取り、`match`させることができる。
+let range = registers.cr.read_as_enum(Control::RANGE);
+match range {
+    Some(Control::RANGE::Value::VeryHigh) =&gt; { /* ... */ }
+    Some(Control::RANGE::Value::High) =&gt; { /* ... */ }
+    Some(Control::RANGE::Value::Low) =&gt; { /* ... */ }
+
+    None =&gt; unreachable!(&quot;invalid value&quot;)
+}
+
+// `en`は0か1である
+let en: u8 = registers.cr.read(Control::EN);
+
+
+// -----------------------------------------------------------------------------
+// MODIFY
+// -----------------------------------------------------------------------------
+
+// ビットフィールドに値を書き込む。他のフィールドの値は変えずにそのまま。
+registers.cr.modify(Control::RANGE.val(2)); // Leaves EN, INT unchanged
+
+// 生の値の代わりに名前付き定数を使用できる。
+registers.cr.modify(Control::RANGE::VeryHigh);
+
+// 生の値をフィールドに書き込むもう一つの例。
+registers.cr.modify(Control::EN.val(0)); // RANGEとINTは変更せずそのまま
+
+// 1ビットフィールでは、名前付きの値、SETとCLEARが自動的に定義されている。
+registers.cr.modify(Control::EN::SET);
+
+// 複数の値を一度に書き込む。他のフィールドは変えずにそのまま。
+registers.cr.modify(Control::EN::CLEAR + Control::RANGE::Low); // INT unchanged
+
+// フィールドが重ならなければ任意の数の値を組み合わせることができる。
+registers.cr.modify(Control::EN::CLEAR + Control::RANGE::High + CR::INT::SET);
+
+// （保護レジスタのように）.modify()の使用は適切でない場合がある
+// 読み取りと書き込むが対になっていないレジスタの更新を可能にするためには
+// modify_no_read()を使用する。
+let original = registers.cr.extract();
+registers.cr.modify_no_read(original, Control::EN::CLEAR);
+
+
+// -----------------------------------------------------------------------------
+// WRITE
+// -----------------------------------------------------------------------------
+
+// modifyと同じインターフェスだが、指定しないフィールドはすべてゼロで
+// 上書きする。
+registers.cr.write(Control::RANGE.val(1)); // 暗示的に他のすべてのビットに
+                                           // ゼロをセットする
+
+// -----------------------------------------------------------------------------
+// BITFLAGS
+// -----------------------------------------------------------------------------
+
+// 1ビットフィールドでセットされているかクリアされているかを簡単にチェックする。
+let txcomplete: bool = registers.s.is_set(Status::TXCOMPLETE);
+
+// -----------------------------------------------------------------------------
+// MATCHING
+// -----------------------------------------------------------------------------
+
+// `matches_[any|all]`を使って指定したレジスタの状態を調べることもできる。
+
+// TXCOMPLETEとMODE以外のフィールドの状態については問わない。
+let ready: bool = registers.s.matches_all(Status::TXCOMPLETE:SET +
+                                     Status::MODE::FullDuplex);
+
+// 指定した状態になるのを待つのに非常に便利。
+while !registers.s.matches_all(Status::TXCOMPLETE::SET +
+                          Status::RXCOMPLETE::SET +
+                          Status::TXINTERRUPT::CLEAR) {}
+
+// あるいは、任意の割り込みが有効になっているかをチェックする。
+let any_ints = registers.s.matches_any(Status::TXINTERRUPT + Status::RXINTERRUPT);
+
+// また、一連のenum値を持つレジスタをenumとして読み取り、`match`させる
+// こともできる。
+let mode = registers.cr.read_as_enum(Status::MODE);
+
+match mode {
+    Some(Status::MODE::FullDuplex) =&gt; { /* ... */ }
+    Some(Status::MODE::HalfDuplex) =&gt; { /* ... */ }
+
+    None =&gt; unreachable!(&quot;invalid value&quot;)
+}
+
+// -----------------------------------------------------------------------------
+// LOCAL COPY
+// -----------------------------------------------------------------------------
+
+// より複雑なコードでは、レジスタ値を一度読み取ってローカル変数に保存し、
+// そのローカルコピーを使って通常のレジスタインターフェイス関数を使用
+// したい場合がある。
+
+// レジスタ値のコピーをローカル変数として作成する。
+let local = registers.cr.extract();
+
+// これでReadOnlyレジスタのすべての関数が動作する。
+let txcomplete: bool = local.is_set(Status::TXCOMPLETE);
+
+// -----------------------------------------------------------------------------
+// In-Memory Registers
+// -----------------------------------------------------------------------------
+
+// 上記のすべてのレジスタ機能においてメモリ配置場所を編集したい場合があるが、実際の
+// メモリ配置場所は固定されたMMIOレジスタではなく、メモリ内の任意の位置です。
+// この場所がハードウェアと共有された場合（すなわち、DMA経由で）、ソフトウェアが
+// 知らないうちに値が変更される可能性があるため、コードはvolatileな読み取りと
+// 書き込みを行う必要があります。 これをサポートするために、ライブラリには
+// `InMemoryRegister`型があります。
+
+let control: InMemoryRegister&lt;u32, Control::Register&gt; = InMemoryRegister::new(0)
+control.write(Contol::BYTE_COUNT.val(0) +
+              Contol::ENABLE::Yes +
+              Contol::LENGTH.val(10));
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>modify</code>は正確に一回のvolatileロードと一回のvolatileストアを、
+<code>write</code>は正確に一回のvolatileストアを、<code>read</code>は正確に一回のvolatileロードを
+それぞれ実行することに注意してください。 したがって、1回の呼び出しで
+すべてのフィールドが同時に設定または照会されることが保証されます。</p>
+<h2><a class="header" href="#パフォーマンス" id="パフォーマンス">パフォーマンス</a></h2>
+<p>このインターフェイスのテスト中にバイナリを調べると、すべてが最適なインライン
+ビット調整命令にコンパイルされています。言い換えれば、非公式の予備調査で
+判明した限り、実行時のコストはゼロです。</p>
+<h2><a class="header" href="#素敵な型チェック" id="素敵な型チェック">素敵な型チェック</a></h2>
+<p>このインターフェースは型チェックを介してコンパイラが一般的な種類のバグを捕捉する
+のに役立ちます。</p>
+<p>たとえば、コントロールレジスタのビットフィールドを定義する場合、<code>Control</code>の
+ようなわかりやすいグループ名を付けることができます。このビットフィールドのグループは
+<code>ReadWrite &lt;_、Control&gt;</code>型（または<code>ReadOnly/WriteOnly</code>型など）のレジスタで
+しか機能しません。たとえば、上記で定義したビットフィールドとレジスタがある場合、</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// この行はコンパイルされる。registers.crはビットフィールドのContorlグループ
+// に関連付けられているからである。
+registers.cr.modify(Control::RANGE.val(1));
+
+// この行はコンパイルされない。registers.sはControlグループではなく、
+// Statusグループに関連付けられているからである。
+let range = registers.s.read(Control::RANGE);
+<span class="boring">}
+</span></code></pre></pre>
+<h2><a class="header" href="#命名規約" id="命名規約">命名規約</a></h2>
+<p>レジスタ定義にはいくつかの関連する名前があります。以下は、それぞれの命名規約の
+説明です。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tock_registers::registers::ReadWrite;
+
+#[repr(C)]
+struct Registers {
+    // 構造体におけるレジスタ名はデータシートに記載されているレジスタの
+    // 省略形を小文字にしたものにするべきである。
+    cr: ReadWrite&lt;u8, Control::Register&gt;,
+}
+
+register_bitfields! [
+    u8,
+
+    // 名前は'register'を除いたキャメルケースの長い説明的なレジスタ名に
+    // するべきである。
+    Control [
+        // フィールド名はデータシートに記載されているフィールド名の省略形を
+        // 大文字にしたものにするべきである。
+        RANGE OFFSET(4) NUMBITS(3) [
+            // 各フィールド値はキャメルケースでその値をできるだけ説明する
+            // ものにするべきである。
+            VeryHigh = 0,
+            High = 1,
+            Low = 2
+        ]
+    ]
+]
+<span class="boring">}
+</span></code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="Memory_Isolation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="Startup.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="Memory_Isolation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="Startup.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

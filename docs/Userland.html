@@ -1,0 +1,434 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ユーザランド - Tockドキュメント</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="Overview.html"><strong aria-hidden="true">1.</strong> Tockの概要</a></li><li class="chapter-item expanded "><a href="Design.html"><strong aria-hidden="true">2.</strong> Tockの設計</a></li><li class="chapter-item expanded "><a href="threat_model/index.html"><strong aria-hidden="true">3.</strong> Threat Model</a></li><li class="chapter-item expanded affix "><li class="part-title">Tockの実装</li><li class="chapter-item expanded "><a href="Lifetimes.html"><strong aria-hidden="true">4.</strong> ライフタイム</a></li><li class="chapter-item expanded "><a href="Mutable_References.html"><strong aria-hidden="true">5.</strong> 可変参照</a></li><li class="chapter-item expanded "><a href="Soundness.html"><strong aria-hidden="true">6.</strong> 安全性</a></li><li class="chapter-item expanded "><a href="Compilation.html"><strong aria-hidden="true">7.</strong> コンパイル</a></li><li class="chapter-item expanded "><a href="TockBinaryFormat.html"><strong aria-hidden="true">8.</strong> TBF: Tockバイナリフォーマット</a></li><li class="chapter-item expanded "><a href="Memory_Layout.html"><strong aria-hidden="true">9.</strong> メモリレイアウト</a></li><li class="chapter-item expanded "><a href="Memory_Isolation.html"><strong aria-hidden="true">10.</strong> メモリ隔離</a></li><li class="chapter-item expanded "><a href="Registers.html"><strong aria-hidden="true">11.</strong> レジスタ</a></li><li class="chapter-item expanded "><a href="Startup.html"><strong aria-hidden="true">12.</strong> 起動</a></li><li class="chapter-item expanded "><a href="Syscalls.html"><strong aria-hidden="true">13.</strong> システムコール</a></li><li class="chapter-item expanded "><a href="Userland.html" class="active"><strong aria-hidden="true">14.</strong> ユーザランド</a></li><li class="chapter-item expanded "><a href="Networking_Stack.html"><strong aria-hidden="true">15.</strong> Networking Stack</a></li><li class="chapter-item expanded "><a href="Configuration.html"><strong aria-hidden="true">16.</strong> 構成</a></li><li class="chapter-item expanded affix "><li class="part-title">インターフェースの詳細</li><li class="chapter-item expanded "><a href="syscalls/index.html"><strong aria-hidden="true">17.</strong> システムコールインターフェース</a></li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">17.1.</strong> コアカーネル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/memop.html"><strong aria-hidden="true">17.1.1.</strong> memop</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">17.2.</strong> カプセル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/00000_alarm.html"><strong aria-hidden="true">17.2.1.</strong> Alarm</a></li><li class="chapter-item expanded "><a href="syscalls/00001_console.html"><strong aria-hidden="true">17.2.2.</strong> Console</a></li><li class="chapter-item expanded "><a href="syscalls/00002_leds.html"><strong aria-hidden="true">17.2.3.</strong> LED</a></li><li class="chapter-item expanded "><a href="syscalls/00003_buttons.html"><strong aria-hidden="true">17.2.4.</strong> Button</a></li><li class="chapter-item expanded "><a href="syscalls/00004_gpio.html"><strong aria-hidden="true">17.2.5.</strong> GPIO</a></li><li class="chapter-item expanded "><a href="syscalls/00005_adc.html"><strong aria-hidden="true">17.2.6.</strong> ADC</a></li><li class="chapter-item expanded "><a href="syscalls/00007_analog_comparator.html"><strong aria-hidden="true">17.2.7.</strong> AnalogComparator</a></li><li class="chapter-item expanded "><a href="syscalls/00008_low_level_debug.html"><strong aria-hidden="true">17.2.8.</strong> Low-Level Debug</a></li><li class="chapter-item expanded "><a href="syscalls/30002_udp.html"><strong aria-hidden="true">17.2.9.</strong> UDP</a></li><li class="chapter-item expanded "><a href="syscalls/60000_ambient_temperature.html"><strong aria-hidden="true">17.2.10.</strong> Ambient Temp</a></li><li class="chapter-item expanded "><a href="syscalls/60001_humidity.html"><strong aria-hidden="true">17.2.11.</strong> Humidity</a></li><li class="chapter-item expanded "><a href="syscalls/60002_luminance.html"><strong aria-hidden="true">17.2.12.</strong> Luminance</a></li><li class="chapter-item expanded "><a href="syscalls/70005_l3gd20.html"><strong aria-hidden="true">17.2.13.</strong> L3GD20</a></li><li class="chapter-item expanded "><a href="syscalls/70006_lsm303dlhc.html"><strong aria-hidden="true">17.2.14.</strong> LSM303DLHC</a></li><li class="chapter-item expanded "><a href="syscalls/80005_hd44780.html"><strong aria-hidden="true">17.2.15.</strong> HD44780</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="reference/index.html"><strong aria-hidden="true">18.</strong> Internal Kernel Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="reference/trd1-trds.html"><strong aria-hidden="true">18.1.</strong> TRD 1: Tock Reference</a></li><li class="chapter-item expanded "><a href="reference/trd102-adc.html"><strong aria-hidden="true">18.2.</strong> TRD 102: ADC</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Tockのセットアップと使用法</li><li class="chapter-item expanded "><a href="Getting_Started.html"><strong aria-hidden="true">19.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="Porting.html"><strong aria-hidden="true">20.</strong> Tockのポーティング</a></li><li class="chapter-item expanded "><a href="OutOfTree.html"><strong aria-hidden="true">21.</strong> ツリー外のボード</a></li><li class="chapter-item expanded "><a href="debugging/index.html"><strong aria-hidden="true">22.</strong> Debugging Help</a></li><li class="chapter-item expanded "><a href="Style.html"><strong aria-hidden="true">23.</strong> Style</a></li><li class="chapter-item expanded affix "><li class="part-title">Management of Tock</li><li class="chapter-item expanded "><a href="wg/index.html"><strong aria-hidden="true">24.</strong> Working Groups</a></li><li class="chapter-item expanded "><a href="CodeReview.html"><strong aria-hidden="true">25.</strong> Code Review Process</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Tockドキュメント</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#ユーザランド" id="ユーザランド">ユーザランド</a></h1>
+<p>このドキュメントでは、アプリケーションコードがTockにおいてどのように動作するかを
+説明します。これは、各自のアプリケーションを作成するためのガイドではなく、
+アプリケーションがどのように機能するかの背後にある設計思想に関するドキュメントです。</p>
+<!-- npm i -g markdown-toc; markdown-toc -i Userland.md -->
+<!-- toc -->
+<ul>
+<li><a href="#%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%A9%E3%83%B3%E3%83%89">ユーザランド</a>
+<ul>
+<li><a href="#tock%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E6%A6%82%E8%A6%81">Tockにおけるアプリケーションの概要</a></li>
+<li><a href="#%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%82%B3%E3%83%BC%E3%83%AB">システムコール</a></li>
+<li><a href="#%E3%82%B3%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF">コールバック</a></li>
+<li><a href="#%E3%83%97%E3%83%AD%E3%82%BB%E3%82%B9%E9%96%93%E9%80%9A%E4%BF%A1">プロセス間通信</a>
+<ul>
+<li><a href="#%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9">サービス</a></li>
+<li><a href="#%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88">クライアント</a></li>
+</ul>
+</li>
+<li><a href="#%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%A8%E3%83%B3%E3%83%88%E3%83%AA%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88">アプリケーションエントリポイント</a></li>
+<li><a href="#%E3%82%B9%E3%82%BF%E3%83%83%E3%82%AF%E3%81%A8%E3%83%92%E3%83%BC%E3%83%97">スタックとヒープ</a></li>
+<li><a href="#%E3%83%87%E3%83%90%E3%83%83%E3%82%B0">デバッグ</a></li>
+<li><a href="#%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3">アプリケーション</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h2><a class="header" href="#tockにおけるアプリケーションの概要" id="tockにおけるアプリケーションの概要">Tockにおけるアプリケーションの概要</a></h2>
+<p>Tockにおけるアプリケーションはエンドユーザのために何らかのタスクを達成するための
+ユーザレベルのコードです。デバイスドライバとチップ固有の詳細、一般的な
+オペレーティングシステムのタスクを処理するカーネルコードとアプリケーションは
+区別されます。既存の多くの組み込みオペレーティングシステムとは異なり、Tockでは
+アプリケーションがカーネルと一緒にはコンパイルされていません。アプリケーションは
+<a href="https://en.wikipedia.org/wiki/System_call">システムコール</a>を介して
+カーネルや他のアプリケーションと相互作用する完全に分離されたコードです。</p>
+<p>アプリケーションはカーネルの一部ではないので、マイクロコントローラ上で実行可能な
+コードにコンパイルできる任意の言語で書くことができます。Tockは複数のアプリケーションの
+同時実行をサポートします。協調的マルチプログラミングがデフォルトですが、
+アプリケーションをタイムスライスすることも可能です。アプリケーションは、
+システムコールを介したプロセス間通信(IPC)で相互に通信できます。</p>
+<p>アプリケーションはインストールアドレスとロードアドレスをコンパイル時に知ることが
+できません。現在のTockの設計では、アプリケーションは[位置独立なコード]
+(https://en.wikipedia.org/wiki/Position-independent_code)（PIC）と
+してコンパイルされる必要があります。これにより、アプリケーションはロードされた
+任意のアドレスから実行できるようになります。TockアプリにおけるPICの使用は基本的な
+選択ではありませんので、将来のシステムのバージョンでは、実行時再配置可能なコードを
+サポートする可能性もあります。</p>
+<p>アプリケーションは非特権コードです。メモリのすべての部分にアクセスできるわけは
+ありません。各自の境界を超えたメモリにアクセスしようとするとフォールトが発生します
+（Linuxコードにおけるセグメンテーションフォールトと同じです）。ハードウェアを
+使用するには、アプリケーションはカーネルを呼び出さなければなりません。</p>
+<h2><a class="header" href="#システムコール" id="システムコール">システムコール</a></h2>
+<p>システムコール（別名、syscalls）はカーネルへのコマンドの送信に使用されます。
+システムコールには、ドライバへのコマンド、コールバックの購読、アプリケーション
+関連データを保存できるようにカーネルにメモリを付与すること、他のアプリケーション
+コードとの通信など多くのものが含まれます。実際には、システムコールはライブラリ
+コードを通して行われ、アプリケーションが直接対応する必要はありません。</p>
+<p>たとえば、GPIOピンをハイに設定する次のようなシステムコールを考えます。</p>
+<pre><code class="language-c">int gpio_set(GPIO_Pin_t pin) {
+  return command(GPIO_DRIVER_NUM, 2, pin);
+}
+</code></pre>
+<p>commandシステムコール自体はARMアセンブリ命令<code>svc</code>（サービスコール）として
+実装されています。</p>
+<pre><code class="language-c">int __attribute__((naked))
+command(uint32_t driver, uint32_t command, int data) {
+  asm volatile(&quot;svc 2\nbx lr&quot; ::: &quot;memory&quot;, &quot;r0&quot;);
+}
+</code></pre>
+<p>より深い考察は<a href="./Syscalls.html">システムコールドキュメント</a>で見ることことができます。</p>
+<h2><a class="header" href="#コールバック" id="コールバック">コールバック</a></h2>
+<p>Tockは、<a href="https://en.wikipedia.org/wiki/Callback_(computer_programming)">コールバック関数</a>を
+使用して非同期イベントを処理することが多い、組み込みアプリケーションをサポートする
+ように設計されています。たとえば、タイマーコールバックを受け取るためには、
+まず、タイマーが発火した際に呼び出してもらいたい関数への関数ポインタを指定して
+<code>timer_subscribe</code>を呼び出します。コールバックを実行させたい特定の状態は
+ポインタ<code>userdata</code>として渡すことができます。アプリケーションがタイマーを起動
+した後は、<code>yield</code>を呼び出するとタイマーが発火し、コールバック関数が呼び出されます。</p>
+<p>現在のTockの実装では、イベントが処理されるには<code>yield</code>が呼び出される必要があることに
+注意してください。アプリケーションへのコールバックはイベントが発生した際にキューに
+入れられますが、アプリケーションは<code>yield</code>を呼び出すまでイベントを受け取れません。
+これはTockにとって根本的なものではありませんので、将来のバージョンでは、任意の
+システムコールに対して、あるいはアプリケーションのタイムスライシングを実行する際に
+コールバックを実行するようになるかもしれません。コールバックを受け取り、実行した後、
+アプリケーションコードは<code>yield</code>後も継続します。「終了した」アプリケーション
+（すなわち、<code>main()</code>から返った）アプリケーションは、カーネルにスケジュール
+されないようにループ内で<code>yield</code>を呼び出す必要があります。</p>
+<h2><a class="header" href="#プロセス間通信" id="プロセス間通信">プロセス間通信</a></h2>
+<p>IPCにより複数のアプリケーションが共有バッファを介して直接通信を行うことができます。
+TockではIPCはサービス・クライアントモデルで実装されています。各アプリはサービスを
+1つサポートすることができ、サービスはアプリのTockバイナリフォーマットヘッダに
+含まれるパッケージ名により識別されます。アプリは複数のサービスと通信することができ、
+検出されたサービスごとに固有のハンドルを取得します。クライアントとサービスは共有
+バッファを介して通信します。各クライアントは自身のアプリケーションメモリの一部を
+サービスと共有し、サービスに通知して共有バッファを解析するように指示することが
+できます。</p>
+<h3><a class="header" href="#サービス" id="サービス">サービス</a></h3>
+<p>サービスはアプリのTBFヘッダに含まれるパッケージ名により命名されます。サービスを
+登録するためにアプリは<code>ipc_register_svc()</code>を呼び出してコールバックを設定します。
+このコールバックは、クライアントがそのサービスのnotifyを呼び出すごとに呼び出されます。</p>
+<h3><a class="header" href="#クライアント" id="クライアント">クライアント</a></h3>
+<p>クライアントはまず<code>ipc_discover()</code>関数を使って使いたいサービスを発見する必要が
+あります。次に、<code>ipc_share()</code>を呼び出してサービスとバッファを共有することが
+できます。サービスにバッファを使って何かをするよう指示するためにクライアントは
+<code>ipc_notify_svc()</code>を呼び出すことができます。アプリがサービスから通知を得たい
+場合は、サービスが<code>ipc_notify_client()</code>を呼び出した時にサービスからイベントを
+受け取るために<code>ipc_register_client_cb()</code>を呼び出す必要があります。</p>
+<p>これらの関数の詳細については<code>libtock-c</code>の<code>ipc.h</code>を参照してください。</p>
+<h2><a class="header" href="#アプリケーションエントリポイント" id="アプリケーションエントリポイント">アプリケーションエントリポイント</a></h2>
+<p>アプリケーションはTBFヘッダに変数<code>init_fn_offset</code>を設定し、カーネルが最初に
+呼び出すべき関数を指定します。この関数は次のシグネチャを持つ必要があります。</p>
+<pre><code class="language-c">void _start(void* text_start, void* mem_start, void* memory_len, void* app_heap_break);
+</code></pre>
+<p>Tockカーネルはアプリケーションプロセスのスタックやヒープレイアウトに関しては制限
+しないようにしています。そのため、プロセスは非常にミニマムな環境で起動し、初期
+スタックはシステムコールのサポートには十分ですが、それ以上のものはありません。
+アプリケーションの起動ルーチンはまず、<a href="/doc/syscalls/memop.html#operation-type-0-brk">プログラムブレークを動かして</a>
+希望のレイアウトに合わせ、実行に追従するようスタックとヒープを設定するべきです。</p>
+<h2><a class="header" href="#スタックとヒープ" id="スタックとヒープ">スタックとヒープ</a></h2>
+<p>アプリケーションはTBFヘッダに<code>minimum_ram_size</code>変数を設定することで必要な
+メモリ量を指定することができます。Tockカーネルはこれを最小値として扱うことに
+注意してください。使用するプラットフォームによってはメモリ量が要求した量より
+大きくなることがありますが、小さくなることは絶対にありません。</p>
+<p>アプリケーションをロードするためのメモリが不足している場合、カーネルはロード中に
+失敗し、メッセージを表示します。</p>
+<p>アプリケーションが実行時に割り当てられたメモリを超過した場合、アプリケーションは
+クラッシュします（その例は<a href="#debugging">デバッグ</a>セクションを参照してください）。</p>
+<h2><a class="header" href="#デバッグ" id="デバッグ">デバッグ</a></h2>
+<p>アプリケーションがクラッシュした場合、Tockは多くの有用な情報を提供します。
+デフォルトでは、アプリケーションがクラッシュすると、Tockはプラットフォームの
+デフォルトコンソールインターフェイス上にクラッシュダンプを表示します。</p>
+<p>アプリケーションはロード時に再配置されるので、アプリケーションが最初にコンパイル
+された時に生成されたバイナリとデバッグ用の<code>.lst</code>ファイルは、ボードで実際に
+実行中のアプリケーションとは一致しないことに注意してください。一致したファイル
+（特に一致した<code>.lst</code>ファイル）を生成するには、対象となるappディレクトリで
+<code>make debug</code>を実行することでアプリケーションが実際に実行されるものにマッチする
+適切な<code>.lst</code>ファイルを作成することができます。コマンドの呼び出し例については
+デバッグプリントの最後を参照してください。</p>
+<pre><code>---| Fault Status |---
+Data Access Violation:              true
+Forced Hard Fault:                  true
+Faulting Memory Address:            0x00000000
+Fault Status Register (CFSR):       0x00000082
+Hard Fault Status Register (HFSR):  0x40000000
+
+---| App Status |---
+App: crash_dummy   -   [Fault]
+ Events Queued: 0   Syscall Count: 0   Dropped Callback Count: 0
+ Restart Count: 0
+ Last Syscall: None
+
+ ╔═══════════╤══════════════════════════════════════════╗
+ ║  Address  │ Region Name    Used | Allocated (bytes)  ║
+ ╚0x20006000═╪══════════════════════════════════════════╝
+             │ ▼ Grant         948 |    948
+  0x20005C4C ┼───────────────────────────────────────────
+             │ Unused
+  0x200049F0 ┼───────────────────────────────────────────
+             │ ▲ Heap            0 |   4700               S
+  0x200049F0 ┼─────────────────────────────────────────── R
+             │ Data            496 |    496               A
+  0x20004800 ┼─────────────────────────────────────────── M
+             │ ▼ Stack          72 |   2048
+  0x200047B8 ┼───────────────────────────────────────────
+             │ Unused
+  0x20004000 ┴───────────────────────────────────────────
+             .....
+  0x00030400 ┬─────────────────────────────────────────── F
+             │ App Flash       976                        L
+  0x00030030 ┼─────────────────────────────────────────── A
+             │ Protected        48                        S
+  0x00030000 ┴─────────────────────────────────────────── H
+
+  R0 : 0x00000000    R6 : 0x20004894
+  R1 : 0x00000001    R7 : 0x20004000
+  R2 : 0x00000000    R8 : 0x00000000
+  R3 : 0x00000000    R10: 0x00000000
+  R4 : 0x00000000    R11: 0x00000000
+  R5 : 0x20004800    R12: 0x12E36C82
+  R9 : 0x20004800 (Static Base Register)
+  SP : 0x200047B8 (Process Stack Pointer)
+  LR : 0x000301B7
+  PC : 0x000300AA
+ YPC : 0x000301B6
+
+ APSR: N 0 Z 1 C 1 V 0 Q 0
+       GE 0 0 0 0
+ EPSR: ICI.IT 0x00
+       ThumbBit true
+
+ Cortex-M MPU
+  Region 0: base: 0x20004000, length: 8192 bytes; ReadWrite (0x3)
+  Region 1: base:    0x30000, length: 1024 bytes; ReadOnly (0x6)
+  Region 2: Unused
+  Region 3: Unused
+  Region 4: Unused
+  Region 5: Unused
+  Region 6: Unused
+  Region 7: Unused
+
+To debug, run `make debug RAM_START=0x20004000 FLASH_INIT=0x30059`
+in the app's folder and open the .lst file.
+</code></pre>
+<h2><a class="header" href="#アプリケーション" id="アプリケーション">アプリケーション</a></h2>
+<p>アプリケーションの例については、言語固有のユーザランドリポジトリを参照してください。</p>
+<ul>
+<li><a href="https://github.com/tock/libtock-c">libtock-c</a>: C and C++ apps.</li>
+<li><a href="https://github.com/tock/libtock-rs">libtock-rs</a>: Rust apps.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="Syscalls.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="Networking_Stack.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="Syscalls.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="Networking_Stack.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

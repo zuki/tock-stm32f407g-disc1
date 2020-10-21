@@ -1,0 +1,535 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>可変参照 - Tockドキュメント</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="Overview.html"><strong aria-hidden="true">1.</strong> Tockの概要</a></li><li class="chapter-item expanded "><a href="Design.html"><strong aria-hidden="true">2.</strong> Tockの設計</a></li><li class="chapter-item expanded "><a href="threat_model/index.html"><strong aria-hidden="true">3.</strong> Threat Model</a></li><li class="chapter-item expanded affix "><li class="part-title">Tockの実装</li><li class="chapter-item expanded "><a href="Lifetimes.html"><strong aria-hidden="true">4.</strong> ライフタイム</a></li><li class="chapter-item expanded "><a href="Mutable_References.html" class="active"><strong aria-hidden="true">5.</strong> 可変参照</a></li><li class="chapter-item expanded "><a href="Soundness.html"><strong aria-hidden="true">6.</strong> 安全性</a></li><li class="chapter-item expanded "><a href="Compilation.html"><strong aria-hidden="true">7.</strong> コンパイル</a></li><li class="chapter-item expanded "><a href="TockBinaryFormat.html"><strong aria-hidden="true">8.</strong> TBF: Tockバイナリフォーマット</a></li><li class="chapter-item expanded "><a href="Memory_Layout.html"><strong aria-hidden="true">9.</strong> メモリレイアウト</a></li><li class="chapter-item expanded "><a href="Memory_Isolation.html"><strong aria-hidden="true">10.</strong> メモリ隔離</a></li><li class="chapter-item expanded "><a href="Registers.html"><strong aria-hidden="true">11.</strong> レジスタ</a></li><li class="chapter-item expanded "><a href="Startup.html"><strong aria-hidden="true">12.</strong> 起動</a></li><li class="chapter-item expanded "><a href="Syscalls.html"><strong aria-hidden="true">13.</strong> システムコール</a></li><li class="chapter-item expanded "><a href="Userland.html"><strong aria-hidden="true">14.</strong> ユーザランド</a></li><li class="chapter-item expanded "><a href="Networking_Stack.html"><strong aria-hidden="true">15.</strong> Networking Stack</a></li><li class="chapter-item expanded "><a href="Configuration.html"><strong aria-hidden="true">16.</strong> 構成</a></li><li class="chapter-item expanded affix "><li class="part-title">インターフェースの詳細</li><li class="chapter-item expanded "><a href="syscalls/index.html"><strong aria-hidden="true">17.</strong> システムコールインターフェース</a></li><li><ol class="section"><li class="chapter-item expanded "><strong aria-hidden="true">17.1.</strong> コアカーネル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/memop.html"><strong aria-hidden="true">17.1.1.</strong> memop</a></li></ol></li><li class="chapter-item expanded "><strong aria-hidden="true">17.2.</strong> カプセル提供</li><li><ol class="section"><li class="chapter-item expanded "><a href="syscalls/00000_alarm.html"><strong aria-hidden="true">17.2.1.</strong> Alarm</a></li><li class="chapter-item expanded "><a href="syscalls/00001_console.html"><strong aria-hidden="true">17.2.2.</strong> Console</a></li><li class="chapter-item expanded "><a href="syscalls/00002_leds.html"><strong aria-hidden="true">17.2.3.</strong> LED</a></li><li class="chapter-item expanded "><a href="syscalls/00003_buttons.html"><strong aria-hidden="true">17.2.4.</strong> Button</a></li><li class="chapter-item expanded "><a href="syscalls/00004_gpio.html"><strong aria-hidden="true">17.2.5.</strong> GPIO</a></li><li class="chapter-item expanded "><a href="syscalls/00005_adc.html"><strong aria-hidden="true">17.2.6.</strong> ADC</a></li><li class="chapter-item expanded "><a href="syscalls/00007_analog_comparator.html"><strong aria-hidden="true">17.2.7.</strong> AnalogComparator</a></li><li class="chapter-item expanded "><a href="syscalls/00008_low_level_debug.html"><strong aria-hidden="true">17.2.8.</strong> Low-Level Debug</a></li><li class="chapter-item expanded "><a href="syscalls/30002_udp.html"><strong aria-hidden="true">17.2.9.</strong> UDP</a></li><li class="chapter-item expanded "><a href="syscalls/60000_ambient_temperature.html"><strong aria-hidden="true">17.2.10.</strong> Ambient Temp</a></li><li class="chapter-item expanded "><a href="syscalls/60001_humidity.html"><strong aria-hidden="true">17.2.11.</strong> Humidity</a></li><li class="chapter-item expanded "><a href="syscalls/60002_luminance.html"><strong aria-hidden="true">17.2.12.</strong> Luminance</a></li><li class="chapter-item expanded "><a href="syscalls/70005_l3gd20.html"><strong aria-hidden="true">17.2.13.</strong> L3GD20</a></li><li class="chapter-item expanded "><a href="syscalls/70006_lsm303dlhc.html"><strong aria-hidden="true">17.2.14.</strong> LSM303DLHC</a></li><li class="chapter-item expanded "><a href="syscalls/80005_hd44780.html"><strong aria-hidden="true">17.2.15.</strong> HD44780</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="reference/index.html"><strong aria-hidden="true">18.</strong> Internal Kernel Interfaces</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="reference/trd1-trds.html"><strong aria-hidden="true">18.1.</strong> TRD 1: Tock Reference</a></li><li class="chapter-item expanded "><a href="reference/trd102-adc.html"><strong aria-hidden="true">18.2.</strong> TRD 102: ADC</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Tockのセットアップと使用法</li><li class="chapter-item expanded "><a href="Getting_Started.html"><strong aria-hidden="true">19.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="Porting.html"><strong aria-hidden="true">20.</strong> Tockのポーティング</a></li><li class="chapter-item expanded "><a href="OutOfTree.html"><strong aria-hidden="true">21.</strong> ツリー外のボード</a></li><li class="chapter-item expanded "><a href="debugging/index.html"><strong aria-hidden="true">22.</strong> Debugging Help</a></li><li class="chapter-item expanded "><a href="Style.html"><strong aria-hidden="true">23.</strong> Style</a></li><li class="chapter-item expanded affix "><li class="part-title">Management of Tock</li><li class="chapter-item expanded "><a href="wg/index.html"><strong aria-hidden="true">24.</strong> Working Groups</a></li><li class="chapter-item expanded "><a href="CodeReview.html"><strong aria-hidden="true">25.</strong> Code Review Process</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Tockドキュメント</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#tockにおける可変参照---メモリコンテナセル" id="tockにおける可変参照---メモリコンテナセル">Tockにおける可変参照 - メモリコンテナ（セル）</a></h1>
+<p>借用はRustの安全性を保証するためのRust言語の最重要な部分です。しかし、動的なメモリ
+割り当てがない（ヒープがない）場合、イベント駆動型のコードはRustの借用セマンティクスに
+よる困難に直面することになります。多くの場合、複数の構造体は、どのイベントが発生した
+かに基づいてある構造体を呼び出せる（共有できる）必要があります。たとえば、無線
+インターフェイスを表す構造体は使用するバスからのコールバックだけでなく、上位レイアで
+あるネットワークスタックからのコールも処理する必要があります。これらのコーラーは両者
+とも無線構造体の状態を変更できる必要がありますが、Rustの借用チェッカは両者が構造体への
+可変参照を持つことを許しません。</p>
+<p>この問題を解決するために、Tockは、構造体内部のメモリへの参照が漏れない（内部での
+変更がない）限り、構造体が変更可能な2つの参照を持つことは安全であるという観察に基づいて
+構築されています。Tockはこの目標を達成するために<em>メモリコンテナ</em>と呼ばれる、可変である
+ことは許可するが、内部での変更は許さない一連の型を使用します。Rust標準ライブラリには
+<code>Cell</code>と<code>RefCell</code>という2つのメモリコンテナ型があります。Tockは<code>Cell</code>を広範囲に
+使用していますが、5つの新しいメモリコンテナ型を追加しています。各々はカーネルコードに
+広く見える特有な使用法に合わせたものになっています。</p>
+<!-- npm i -g markdown-toc; markdown-toc -i Mutable_References.md -->
+<!-- toc -->
+<ul>
+<li><a href="#tock%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E5%8F%AF%E5%A4%89%E5%8F%82%E7%85%A7---%E3%83%A1%E3%83%A2%E3%83%AA%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%82%BB%E3%83%AB">Tockにおける可変参照 - メモリコンテナ（セル）</a>
+<ul>
+<li><a href="#rust%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E5%80%9F%E7%94%A8%E3%81%AE%E7%B0%A1%E5%8D%98%E3%81%AA%E6%A6%82%E8%A6%81">Rustにおける借用の簡単な概要</a></li>
+<li><a href="#%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E9%A7%86%E5%8B%95%E5%9E%8B%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E5%80%9F%E7%94%A8%E3%81%AE%E5%95%8F%E9%A1%8C%E7%82%B9">イベント駆動型コードにおける借用の問題点</a></li>
+<li><a href="#tock%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8Bcell">Tockにおける<code>Cell</code></a></li>
+<li><a href="#takecell%E6%8A%BD%E8%B1%A1%E5%8C%96"><code>TakeCell</code>抽象化</a>
+<ul>
+<li><a href="#take%E3%81%A8replace%E3%81%AE%E4%BD%BF%E7%94%A8%E4%BE%8B"><code>take</code>と<code>replace</code>の使用例</a></li>
+<li><a href="#map%E3%81%AE%E4%BD%BF%E7%94%A8%E4%BE%8B"><code>map</code>の使用例</a>
+<ul>
+<li><a href="#map%E3%81%AE%E5%A4%89%E7%95%B0"><code>map</code>の変異</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#mapcell"><code>MapCell</code></a></li>
+<li><a href="#optionalcell"><code>OptionalCell</code></a></li>
+<li><a href="#volatilecell"><code>VolatileCell</code></a></li>
+<li><a href="#cell%E3%81%AE%E6%8B%A1%E5%BC%B5%E6%A9%9F%E8%83%BD">Cellの拡張機能</a>
+<ul>
+<li><a href="#numericcellext"><code>NumericCellExt</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h2><a class="header" href="#rustにおける借用の簡単な概要" id="rustにおける借用の簡単な概要">Rustにおける借用の簡単な概要</a></h2>
+<p>所有権と借用はRustの設計上の2つの特徴であり、競合状態を防ぎ、ダングリングポインタを
+生み出すコードを書くことを不可能にします。</p>
+<p>借用はメモリへの参照を可能にするためのRustの機構です。C++などの他言語の参照と同様に、
+借用は、構造体全体をコピーするのではなく、ポインタを渡すことで大きな構造体を効率的に
+渡すことを可能します。しかし、Rustのコンパイラは借用を制限し、メモリへの同時書き込みや
+同時読み書きによって引き起こされる競合状態が発生できないようにしています。Rustでは、
+コードを一つの可変（書き込み可能な）参照か、任意の数の読み取り専用参照に制限しています。</p>
+<p>コードのある部分がメモリのある部分への可変参照を持っている場合、その他の部分のコードは
+そのメモリ内で他の参照を持たないことも重要です。そうでなければ言語は安全ではありません。
+たとえば、ポインタと値のいずれかを持つことができる<code>enum</code>の場合を考えてみましょう。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum NumOrPointer {
+  Num(u32),
+  Pointer(&amp;'static mut u32)
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Rustの<code>enum</code>は、型安全なCの共用体のようなものです。コードが<code>NumOrPointer</code>への可変
+参照とカプセル化された<code>Pointer</code>への読み取り専用参照の両者を持っているとします。<code>NumOrPointer</code>参照を持つコードがそれを<code>Num</code>に変更すると、<code>Num</code>には任意の値を設定
+することができます。しかし、<code>Pointer</code>への参照は依然としてポインタとしてメモリに
+アクセスすることができます。これら2つの表現は同じメモリを使用しますので、これは
+<code>Num</code>への参照はそれば望む任意のポインタを作成することができ、Rustの型の安全性を
+破ることを意味します。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 注意: 不正な例
+let external : &amp;mut NumOrPointer;
+match external {
+  &amp;mut Pointer(ref mut internal) =&gt; {
+    // これは安全性を破り
+    // 0xdeadbeefにあるメモリに書き込む
+    *external = Num(0xdeadbeef);
+    *internal = 12345;
+  },
+  ...
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Tockカーネルはシングルスレッドなので競合条件はなく、複数の参照があったとしても
+（数/ポインタの例のように）内部で互いにポイントしない限り安全な場合があります。しかし、
+Rustはこのことを知りませんので、その規則は依然として残ります。実際のところ、Rustの
+規則はイベント駆動型のコードで問題を引き起こします。</p>
+<h2><a class="header" href="#イベント駆動型コードにおける借用の問題点" id="イベント駆動型コードにおける借用の問題点">イベント駆動型コードにおける借用の問題点</a></h2>
+<p>イベント駆動型のコードでは同じオブジェクトへの書き込み可能な参照が複数必要になることが
+よくあります。たとえば、定期的にセンサをサンプリングし、シリアルポートを介してコマンドを
+受信するイベント駆動型の組み込みアプリケーションを考えてみましょう。このアプリケーション
+では、タイマー、センサデータの取得、コマンドの受信といった2つまたは3つのイベント
+コールバックが登録される可能性があります。各コールバックはカーネル内の異なる
+コンポーネントに登録され、これらの各コンポーネントはコールバックを発行するために
+オブジェクトへの参照を必要とします。すなわち、各コールバックのジェネレータは、
+アプリケーションへの書き込み可能な独自の参照を必要とします。しかし、Rustの規則は
+複数の可変参照を許可しません。</p>
+<h2><a class="header" href="#tockにおけるcell" id="tockにおけるcell">Tockにおける<code>Cell</code></a></h2>
+<p>Tockはさまざまなデータ型のためにいくつかの<a href="https://doc.rust-lang.org/core/cell/">Cell</a>型を
+使用します。以下の表は様々な型をまとめたもので、以下に詳細を示します。</p>
+<table><thead><tr><th>Cell型</th><th>最適な用途 　</th><th>例</th><th>一般的な用途</th></tr></thead><tbody>
+<tr><td><code>Cell</code></td><td>プリミティブ型</td><td><code>Cell&lt;bool&gt;</code>,<br/><a href="../kernel/src/sched/mod.rs"><code>sched/mod.rs</code></a></td><td>状態変数（<code>enum</code>を格納）, 真偽フラグ, 長さなどの整数パラメタ。</td></tr>
+<tr><td><code>TakeCell</code></td><td>小さな静的バッファ</td><td><code>TakeCell&lt;'static, [u8]&gt;</code>,<br/><a href="../capsules/src/spi.rs"><code>spi.rs</code></a></td><td>データを送受信するための静的バッファを格納する。</td></tr>
+<tr><td><code>MapCell</code></td><td>大きな静的バッファ</td><td><code>MapCell&lt;App&gt;</code>,<br/><a href="../capsules/src/spi.rs"><code>spi.rs</code></a></td><td>参照を大きなバッファ（たとえば、アプリケーションばっふぁ）に委譲する。</td></tr>
+<tr><td><code>OptionalCell</code></td><td>オプションパラメタ</td><td><code>client: OptionalCell&lt;&amp;'static hil::nonvolatile_storage::</code><br/><code>NonvolatileStorageClient&gt;</code>,<br/><a href="../capsules/src/nonvolatile_to_pages.rs"><code>nonvolatile_to_pages.rs</code></a></td><td>セットされる前のクライアントのように、初期化可能な状態を保持する。</td></tr>
+<tr><td><code>VolatileCell</code></td><td>レジスタ</td><td><code>VolatileCell&lt;u32&gt;</code></td><td><code>tock_registers</code>クレートにより使用されるMMIOレジスタをアクセスする。</td></tr>
+</tbody></table>
+<h2><a class="header" href="#takecell抽象化" id="takecell抽象化"><code>TakeCell</code>抽象化</a></h2>
+<p>個々のメモリコンテナは各々に特化した用途を持っていますが、その操作のほとんどは
+これらの型の間で共通です。したがって、TakeCellのコンテキストにおけるメモリ
+コンテナの基本的な使い方を説明し、他の型が追加で持つ機能や特殊な機能については
+各自のセクションで説明します。<code>tock/libraries/tock-cell/src/take_cell.rs</code>には次のように書かれています。</p>
+<blockquote>
+<p><code>TakeCell</code>は可変メモリへの潜在的な参照です。借用規則は、クライアントに
+メモリをセルの外に移動させるか、クロージャ内で借用操作を行うように強制する
+ことにより強制されています。</p>
+</blockquote>
+<p>TakeCellは値があっても空でも構いません。nullにすることができる安全なポインタの
+ようなものです。コードがTakeCellに含まれているデータを操作したい場合は、
+TakeCellの外にデータを移動させる（空にする）か、<code>map</code>コールを使い
+クロージャ内で操作しなければなりません。<code>map</code>を使用するにはTakeCellが実行する
+コードブロックを渡します。クロージャを使用すると制御パスが誤って値を置換しない
+という危険性なしに、コードがTakeCellの内容をインラインで変更することが可能に
+なります。しかし、クロージャであるため、TakeCellの内容への参照が漏れることは
+ありません。</p>
+<p>TakeCellはコードが通常の(不変)参照を持っている場合は、その内容を変更する
+ことを可能にします。これは、構造体がその状態をTakeCellに格納している場合、
+構造体への通常の(不変)参照を持つコードはTakeCellの内容を変更することができ、
+その結果、構造体を修正することができることを意味します。したがって、複数の
+コールバックが構造体への参照を持ち、その状態を変更することが可能です。</p>
+<h3><a class="header" href="#takeとreplaceの使用例" id="takeとreplaceの使用例"><code>take</code>と<code>replace</code>の使用例</a></h3>
+<p><code>TakeCell.take()</code>が呼ばれると、メモリ内のロケーションの所有権はセルの外に
+移動します。そして、所有権は誰が取得したとしても自由に使うことができ（所有権を
+所有するので）<code>TakeCell.put()</code>や<code>TakeCell.replace()</code>を使って元に戻す
+ことができます。</p>
+<p>たとえば、以下の<code>chips/nrf51/src/clock.rs</code>から抽出したコードは、
+ハードウェアクロックのコールバッククライアントを設定しています。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn set_client(&amp;self, client: &amp;'static ClockClient) {
+    self.client.replace(client);
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>すでにクライアントが存在する場合は<code>client</code>で置き換えられます。
+<code>self.client</code>が空の場合は<code>client</code>がセットされます。</p>
+<p>以下の<code>Chips/sam4l/src/dma.rs</code>から抽出したコードコードは、現在の
+ダイレクトメモリ操作（DMA）操作をキャンセルし、<code>take</code>をコールすることで
+現在のトランザクションバッファをTakeCellから削除します。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn abort_transfer(&amp;self) -&gt; Option&lt;&amp;'static mut [u8]&gt; {
+    let registers: &amp;DMARegisters = unsafe { &amp;*self.registers };
+    registers.interrupt_disable.set(!0);
+    // カウンタをリセットする
+    registers.transfer_counter.set(0);
+    self.buffer.take()
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3><a class="header" href="#mapの使用例" id="mapの使用例"><code>map</code>の使用例</a></h3>
+<p>TakeCellの内容には<code>take</code>と<code>replace</code>を組み合わせることで直接アクセスする
+ことができますが、通常、Tockのコードは<code>TakeCell.map()</code>を使用します。これは
+<code>TakeCell.take()</code>と<code>TakeCell.replace()</code>の間に提供されたクロージャを
+ラップします。このアプローチには、正しく<code>replace</code>を行わないという制御フロー
+のバグがあっても、誤ってTakeCellを空にしてしまうことがないという利点が
+あります。</p>
+<p>以下は、<code>chips/sam4l/src/dma.rs</code>から取得した<code>map</code>の簡単な使用法を
+示しています。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn disable(&amp;self) {
+    let registers: &amp;SpiRegisters = unsafe { &amp;*self.registers };
+
+    self.dma_read.map(|read| read.disable());
+    self.dma_write.map(|write| write.disable());
+    registers.cr.set(0b10);
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>dma_read</code>と<code>dma_write</code>はどちらも<code>TakeCell&lt;&amp;'static mut DMAChannel&gt;</code>
+型、すなわち、DMAチャンネルへの可変参照のためのTakeCellです。<code>map</code>を呼び出す
+ことにより、この関数は参照にアクセスして<code>disable</code>関数を呼び出すことが
+できます。TakeCellが参照を持たない（空である）場合、<code>map</code>は何もしません。</p>
+<p>以下は、<code>chips/sam4l/src/spi.rs</code>から取得した<code>map</code>のより複雑な使用例を
+示しています。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>self.client.map(|cb| {
+    txbuf.map(|txbuf| {
+        cb.read_write_done(txbuf, rxbuf, len);
+    });
+});
+<span class="boring">}
+</span></code></pre></pre>
+<p>この例では、<code>client</code>は<code>TakeCell&lt;&amp;'static SpiMasterClient&gt;</code>です。
+<code>map</code>に渡されるクロージャは引数を一つ持ち、その値はTakeCellが持つ値です。
+したがって、この場合、<code>cb</code>は<code>SpiMasterClient</code>への参照です。<code>client.map</code>
+に渡されるクロージャはそれ自体が<code>cb</code>を使用して<code>txbuf</code>を渡してコールバックを
+呼び出すクロージャを含んでいることに注意してください。</p>
+<h4><a class="header" href="#mapの変異" id="mapの変異"><code>map</code>の変異</a></h4>
+<p><code>TakeCell.map()</code>は<code>TakeCell</code>に格納された内容を利用するための便利な
+メソッドを提供しますが、単にクロージャを実行しないことで<code>TakeCell</code>が
+空であることを隠します。<code>TakeCell</code>が空の場合でも処理を可能にするために、
+rust (とその延長であるTock)は追加の関数を提供しています。</p>
+<p>最初の関数は<code>.map_or()</code>です。これは<code>TakeCell</code>が空であっても、値を持って
+いても値を返す場合に便利です。たとえば、次のような場合、</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let return = if txbuf.is_some() {
+    txbuf.map(|txbuf| {
+        write_done(txbuf);
+    });
+    ReturnCode::SUCCESS
+} else {
+    ReturnCode::ERESERVE
+};
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>.map_or()</code>を使えば次のように書くことができます。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let return = txbuf.map_or(ReturnCode::ERESERVE, |txbuf| {
+    write_done(txbuf);
+    ReturnCode::SUCCESS
+});
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>TakeCell</code>が空の場合、第1引数（エラーコード）が返され、そうでない場合は
+クロージャが実行され<code>SUCCESS</code>が返されます。</p>
+<p><code>TakeCell</code>が空か否により異なるコードを実行したい場合もあります。繰り返しに
+なりますが、次のように書くことができます。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if txbuf.is_some() {
+    txbuf.map(|txbuf| {
+        write_done(txbuf);
+    });
+} else {
+    write_done_failure();
+};
+<span class="boring">}
+</span></code></pre></pre>
+<p>しかし、代わりに<code>.map_or_else()</code>関数を使うことができます。これには2つの
+クロージャを渡すことができます。1つは<code>TakeCell</code>が空の場合、もう1つは
+データがある場合に使われます。</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>txbuf.map_or_else(|| {
+    write_done_failure();
+}, |txbuf| {
+    write_done(txbuf);
+});
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>.map_or()</code>の場合も<code>.map_or_else()</code>の場合も、最初の引数は<code>TakeCell</code>が
+空の場合に対応することに注意してください。</p>
+<h2><a class="header" href="#mapcell" id="mapcell"><code>MapCell</code></a></h2>
+<p><code>MapCell</code>はその目的とインターフェースが<code>TakeCell</code>に非常に似ています。
+異なるのはその背後にある実装です。<code>TakeCell</code>では、何かがセルの内容を<code>take()</code>
+すると、実際にセル内のメモリが移動します。これは、<code>TakeCell</code>内のデータが
+大きい場合はパフォーマンス上の問題になりますが、データが小さい場合（ポインタや
+スライスなど）はサイクルとメモリの双方が節約できます。内部の<code>Option</code>は多くの
+場合で最適化することができ、コードはメモリに対してではなくレジスタ上で動作する
+からです。一方、<code>MapCells</code>は小さな型にいくらかのアカウンティングオーバー
+ヘッドをもたらし、アクセスするための最小サイクル数を必要とします。</p>
+<p><a href="(https://github.com/tock/tock/commit/5f7246d4af139864f567cebf15bfc0b49e17b787)"><code>MapCell</code>を導入したコミット</a>にはパフォーマンスベンチマークが
+含まれていますが、正確なパフォーマンスは使用場面により異なります。一般的に
+言えば、中型から大型のバッファは<code>MapCell</code>がふさわしいはずです。</p>
+<h2><a class="header" href="#optionalcell" id="optionalcell"><code>OptionalCell</code></a></h2>
+<p><a href="https://github.com/tock/tock/blob/master/libraries/tock-cells/src/optional_cell.rs"><code>OptionalCell</code></a>は
+実質上、<code>Cell&lt;Option&lt;T&gt;&gt;</code>などの<code>Option</code>を含む<code>Cell</code>のラッパーです。
+これはある程度<code>TakeCell</code>のインターフェイスを反映していますが、ここでは、
+<code>Option</code>が利用者からは隠されています。そのため、<code>my_optional_cell.get().map(|| {})</code>ではなく、<code>my_optional_cell.map(|| {})</code>のように書くことが
+できます。</p>
+<p><code>OptionalCell</code>は<code>Cell</code>が保持できるものと同じ値を保持することができますが、
+値が事実上設定されていない場合は、単に<code>None</code>とすることもできます。
+<code>OptionalCell</code>を使用すると（<code>NumCell</code>のように）コードがより明確になり、
+余分で面倒な関数呼び出しを隠すことができます。</p>
+<h2><a class="header" href="#volatilecell" id="volatilecell"><code>VolatileCell</code></a></h2>
+<p><code>VolatileCell</code>は、値をvolatileに読み書きするためのヘルパー型です。
+これは主にメモリマップドI/Oレジスタへのアクセスに使用されます。<code>get()</code>関数と
+<code>set()</code>関数は、各々<code>core::ptr::read_volatile()</code>と <code>core::ptr::write_volatile()</code>のラッパーです。</p>
+<h2><a class="header" href="#cellの拡張機能" id="cellの拡張機能">Cellの拡張機能</a></h2>
+<p>Tockでは、カスタム型に加えて、ユーザビリティの拡大と簡易化のために標準のCellの
+一部に<a href="https://github.com/aturon/rfcs/blob/extension-trait-conventions/text/0000-extension-trait-conventions.md">拡張機能</a>を追加しています。その仕組みは、
+既存のデータ型にトレイトを追加して機能を向上させることです。拡張機能を使うには、
+<code>use kernel::common::cell::THE_EXTENSION</code>として、新しいトレイトを
+スコープに入れるだけです。</p>
+<h3><a class="header" href="#numericcellext" id="numericcellext"><code>NumericCellExt</code></a></h3>
+<p><a href="https://github.com/tock/tock/blob/master/libraries/tock-cells/src/numeric_cell_ext.rs"><code>NumericCellExt</code></a>は
+（<code>usize</code>や<code>i32</code>などの）「数値」型を含むcellを拡張し（<code>add()</code>や
+<code>subtract()</code>などの）便利な関数を提供するものです。この拡張により、増減する
+数値を格納する際のコードがより明確なものになります。たとえば、通常の<code>Cell</code>
+では格納された値に1を追加するコードは、<code>my_cell.set(my_cell.get() + 1)</code>
+のようになりますが、<code>NumericCellExt</code>の場合は少し理解しやすい<code>my_cell.increment()</code>（または<code>my_cell.add(1)</code>）のようになります。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="Lifetimes.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="Soundness.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="Lifetimes.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="Soundness.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
